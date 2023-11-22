@@ -16,12 +16,6 @@ class Course(models.Model):
     course_description = models.CharField(max_length=1000)
     course_code = models.CharField(max_length=20)
 
-class ArchivedCourse(models.Model):
-    course_id = models.OneToOneField(Course, on_delete=models.CASCADE, primary_key=True)
-    course_name = models.CharField(max_length=255)
-    course_description = models.CharField(max_length=1000)
-    course_code = models.CharField(max_length=20)
-    archiving_date = models.DateField()
 
 class Section(models.Model):
     section_id = models.IntegerField(unique=True, primary_key=True)
@@ -34,6 +28,11 @@ class UserCourseAssignment(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     section_type = models.CharField(max_length=50)
 
-    # Enforces that a user can only be assigned to a course once
-    class Meta:
-        unique_together = ('user_id', 'course_id')
+
+
+
+    # # Enforces that a user can only be assigned to a course once
+    # class Meta:
+    #     unique_together = ('user_id', 'course_id')
+    #     app_label = 'supercreative'
+
