@@ -3,7 +3,7 @@
 import os
 import sys
 
-
+print('\n', sys.path, '\n')
 def main():
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
