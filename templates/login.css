@@ -1,0 +1,89 @@
+@font-face {
+    font-family: college-font;
+    src: url(CollegiateheavyoutlineMedium-B0yx.ttf);
+}
+
+html {
+    background-color: white;
+}
+
+body {
+    background-color: #f1f5f9;
+    height: 100vh;
+    margin: 0px;
+    padding: 0px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.logo {
+    font-family: college-font;
+    font-size: 60px;
+    color: #0e415f;
+    margin-bottom: 50px;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px lightgray;
+    padding: 20px;
+}
+
+input, button {
+    height: 44px;
+    margin: 10px;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+input {
+    outline: none;
+    width: 380px;
+    border: solid lightgray 1px;
+    padding: 0px 8px;
+    font-size: 16px;
+}
+
+input::placeholder {
+    color: gray;
+    opacity: .75;
+}
+
+input:focus {
+    border: solid #38bdf8 2px;
+}
+
+button {
+    background-color: #f97316;
+    border: 0px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    width: 380px;
+}
+
+button:hover {
+    background-color: #da6512;
+}
+
+a {
+    color: #f97316;
+    margin-top: 6px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #da6512;
+}
