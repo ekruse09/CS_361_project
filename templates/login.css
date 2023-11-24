@@ -17,16 +17,17 @@ body {
 .content {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 100%;
+    padding-top: 90px;
+    height: auto;
 }
 
 .logo {
     font-family: college-font;
-    font-size: 60px;
+    font-size: 80px;
     color: #0e415f;
-    margin-bottom: 50px;
+    margin-bottom: 65px;
+    cursor: default;
 }
 
 form {
@@ -61,7 +62,8 @@ input::placeholder {
 }
 
 input:focus {
-    border: solid #38bdf8 2px;
+    border: solid #1d4ed8 1px;
+    box-shadow: 0px 0px 3px #38bdf8;
 }
 
 button {
@@ -75,15 +77,16 @@ button {
 
 button:hover {
     background-color: #da6512;
+    cursor: pointer;
 }
 
-a {
+.forgot-pass {
     color: #f97316;
     margin-top: 6px;
     font-size: 16px;
-    text-decoration: none;
 }
 
-a:hover {
+.forgot-pass:hover {
     color: #da6512;
+    cursor: pointer;
 }
