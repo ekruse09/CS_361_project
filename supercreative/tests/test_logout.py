@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
-from supercreative.models import (User, Course, Section, UserCourseAssignment)
-from supercreative.Logout.logout import logout
+from supercreative.models import User
+from supercreative.Logout.logout import end_session
 
 class LogoutTestCase(TestCase):
     client = None
@@ -10,6 +10,7 @@ class LogoutTestCase(TestCase):
     def setUp(self):
         # Session keys would not save if only using self.client.session. Not sure why because self.session and
         # self.client.session are the same object
+        user = User.objects.get
         self.client = Client()
         self.session = self.client.session
         self.user = User.objects.create(user_id=1, email="test@example.com",
@@ -25,9 +26,21 @@ class LogoutTestCase(TestCase):
         self.assertEqual(self.user.user_id, self.client.session['user_id'])
 
         # logs user out by deleting session keys
-        logout(self.client.session)
+        end_session(self.client.session)
 
         # verify that session keys have been deleted
+        for key, value in self.session.items():
+            with self.assertRaises(KeyError):
+                self.client.session[key]
+
+    def test_acceptance_end_session(self):
+        # assert that session exists
+        self.assertEqual(self.client.session['user_id'], self.user.user_id)
+
+        # redirect to login simulates user clicking logout link
+        self.client.get('/login/', follow=True)
+
+        # assert that session has been cleared
         for key, value in self.session.items():
             with self.assertRaises(KeyError):
                 self.client.session[key]

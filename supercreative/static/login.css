@@ -1,6 +1,6 @@
 @font-face {
     font-family: college-font;
-    src: url(CollegiateheavyoutlineMedium-B0yx.ttf);
+    src: url(/supercreative/static/CollegiateheavyoutlineMedium-B0yx.ttf);
 }
 
 html {
@@ -23,7 +23,7 @@ body {
 }
 
 .logo {
-    font-family: college-font;
+    font-family: college-font, serif;
     font-size: 60px;
     color: #0e415f;
     margin-bottom: 50px;
