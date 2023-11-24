@@ -1,10 +1,13 @@
 from supercreative.models import (User, Course, Section)
+from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_session(session, email):
-    user = User.objects.get(email)
+def create_session(session, login_email):
 
-    if user is None:
+    try:
+        user = User.objects.get(email=login_email)
+
+    except ObjectDoesNotExist:
         return False
 
     session["user_id"] = user.user_id

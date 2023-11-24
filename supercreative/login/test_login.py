@@ -19,6 +19,11 @@ class TestLogin(TestCase):
                                         password="password123",
                                         role="student", first_name="John", last_name="Doe",
                                         phone_number="1234567890", address="123 Main St")
+        self.session = self.client.session
+
+        for key, value in self.session.items():
+            with self.assertRaises(KeyError):
+                self.client.session[key]
 
     # we login with email and password
 
@@ -32,7 +37,7 @@ class TestLogin(TestCase):
     def test_complete(self):
         # tests to see if the complete list of user's data is correct
         create_session(self.session, self.user.email)
-        self.assertEqual(self.client.session["user_id"], "1", "incorrect session!")
+        self.assertEqual(self.client.session["user_id"], 1, "incorrect session!")
         self.assertEqual(self.client.session["role"], "student", "incorrect role!")
 
         '''
