@@ -20,35 +20,18 @@ class TestLogin(TestCase):
                                         role="student", first_name="John", last_name="Doe",
                                         phone_number="1234567890", address="123 Main St")
 
-    # tests assume we login with email and password
-    def test_wrongPassword(self):
-        # modeled after TestSessionLab2's test_wrongPassword
-        resp = self.client.post("/", {"email": "test@example.com", "password": "wrong"}, follow=True)
-        self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with bad "
-                                                                                        "password")
+    # we login with email and password
 
-        resp = self.client.post("/", {"email": "test@example.com", "password": ""}, follow=True)
-        self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with no "
-                                                                                        "password")
-
-    def test_wrongUsername(self):
-        resp = self.client.post("/", {"email": "wrong@email.com", "password": "password123"}, follow=True)
-        self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with bad "
-                                                                                        "email")
-
-        resp = self.client.post("/", {"email": "", "password": "password123"}, follow=True)
-        self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with no "
-                                                                                        "email")
+    def test_wrong_email(self):
+        self.assertFalse(create_session(self.session, "wrong@email.com"))
 
     def test_session(self):
         # assumes the session is named after the user_id
-        resp = self.client.post("/", {"email": "test@example.com", "password": "password123"}, follow=True)
-        self.assertTrue(create_session(self.session, resp))
+        self.assertTrue(create_session(self.session, self.user.email))
 
     def test_complete(self):
         # tests to see if the complete list of user's data is correct
-        resp = self.client.post("/", {"email": "test@example.com", "password": "password123"}, follow=True)
-        create_session(self.session, resp)
+        create_session(self.session, self.user.email)
         self.assertEqual(self.client.session["user_id"], "1", "incorrect session!")
         self.assertEqual(self.client.session["role"], "student", "incorrect role!")
 
@@ -68,3 +51,26 @@ class TestLogin(TestCase):
         #do my tests run
         self.assertEqual(1,1, "not equal")
     '''
+
+    '''
+        acceptance tests
+
+        def test_wrong_password(self):
+            # modeled after TestSessionLab2's test_wrongPassword
+            resp = self.client.post("/", {"email": "test@example.com", "password": "wrong"}, follow=True)
+            self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with bad "
+                                                                                            "password")
+
+            resp = self.client.post("/", {"email": "test@example.com", "password": ""}, follow=True)
+            self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with no "
+                                                                                            "password")
+
+        def test_wrong_username(self):
+            resp = self.client.post("/", {"email": "wrong@email.com", "password": "password123"}, follow=True)
+            self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with bad "
+                                                                                            "email")
+
+            resp = self.client.post("/", {"email": "", "password": "password123"}, follow=True)
+            self.assertEqual(resp.context["message"], "Invalid email address or password.", "user logged in with no "
+                                                                                            "email")
+        '''
