@@ -29,8 +29,6 @@ class UserCourseAssignment(models.Model):
     section_type = models.CharField(max_length=50)
 
 
-
-
     # # Enforces that a user can only be assigned to a course once
     # class Meta:
     #     unique_together = ('user_id', 'course_id')
