@@ -10,6 +10,7 @@ def create_session(session, login_email):
     except ObjectDoesNotExist:
         return False
 
+    # only store the user_id and role in the session
     session["user_id"] = user.user_id
     session["role"] = user.role
     session.save()

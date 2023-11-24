@@ -25,8 +25,7 @@ class TestLogin(TestCase):
             with self.assertRaises(KeyError):
                 self.client.session[key]
 
-    # we login with email and password
-
+    # we log in with email and password
     def test_wrong_email(self):
         self.assertFalse(create_session(self.session, "wrong@email.com"))
 
