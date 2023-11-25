@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="../supercreative/static/login.css/">
     <title>Login</title>
 </head>
 <body>
@@ -11,13 +12,14 @@
         <div class="logo">
             Fictitious University
         </div>
-        <form action="" method="get"
+        <form action="" method="post">
+            {% csrf_token %}
             <label for="email"></label>
             <input type="email" id="email" name="email" placeholder="Email">
             <label for="password"></label>
             <input type="password" id="password" name="password" placeholder="Password">
-            <button>Log In</button>
-            <p class="forgot-pass">Forgot password?</p>
+            <input type="submit" value="Login">
+            <a href="">Forgot password?</a>
         </form>
     </div>
 </body>
