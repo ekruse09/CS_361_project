@@ -38,7 +38,7 @@ class LogoutTestCase(TestCase):
         self.assertEqual(self.client.session['user_id'], self.user.user_id)
 
         # redirect to login simulates user clicking logout link
-        self.client.get('/login/', follow=True)
+        self.client.get('/', follow=True)
 
         # assert that session has been cleared
         for key, value in self.session.items():
