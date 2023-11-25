@@ -6,7 +6,7 @@ def logout(request):
     return redirect('/')
 
 class Login(View):
-    def get(self,request):
+    def get(self, request):
         logout(request)
         return render(request, 'login.html', {})
 
