@@ -10,3 +10,9 @@ def end_session(session):
         except TypeError:
             pass
     session.save()
+
+def did_logout(request):
+    end_session(request.session)
+    for key in request.session.items():
+        return False
+    return True
