@@ -42,6 +42,12 @@ form {
     padding: 20px;
 }
 
+.bad-pass {
+    color: red;
+    font-size: 18px;
+    margin: 14px;
+}
+
 input, button {
     height: 44px;
     margin: 10px;

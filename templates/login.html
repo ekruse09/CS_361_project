@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="supercreative/static/login.css/">
+    <link rel="stylesheet" href="{% static 'login.css' %}">
     <title>Login</title>
 </head>
 <body>
@@ -13,6 +13,9 @@
             Fictitious University
         </div>
         <form action="" method="post">
+            {% if message %}
+                <p class="bad-pass">{{ message }}</p>
+            {% endif %}
             {% csrf_token %}
             <label for="email"></label>
             <input type="email" id="email" name="email" placeholder="Email">
