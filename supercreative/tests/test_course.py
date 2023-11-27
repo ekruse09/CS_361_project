@@ -10,7 +10,7 @@ class CourseViewTestCase(TestCase):
         # Set up any initial data here, like creating a test course
 
     def test_create_course(self):
-        response = self.client.post(reverse('course/'), {
+        response = self.client.post('course/', {
             'action': 'new_user',
             'course_id': '1',
             'course_name': 'Test Course',
@@ -22,7 +22,7 @@ class CourseViewTestCase(TestCase):
 
     def test_edit_course(self):
         # Assuming a course with course_id '1' already exists
-        response = self.client.post(reverse('course/'), {
+        response = self.client.post('course/', {
             'action': 'edit_user',
             'course_id': '1',
             'course_name': 'Updated Course',
@@ -36,7 +36,7 @@ class CourseViewTestCase(TestCase):
 
     def test_delete_course(self):
         # Assuming a course with course_id '1' exists
-        response = self.client.post(reverse('course/'), {
+        response = self.client.post('course/', {
             'action': 'delete_user',
             'course_id': '1'
         })
@@ -44,7 +44,7 @@ class CourseViewTestCase(TestCase):
         self.assertFalse(Course.objects.filter(course_id='1').exists())
 
     def test_invalid_action(self):
-        response = self.client.post(reverse('course/'), {
+        response = self.client.post('course/', {
             'action': 'invalid_action',
             'course_id': '1'
         })
