@@ -24,11 +24,11 @@ class UnitTestActiveSessionExists(TestCase):
 
     def test_active_session(self):
         # Assert that session exists and that user role is legitimate
-        self.assertTrue(active_session_exists(self.good_session), "No active session")
+        self.assertTrue(active_session_exists(self.good_client), "No active session")
 
     def test_no_session(self):
         # Assert that session does not exist
-        self.assertFalse(active_session_exists(self.bad_session), "Session should not exist")
+        self.assertFalse(active_session_exists(self.bad_client), "Session should not exist")
 
 class AcceptanceTestActiveSessionExists(TestCase):
     good_session = None

@@ -1,5 +1,4 @@
 from supercreative.models import User
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def active_session_exists(request):
