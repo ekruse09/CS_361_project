@@ -20,7 +20,9 @@ class Test(View):
 
 class Course(View):
     def get(self, request):
-        return render(request, 'course.html')
+        #get all the courses
+        courses = Course.objects.all()
+        return render(request, 'course.html', {'courses': courses})
 
     def post(self, request):
 
@@ -31,6 +33,9 @@ class Course(View):
             course_code = request.POST.get('course_code')
             course.create_course(course_id, course_name, course_description, course_code)
             return redirect('/course')
+
+        elif 'select_edit' in request.POST.get('action'):
+            return redie
 
         elif 'edit_cousre' in request.POST.get('action'):
             if not course.check_existence(request.POST.get('course_id')):
