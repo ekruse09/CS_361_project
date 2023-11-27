@@ -22,6 +22,6 @@ from supercreative import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('test/', Test.as_view()),
-    path('course/', views.course),
+    path('course/', views.Course),
     path('', Login.as_view()),
 ]

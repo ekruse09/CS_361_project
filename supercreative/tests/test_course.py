@@ -49,4 +49,3 @@ class CourseViewTestCase(TestCase):
             'course_id': '1'
         })
         self.assertEqual(response.status_code, 302)
-        # Optionally, check that no changes were made to the database
