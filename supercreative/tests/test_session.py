@@ -23,9 +23,11 @@ class UnitTestActiveSessionExists(TestCase):
         self.bad_session = self.bad_client.session
 
     def test_active_session(self):
+        # Assert that session exists and that user role is legitimate
         self.assertTrue(active_session_exists(self.good_session), "No active session")
 
     def test_no_session(self):
+        # Assert that session does not exist
         self.assertFalse(active_session_exists(self.bad_session), "Session should not exist")
 
 class AcceptanceTestActiveSessionExists(TestCase):
@@ -50,12 +52,14 @@ class AcceptanceTestActiveSessionExists(TestCase):
         self.bad_session = self.bad_client.session
 
     def test_good_session(self):
+        # Assert that user stays on page if session is valid
         resp = self.good_client.get("/test/", follow=True)
         self.assertEqual(resp.status_code,200, "Did not login successfully")
 
 
 
     def test_bad_session(self):
+        # Assert that user is redirected if session is invalid
         resp = self.bad_client.get("/test/", follow=True)
         self.assertRedirects(resp, '/', status_code=302, target_status_code=200,
                              fetch_redirect_response=True)
