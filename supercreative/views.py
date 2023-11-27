@@ -2,7 +2,7 @@ from django.shortcuts import redirect,render
 from django.views import View
 from supercreative.logout import logout
 from supercreative.login import login
-from supercreative.models import User
+from supercreative.session import session
 
 class Login(View):
     def get(self, request):
@@ -20,7 +20,10 @@ class Login(View):
 
 class Test(View):
     def get(self, request):
-        return render(request, 'test_page.html', {'user_id':request.session['user_id'], 'role':request.session['role']})
+        if session.active_session_exists(request):
+            return render(request, 'test_page.html', {'user_id':request.session['user_id'], 'role':request.session['role']})
+        else:
+            return redirect("/")
 
 
 
