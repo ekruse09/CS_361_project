@@ -1,7 +1,8 @@
 from django.shortcuts import redirect,render
 from django.views import View
-from supercreative.logout import logout
+from supercreative.Logout import logout
 from supercreative.login import login
+from supercreative.Course import course
 from supercreative.models import User
 
 class Login(View):
