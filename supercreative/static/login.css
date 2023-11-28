@@ -3,6 +3,12 @@
     src: url(/supercreative/static/CollegiateheavyoutlineMedium-B0yx.ttf);
 }
 
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+}
+
 html {
     background-color: white;
 }
@@ -26,8 +32,9 @@ body {
     font-family: college-font;
     font-size: 80px;
     color: #0e415f;
-    margin-bottom: 65px;
+    margin-bottom: 90px;
     cursor: default;
+    white-space: nowrap;
 }
 
 form {
@@ -39,6 +46,12 @@ form {
     border-radius: 8px;
     box-shadow: 0px 2px 8px lightgray;
     padding: 20px;
+}
+
+.bad-pass {
+    color: red;
+    font-size: 18px;
+    margin: 14px;
 }
 
 input, button {
