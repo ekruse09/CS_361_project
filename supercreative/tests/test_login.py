@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
-from supercreative.models import (User, Course, Section)
-from supercreative.login.login import create_session
+from supercreative.models import (User)
+from supercreative.authentication.authentication import create_session
 
 
 class LoginUnitTest(TestCase):
