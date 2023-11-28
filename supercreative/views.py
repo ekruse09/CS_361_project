@@ -1,31 +1,27 @@
-from django.shortcuts import redirect,render
+from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.logout import logout
-from supercreative.login import login
-from supercreative.session import session
+from supercreative.authentication import authentication
+
 
 class Login(View):
     def get(self, request):
-        if logout.did_logout(request) is True:
+        if authentication.did_logout(request) is True:
             return render(request, 'login.html', {})
         else:
             return redirect("/")
 
     def post(self, request):
-        if login.did_login(request) is False:
+        if authentication.did_login(request) is False:
             return render(request, 'login.html',
-                          {'message':"No account found with that email and password"})
+                          {'message': "No account found with that email and password"})
         else:
             return redirect("test/")
 
+
 class Test(View):
     def get(self, request):
-        if session.active_session_exists(request):
-            return render(request, 'test_page.html', {'user_id':request.session['user_id'], 'role':request.session['role']})
+        if authentication.active_session_exists(request):
+            return render(request, 'test_page.html',
+                          {'user_id': request.session['user_id'], 'role': request.session['role']})
         else:
             return redirect("/")
-
-
-
-
-

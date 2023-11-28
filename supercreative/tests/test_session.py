@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
-from supercreative.models import (User, Course, Section)
-from supercreative.session.session import active_session_exists
+from supercreative.models import (User)
+from supercreative.authentication.authentication import active_session_exists
+
 
 class UnitTestActiveSessionExists(TestCase):
     good_session = None
@@ -8,6 +9,7 @@ class UnitTestActiveSessionExists(TestCase):
     good_client = None
     bad_client = None
     user = None
+
     def setUp(self):
         self.user = User.objects.create(user_id=1, email="test@example.com",
                                         password="password123",
@@ -29,6 +31,7 @@ class UnitTestActiveSessionExists(TestCase):
     def test_no_session(self):
         # Assert that session does not exist
         self.assertFalse(active_session_exists(self.bad_client), "Session should not exist")
+
 
 class AcceptanceTestActiveSessionExists(TestCase):
     good_session = None
@@ -54,9 +57,7 @@ class AcceptanceTestActiveSessionExists(TestCase):
     def test_good_session(self):
         # Assert that user stays on page if session is valid
         resp = self.good_client.get("/test/", follow=True)
-        self.assertEqual(resp.status_code,200, "Did not login successfully")
-
-
+        self.assertEqual(resp.status_code, 200, "Did not login successfully")
 
     def test_bad_session(self):
         # Assert that user is redirected if session is invalid

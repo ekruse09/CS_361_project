@@ -1,6 +1,6 @@
-from django.test import TestCase, Client
-from supercreative.models import (User, Course, Section)
-from supercreative.course import edit_course
+from django.test import TestCase
+from supercreative.models import (Course)
+from supercreative.create_course.course import edit_course
 
 class TestCourseEdit(TestCase):
     base_course = None

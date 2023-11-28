@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from supercreative.models import User
-from supercreative.logout.logout import end_session
+from supercreative.authentication.authentication import end_session
 
 class LogoutUnitTest(TestCase):
     client = None
