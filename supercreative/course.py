@@ -26,6 +26,7 @@ def edit_course(current_course_id, new_course_name='', new_course_description=""
     course.save()
     return True
 
-def delete_course(current_course_id):
-    # Can't delete course with sections
-    pass
+def delete_course(course):
+    if Section.objects.filter(course_id=course).exists():
+        return False
+    return course.delete()
