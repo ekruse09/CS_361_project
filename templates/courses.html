@@ -42,18 +42,18 @@
                 <th>Course Description</th>
             </tr>
             {% for course in courses %}
-            <tr>
-                <td>{{ course.course_id }}</td>
-                <td>{{ course.course_code }}</td>
-                <td>{{ course.course_name }}</td>
-                <td>{{ course.course_description }}</td>
-            </tr>
+                <tr>
+                    <td>{{ course.course_id }}</td>
+                    <td>{{ course.course_code }}</td>
+                    <td>{{ course.course_name }}</td>
+                    <td>{{ course.course_description }}</td>
+                </tr>
             {% endfor %}
         </table>
     </div>
-    {% if not pool %}
-    <div class="shade"></div>
-    <div class="pop-up">Dummy code</div>
+    {% if flag %}
+        <div class="shade"></div>
+        <div class="pop-up">Dummy code</div>
     {% endif %}
 </body>
 </html>
