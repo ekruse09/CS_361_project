@@ -66,4 +66,5 @@ def edit_course(current_course_id, new_course_name='', new_course_description=""
 def delete_course(course):
     if Section.objects.filter(course_id=course).exists():
         return False
-    return course.delete()
+    Course.objects.get(course_id=course.course_id).delete()
+    return True

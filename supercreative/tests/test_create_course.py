@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from supercreative.models import (User, Course)
-from supercreative.create_course.course import create_course
+from supercreative.course.course import create_course
 
 
 class CreateCourseTest(TestCase):

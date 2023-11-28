@@ -1,6 +1,7 @@
 from django.test import TestCase
 from supercreative.models import Course, Section
-from supercreative.create_course.course import delete_course
+from supercreative.course.course import delete_course
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class TestCourseDelete(TestCase):
@@ -22,9 +23,8 @@ class TestCourseDelete(TestCase):
 
     def test_successful_delete(self):
         self.assertTrue(delete_course(self.good_course), "Failed to delete course")
-        # print(self.good_course.course_id)
-        # with self.assertRaises(ObjectDoesNotExist):
-        # self.good_course
+        with self.assertRaises(ObjectDoesNotExist):
+            Course.objects.get(course_id=self.good_course.course_id)
 
     def test_failed_delete(self):
         self.assertFalse(delete_course(self.bad_course), "Deleted course with sections")
