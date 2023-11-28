@@ -14,7 +14,7 @@ def create_user(uid, email, password, role, first, last, phone, address):
         site = hold.partition('@')
         if site[2] != 'uwm.edu':
             return False
-    else: #ignore
+    else:
         return False
 
     if not isinstance(password, str) or len(password) == 0:
