@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: grid;
+    grid-template: 120px 1fr / 1fr 6fr;
+}
+
+.sidebar {
+    background-color: #0e415f;
+    grid-row: 1 / -1;
+    height: 100vh;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar > div {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 30px;
+    cursor: pointer;
+}
+
+.sidebar > div:hover {
+    background-color: #f97316;
+}
+
+.sidebar > div:active {
+    background-color: #da6512;
+}
+
+.sidebar img {
+    justify-self: center;
+    align-self: center;
+    filter: invert(100%) sepia(33%) saturate(2%) hue-rotate(293deg) brightness(107%) contrast(101%);
+    width: 25px;
+}
+
+.sidebar p {
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding-left: 100px;
+}
+
+.header > p {
+    font-size: 48px;
+    font-weight: 500;
+}
+
+.content {
+    /*display: flex;*/
+    background-color: #f1f5f9;
+    box-shadow: inset 4px 4px 4px -4px black;
+    padding: 30px;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid black;
+}
+
+td, th {
+    border: 1px solid #bebebe;
+    padding: 10px 20px;
+}
+
+td {
+    text-align: left;
+}
+
+tr:nth-child(even) td {
+    background-color: #fafafa;
+}
+
+tr:nth-child(odd) td {
+    background-color: #f5f5f5;
+}
+
+.shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: .4;
+    height: 100%;
+    z-index: 1;
+}
+
+.pop-up {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 500px;
+    width: 350px;
+    background-color: aqua;
+    display: flex;
+    padding: 50px;
+    flex-direction: column;
+    justify-content: end;
+    z-index: 5;
+}

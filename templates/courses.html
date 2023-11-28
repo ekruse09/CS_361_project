@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'courses.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="home">
+            <img src="../supercreative/static/images/home.svg" alt="home button">
+            <p>Home</p>
+        </div>
+        <div class="users">
+            <img src="../supercreative/static/images/account-group.svg" alt="users button">
+            <p>Users</p>
+        </div>
+        <div class="courses" onclick="location.href=''">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            <p>Courses</p>
+        </div>
+        <div class="sections">
+            <img src="../supercreative/static/images/monitor-dashboard.svg" alt="sections button">
+            <p>Sections</p>
+        </div>
+    </div>
+    <div class="header">
+        <p>Course Catalog</p>
+    </div>
+    <div class="content">
+        <table>
+            <tr>
+                <th>Course Code</th>
+                <th>Course Name</th>
+                <th>Course Description</th>
+            </tr>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.course_code }}</td>
+                <td>{{ course.course_name }}</td>
+                <td>{{ course.course_description }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if not pool %}
+    <div class="shade"></div>
+    <div class="pop-up">Dummy code</div>
+    {% endif %}
+</body>
+</html>
