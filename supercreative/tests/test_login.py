@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from supercreative.models import (User)
 from supercreative.authentication.authentication import create_session
+from supercreative.user.user import create_user
+from supercreative.authentication.authentication import create_session
 
 
 class LoginUnitTest(TestCase):
@@ -11,29 +13,25 @@ class LoginUnitTest(TestCase):
     def setUp(self):
         # same user setup as everyone else used
         self.client = Client()
-        self.user = User.objects.create(user_id=1, email="test@example.com",
-                                        password="password123",
-                                        role="student", first_name="John", last_name="Doe",
-                                        phone_number="1234567890", address="123 Main St")
-        self.session = self.client.session
 
-        for key, value in self.session.items():
-            with self.assertRaises(KeyError):
-                self.client.session[key]
+        create_user(1,"test@uwm.edu", "P@ssword123", "ADMINISTRATOR", "John", "Doe",
+                    "1234567890", "123 Main St")
+        self.user = User.objects.get(user_id=1)
+        self.session = self.client.session
 
     # we log in with email and password
     def test_wrong_email(self):
-        self.assertFalse(create_session(self.session, "wrong@email.com"))
+        self.assertFalse(create_session(self.client.session, "wrong@email.com"))
 
     def test_session(self):
         # assumes the session is named after the user_id
-        self.assertTrue(create_session(self.session, self.user.email))
+        self.assertTrue(create_session(self.client.session, self.user.email))
 
     def test_complete(self):
         # tests to see if the complete list of user's data is correct
         create_session(self.session, self.user.email)
-        self.assertEqual(self.client.session["user_id"], 1, "incorrect session!")
-        self.assertEqual(self.client.session["role"], "student", "incorrect role!")
+        self.assertEqual(self.session["user_id"], self.user.user_id, "incorrect session!")
+        self.assertEqual(self.session["role"], self.user.role, "incorrect role!")
         '''
         not stored in the session but can be added
         
@@ -53,10 +51,9 @@ class LoginAcceptanceTest(TestCase):
     def setUp(self):
         # same user setup as everyone else used
         self.client = Client()
-        self.user = User.objects.create(user_id=1, email="test@example.com",
-                                        password="password123",
-                                        role="student", first_name="John", last_name="Doe",
-                                        phone_number="1234567890", address="123 Main St")
+        create_user(1, "test@uwm.edu", "P@ssword123", "ADMINISTRATOR", "John", "Doe",
+                    "1234567890", "123 Main St")
+        self.user = User.objects.get(user_id=1)
         self.session = self.client.session
 
     def test_successful_login(self):

@@ -1,6 +1,6 @@
 import os
 from django.test import TestCase
-from supercreative.CreateAccount.CreateAccount import create_user
+from supercreative.user.user import create_user
 from supercreative.models import User
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")

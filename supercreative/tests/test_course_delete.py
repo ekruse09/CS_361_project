@@ -1,6 +1,6 @@
 from django.test import TestCase
 from supercreative.models import Course, Section
-from supercreative.course.course import delete_course
+from supercreative.course.course import delete_course, create_course
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -11,13 +11,17 @@ class TestCourseDelete(TestCase):
     section2 = None
 
     def setUp(self):
-        self.bad_course = Course.objects.create(course_id=101, course_name="Introduction to Python",
-                                                course_description="A basic course on Python programming",
-                                                course_code="PY101")
+        create_course(101, "Introduction to Python",
+                      "A basic course on Python programming",
+                      "PY101")
+        self.bad_course = Course.objects.get(course_id=101)
 
-        self.good_course = Course.objects.create(course_id=201, course_name="Intermediate Python Programming",
-                                                 course_description="An intermediate course on Python programming",
-                                                 course_code="PY101")
+        create_course(201, "Intermediate Python Programming",
+                      "An intermediate course on Python programming",
+                      "PY201")
+        self.good_course = Course.objects.get(course_id=201)
+
+        # Missing integration tests
         self.section1 = Section.objects.create(section_id=1, course_id=self.bad_course, section_type="Lecture")
         self.section2 = Section.objects.create(section_id=2, course_id=self.bad_course, section_type="Lab")
 

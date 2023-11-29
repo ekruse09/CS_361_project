@@ -2,7 +2,7 @@ from supercreative.models import Course, Section
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_course(id, name, description, code, role):
+def create_course(id, name, description, code):
     # check for valid id
     if not (isinstance(id, int) and id > 0):
         return False
@@ -17,10 +17,6 @@ def create_course(id, name, description, code, role):
 
     # check for valid course code (just checking for a unique string as of now)
     if not (isinstance(code, str)):
-        return False
-
-    # checking for appropriate privileges
-    if role != "administrator":
         return False
 
     # check database for duplicate ids, names, or course codes

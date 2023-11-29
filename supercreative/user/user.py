@@ -30,8 +30,8 @@ def create_user(uid, email, password, role, first, last, phone, address):
     if len(role) == 0 or not isinstance(role, str):
         return False
 
-    valid_roles = ["administrator", "Administrator", "TA", "Teaching Assistant", "teaching assistant", "instructor",
-                   "Instructor"]
+    role.capitalize()
+    valid_roles = ["ADMINISTRATOR", "INSTRUCTOR", "TA"]
     if role not in valid_roles:
         return False
 
