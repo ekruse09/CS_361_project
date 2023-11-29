@@ -33,7 +33,7 @@ class Courses(View):
         #get all the courses
         courses = Course.objects.all()
         val = True
-        return render(request, 'courses.html', {'courses': courses, 'pool': val})
+        return render(request, 'courses.html', {'courses': courses, 'popup': val})
 
     def post(self, request):
 
@@ -73,7 +73,7 @@ class Courses(View):
             return redirect(request.path)
 
         else:
-            return redirect('course/')
+            return redirect('/course/')
 
 
 
