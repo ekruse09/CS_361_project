@@ -37,6 +37,11 @@ class Courses(View):
 
     def post(self, request):
 
+        if 'view_course' in request.POST.get('action'):
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(course_id=course_id)
+            return render(request, 'course.html', {'course': course, 'pool': True, 'edit': False})
+
         if 'new_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course_name = request.POST.get('course_name')
@@ -45,7 +50,7 @@ class Courses(View):
             course.create_course(course_id, course_name, course_description, course_code)
             return redirect('course/')
 
-        elif 'edit_cousre' in request.POST.get('action'):
+        elif 'edit_course' in request.POST.get('action'):
             if not course.check_existence(request.POST.get('course_id')):
                 return course.nonexistense_error()
             course_id = request.POST.get('course_id')
