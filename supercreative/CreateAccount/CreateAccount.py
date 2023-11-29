@@ -6,7 +6,7 @@ def create_user(uid, email, password, role, first, last, phone, address):
     if not isinstance(uid, int) or User.objects.filter(user_id=uid).exists() or uid <= 0:
         return False
 
-    if len(email) == 0 or (not isinstance(email, str) and User.objects.filter(email=email).exists()):
+    if len(email) == 0 or (not isinstance(email, str) or User.objects.filter(email=email).exists()):
         return False
 
     hold = email
@@ -50,7 +50,7 @@ def create_user(uid, email, password, role, first, last, phone, address):
         if char.isdigit():
             clean_phone += char
 
-    if len(clean_phone) < 10:
+    if len(clean_phone) != 10:
         return False
 
     if not isinstance(address, str) or len(address) == 0:

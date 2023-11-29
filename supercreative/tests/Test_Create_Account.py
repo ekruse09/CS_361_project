@@ -1,15 +1,34 @@
 import os
 from django.test import TestCase
 from supercreative.CreateAccount.CreateAccount import create_user
+from supercreative.models import User
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
 
 
 class CreateAccountTest(TestCase):
     def test_good_create(self):
-        goodcreate = create_user(1, "test@uwm.edu", "Testp@ss", "TA", "testfirst", "testlast", "5555555555",
-                                 "testaddress")
+        goodcreate = create_user(1, "test@uwm.edu", "Testp@ss", "TA", "testfirst",
+                                 "testlast", "5555555555","testaddress")
         self.assertTrue(goodcreate)
+        self.assertEqual(User.objects.get(user_id=1).user_id, 1)
+        self.assertEqual(User.objects.get(user_id=1).email, "test@uwm.edu")
+        self.assertEqual(User.objects.get(user_id=1).password, "Testp@ss")
+        self.assertEqual(User.objects.get(user_id=1).role, "TA")
+        self.assertEqual(User.objects.get(user_id=1).first_name, "testfirst")
+        self.assertEqual(User.objects.get(user_id=1).last_name, "testlast")
+        self.assertEqual(User.objects.get(user_id=1).phone_number, "5555555555")
+        self.assertEqual(User.objects.get(user_id=1).address, "testaddress")
+
+    def test_existing_user(self):
+        goodcreate = create_user(1, "test@uwm.edu", "Testp@ss", "TA", "testfirst",
+                                 "testlast", "5555555555", "testaddress")
+        dupeidcreate = create_user(1, "again@uwm.edu", "Testp@ss", "TA", "testfirst",
+                                 "testlast", "5555555555", "testaddress")
+        dupemailcreate = create_user(2, "test@uwm.edu", "Testp@ss", "TA", "testfirst",
+                                 "testlast", "5555555555", "testaddress")
+        self.assertFalse(dupeidcreate)
+        self.assertFalse(dupemailcreate)
 
     def test_bad_id(self):
         badcreate = create_user(-1, "test@uwm.edu", "Testp@ss", "TA", "testfirst", "testlast", "5555555555",
