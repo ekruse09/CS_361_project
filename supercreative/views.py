@@ -52,10 +52,9 @@ class Courses(View):
 
         if 'new_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
-            course = Course.objects.get(course_id=course_id)
-            course_name = course.course_name
-            course_description = course.course_description
-            course_code = course.course_code
+            course_name = request.POST.get('course_name')
+            course_description = request.POST.get('course_description')
+            course_code = request.POST.get('course_code')
             courseHelper.create_course(course_id, course_name, course_description, course_code)
             return redirect('course/')
 
