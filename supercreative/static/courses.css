@@ -10,13 +10,14 @@ html, body {
 
 body {
     display: grid;
-    grid-template: 120px 1fr / 1fr 6fr;
+    grid-template: 120px 1fr / 1fr;
 }
 
 .sidebar {
+    position: fixed;
     background-color: #0e415f;
-    grid-row: 1 / -1;
     height: 100vh;
+    width: 200px;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
@@ -60,7 +61,7 @@ body {
 .header {
     display: flex;
     align-items: center;
-    padding: 0 100px;
+    padding: 0 100px 0 300px;
 }
 
 .header > p {
@@ -100,7 +101,7 @@ body {
     align-items: center;
     background-color: #f1f5f9;
     box-shadow: inset 4px 4px 4px -4px #808080;
-    padding: 50px;
+    padding: 50px 50px 50px 250px;
 }
 
 .create-course {
@@ -172,17 +173,27 @@ td button {
     left: 0;
     right: 0;
     margin: auto;
-    height: 500px;
-    width: 350px;
+    height: fit-content;
+    width: 500px;
+    box-sizing: border-box;
     background-color: #f1f5f9;
+    border-radius: 6px;
     display: flex;
-    padding: 50px;
     flex-direction: column;
     z-index: 2;
 }
 
-.info-pop-up > h1 {
-    background-color: #f1f5f9;
+.hidden {
+    display: none;
+}
+
+.info-pop-up > h1,
+.edit-pop-up > h1 {
+    background-color: white;
+    box-shadow: 0 2px 4px -4px black;
+    font-size: 24px;
+    padding: 25px 50px;
+    border-radius: 6px 6px 0 0;
 }
 
 .info-pop-up label,
@@ -193,15 +204,17 @@ td button {
 .buttons {
     margin: 30px;
     display: flex;
-    gap: 5px;
+    flex-direction: column;
+    gap: 10px;
     justify-content: center;
+    align-items: center;
 }
 
 .buttons button,
 .buttons a {
     background-color: #f97316;
-    height: 30px;
-    width: 50px;
+    height: 40px;
+    width: 90px;
     font-size: 16px;
     color: white;
     box-sizing: border-box;
@@ -227,12 +240,68 @@ td button {
     text-decoration: none;
 }
 
-.edit-pop-up form {
-    display: flex;
-    flex-direction: column;
+.edit-pop-up > form {
+    padding: 25px 50px;
+    display: grid;
+    gap: 20px;
 }
 
-.delete > label,
-.delete > input {
+.edit-pop-up > form > label {
+    margin-bottom: -15px;
+}
+
+.edit-pop-up > form > input {
+    padding: 4px;
+}
+
+textarea {
+    height: 100px;
+    padding: 4px;
+    resize: none;
+}
+
+.edit-pop-up > form > [for="action"],
+.edit-pop-up > form > [id="action"] {
+    display: none;
+}
+
+.edit-pop-up > form button,
+.delete > form button {
+    height: 40px;
+    width: 120px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f97316;
+    color: white;
+    cursor: pointer;
+    justify-self: center;
+}
+
+.edit-pop-up > form button:hover,
+.delete > form button:hover {
+    background-color: #da6512;
+}
+
+.edit-pop-up > form button:active,
+.delete > form button:active {
+    background-color: #f97316;
+}
+
+.edit-pop-up > form > button {
+    margin-top: 15px;
+    margin-bottom: -5px;
+}
+
+.delete {
+    display: grid;
+}
+
+.delete button {
+    margin-top: -5px;
+    margin-bottom: 25px;
+}
+
+.delete [id="action"],
+.delete [id="course_id"] {
     display: none;
 }

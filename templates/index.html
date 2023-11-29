@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="sidebar">
+        <a class="home" href="/home/">
+            <img src="../supercreative/static/images/home.svg" alt="home button">
+            Home
+        </a>
+        <a class="users">
+            <img src="../supercreative/static/images/account-group.svg" alt="users button">
+            Users
+        </a>
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
+        <a class="sections">
+            <img src="../supercreative/static/images/monitor-dashboard.svg" alt="sections button">
+            Sections
+        </a>
+    </div>
+    <div class="header">
+        <p>{{ user.first_name }}'s Dashboard</p>
+        <a class="logout" href="/">Logout</a>
+    </div>
+    <div class="content">
+
+    </div>
+</body>
+</html>

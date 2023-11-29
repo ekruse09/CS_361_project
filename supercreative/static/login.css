@@ -86,11 +86,15 @@ button {
     font-size: 20px;
     font-weight: bold;
     width: 380px;
+    cursor: pointer;
 }
 
 button:hover {
     background-color: #da6512;
-    cursor: pointer;
+}
+
+button:hover {
+    background-color: #f97316;
 }
 
 .forgot-pass {
