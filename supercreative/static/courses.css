@@ -69,6 +69,9 @@ body {
 }
 
 .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: #f1f5f9;
     box-shadow: inset 4px 4px 4px -4px #808080;
     padding: 50px;
@@ -91,9 +94,6 @@ td, th {
 
 td {
     text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 tr:nth-child(even) td {
@@ -116,7 +116,7 @@ tr:nth-child(odd) td {
     z-index: 1;
 }
 
-.pop-up {
+.pop-up, .info-pop-up {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -125,10 +125,45 @@ tr:nth-child(odd) td {
     margin: auto;
     height: 500px;
     width: 350px;
-    background-color: aqua;
+    background-color: #f1f5f9;
     display: flex;
     padding: 50px;
     flex-direction: column;
-    justify-content: end;
     z-index: 5;
+}
+
+.info-pop-up label,
+.info-pop-up input {
+    display: none;
+}
+
+.buttons {
+    margin: 30px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.buttons button,
+.buttons a {
+    background-color: #f97316;
+    height: 30px;
+    width: 50px;
+    font-size: 16px;
+    color: white;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 8px;
+}
+
+.buttons button:active,
+.buttons a:active {
+    background-color: #da6512;
+}
+
+.buttons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }

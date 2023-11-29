@@ -51,9 +51,23 @@
             {% endfor %}
         </table>
     </div>
-    {% if flag %}
+    {% if flag == 1 %}
         <div class="shade"></div>
-        <div class="pop-up">Dummy code</div>
+        <div class="info-pop-up">
+            <h1>Course Information:</h1>
+            <p>{{ selection.course_name }}</p>
+            <p>{{ selection.course_id }}</p>
+            <p>{{ selection.course_code }}</p>
+            <p>{{ selection.course_description }}</p>
+            <div class="buttons">
+                <form action="" method="post">
+                    <label for="cid"></label>
+                    <input type="text" id="cid" name="cid" value="{{ selection.course_id }}">
+                    <button>Edit</button>
+                </form>
+                <a href="/course/">Back</a>
+            </div>
+        </div>
     {% endif %}
 </body>
 </html>
