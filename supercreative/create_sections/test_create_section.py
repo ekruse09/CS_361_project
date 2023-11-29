@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
-from supercreative.models import (User, Course, Section)
+from supercreative.models import (Course, Section)
 from supercreative.create_sections.section import create_section
 
 
@@ -17,6 +17,9 @@ class CreateSectionTest(TestCase):
         # set up a mock course
         self.course = Course.objects.create(course_name="Intro to Software Engineering", course_id=1,
                                             course_description="stuff", course_code="COMPSCI-361")
+
+        # set up a mock section (to test for duplicates)
+        self.section = Section.objects.create(section_id=803, course_id=5, section_type="discussion", role=self.role)
 
     # done
     def test_correct_course(self):
@@ -38,89 +41,88 @@ class CreateSectionTest(TestCase):
         self.assertEqual(created_section.section_type, self.section_type, "create_course did not "
                                                                           "correctly set the "
                                                                           "section_type")
-    '''
-    # TODO
-    # course must exist
+
+    # course must exist (course_id in database)
     def test_invalid_course_id(self):
-        # attempt to create a course with various invalid course ids
-        self.assertFalse(create_course("wrong", self.course_name, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        # attempt to create a section with various invalid course ids
+        self.assertFalse(create_section(self.section_id, 3465423, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course("1", self.course_name, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, None, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(None, self.course_name, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, "wrong", self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(-1, self.course_name, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, -1, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        # make sure the invalid courses weren't created
+        # make sure the invalid sections weren't created
         with self.assertRaises(ObjectDoesNotExist, msg="an exception should've been raised here"):
-            Course.objects.get(course_name=self.course_name)
+            Section.objects.get(section_id=self.section_id)
 
-    # TODO
-    # make sure to test for duplicate section_ids
+    # section id must be a unique integer
     def test_invalid_section_id(self):
-        # attempt to create a course with various invalid course names
-        self.assertFalse(create_course(self.course_id, 1, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        # attempt to create a course with various invalid section ids
+        self.assertFalse(create_section(-1, self.course.course_id, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(self.course_id, True, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(None, self.course.course_id, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(self.course_id, None, self.course_description,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section("wrong", self.course.course_id, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        # make sure the invalid courses weren't created
+        # duplicate section_id
+        self.assertFalse(create_section(self.section.section_id, self.course.course_id, self.section_type,
+                                        self.role),
+                         "create_section did not return false when it should have.")
+
+        # make sure the invalid sections weren't created
         with self.assertRaises(ObjectDoesNotExist, msg="an exception should've been raised here"):
-            Course.objects.get(course_id=self.course_id)
+            Section.objects.get(course_id=self.course.course_id)
 
-    # TODO
-    # section type must be lecture, lab, or discussion
+    # section type must be: lecture, lab, or discussion
     def test_invalid_section_type(self):
-        # attempt to create a course with various invalid course descriptions
-        self.assertFalse(create_course(self.course_id, self.course_name, 1,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        # attempt to create a course with various invalid section types
+        self.assertFalse(create_section(self.section_id, self.course.course_id, "wrong",
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(self.course_id, self.course_name, False,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, self.course.course_id, None,
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(self.course_id, self.course_name, None,
-                                       self.course_code, self.role),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, self.course.course_id, "",
+                                        self.role),
+                         "create_section did not return false when it should have.")
 
-        # make sure the invalid courses weren't created
+        # make sure the invalid sections weren't created
         with self.assertRaises(ObjectDoesNotExist, msg="an exception should've been raised here"):
-            Course.objects.get(course_id=self.course_id)
+            Section.objects.get(section_id=self.section_id)
 
-
-    # TODO
     # must have admin privileges
     def test_invalid_role(self):
-        # attempt to create a course with invalid user role
-        self.assertFalse(create_course(self.course_id, self.course_name, self.course_description,
-                                       self.course_code, ""),
-                         "create_course did not return false when it should have.")
+        # attempt to create a section with invalid user role
+        self.assertFalse(create_section(self.section_id, self.course.course_id, self.section_type,
+                                        "student"),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(self.course_id, self.course_name, self.course_description,
-                                       self.course_code, "student"),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, self.course.course_id, self.section_type,
+                                        None),
+                         "create_section did not return false when it should have.")
 
-        self.assertFalse(create_course(self.course_id, self.course_name, self.course_description,
-                                       self.course_code, None),
-                         "create_course did not return false when it should have.")
+        self.assertFalse(create_section(self.section_id, self.course.course_id, self.section_type,
+                                        ""),
+                         "create_section did not return false when it should have.")
 
-        # make sure the invalid courses weren't created
+        # make sure the invalid sections weren't created
         with self.assertRaises(ObjectDoesNotExist, msg="an exception should've been raised here"):
-            Course.objects.get(course_id=self.course_id)
-    '''
+            Section.objects.get(section_id=self.section_id)
