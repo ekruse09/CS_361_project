@@ -56,7 +56,7 @@ class Courses(View):
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
             courseHelper.create_course(course_id, course_name, course_description, course_code)
-            return redirect('course/')
+            return redirect(request.path)
 
         elif 'edit_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
@@ -65,12 +65,12 @@ class Courses(View):
             course_description = course.course_description
             course_code = course.course_code
             courseHelper.edit_course(course_id, course_name, course_description, course_code)
-            return redirect('course/')
+            return redirect(request.path)
 
         elif 'delete_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             courseHelper.delete_course(course_id)
-            return redirect('course/')
+            return redirect(request.path)
 
         else:
             return redirect('course/')
