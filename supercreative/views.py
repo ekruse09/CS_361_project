@@ -40,15 +40,15 @@ class Courses(View):
         if 'view_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
-            return render(request, 'courses.html', {'course': course, 'pool': True, 'edit': False})
+            return render(request, 'courses.html', {'course': course, 'popup': True, 'edit': False})
 
         elif 'request_edit' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
-            return render(request, 'courses.html', {'course': course, 'pool': True, 'edit': True})
+            return render(request, 'courses.html', {'course': course, 'popup': True, 'edit': True})
 
         elif 'request_new' in request.POST.get('action'):
-            return render(request, 'courses.html', {'pool': True, 'edit': True})
+            return render(request, 'courses.html', {'popup': True, 'edit': True})
 
         if 'new_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
