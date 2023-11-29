@@ -7,9 +7,6 @@ def check_existence(course_id):
     exists = models.Course.objects.filter(course_id=course_id).exists()
     return exists
 
-def nonexistense_error():
-    redirect('/course/nonexistantcourse')
-
 def edit_course(course_id, course_name, course_description, course_code):
     course = models.Course.objects.get(course_id=course_id)
     course.course_name = course_name
