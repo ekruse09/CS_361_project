@@ -42,8 +42,8 @@ class TestAccountDelete(TestCase):
                                                 phone_number="0987654321", address="321 Main St")
 
     def test_successful_delete(self):
-        self.assertTrue(delete_user(self.admin_user.user_id, self.admin_user.role), "delete user should've returned "
-                                                                                    "true here!")
+        self.assertTrue(delete_user(self.admin_user.user_id), "delete user should've returned "
+                                                              "true here!")
 
         # check to see if the user was actually deleted from the Users table
         with self.assertRaises(ObjectDoesNotExist, msg="failed to delete user."):
@@ -54,15 +54,7 @@ class TestAccountDelete(TestCase):
         # Assuming each course assignment was counted as a single entry, subtracting 2 represents the removal of both
         # assignments.
 
-    def test_incorrect_role(self):
-        self.assertFalse(delete_user(self.student_user.user_id, self.student_user.role), "delete user should've "
-                                                                                         "returned false here!")
-
-        # checks to see if the user was actually deleted
-        self.assertTrue(User.objects.filter(user_id=self.student_user.user_id).exists(),
-                        msg="the user should not have been deleted!")
-
     def test_no_user(self):
         # trying to delete a user that doesn't exist
-        self.assertFalse(delete_user(24, "administrator"), "delete user should've "
-                                                           "returned false here!")
+        self.assertFalse(delete_user(24), "delete user should've "
+                                          "returned false here!")

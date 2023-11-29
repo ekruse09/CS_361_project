@@ -2,7 +2,7 @@ from supercreative.models import Course, Section
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_section(section_id, course, section_type, role):
+def create_section(section_id, course, section_type):
     # Preconditions
 
     # Check if the SectionID is a valid int
@@ -23,17 +23,10 @@ def create_section(section_id, course, section_type, role):
     if Section.objects.filter(section_id=section_id).exists():
         return False
 
-    # Check if the active user role is Administrator
-    if role != "administrator":
-        return False
-
     # Check if Section Type is valid: "Lecture", "Lab", or "Discussion"
-    valid_section_types = ["lecture", "lab", "discussion"]
+    valid_section_types = ["LECTURE", "LAB", "DISCUSSION"]
 
-    if section_type is None:
-        return False
-
-    if section_type.lower() not in valid_section_types:
+    if section_type is None or section_type.upper() not in valid_section_types:
         return False
 
     # Post conditions

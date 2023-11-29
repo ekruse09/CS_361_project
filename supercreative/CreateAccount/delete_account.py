@@ -2,13 +2,8 @@ from supercreative.models import User, UserCourseAssignment
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def delete_user(user_id, role):
+def delete_user(user_id):
     # Preconditions
-    if role is None or user_id is None:
-        return False
-
-    if role.lower() != "administrator":
-        return False
 
     try:
         # Check if the target userID exists in the Users table
