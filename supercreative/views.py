@@ -42,21 +42,29 @@ class Courses(View):
             course = Course.objects.get(course_id=course_id)
             return render(request, 'course.html', {'course': course, 'pool': True, 'edit': False})
 
+        elif 'request_edit' in request.POST.get('action'):
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(course_id=course_id)
+            return render(request, 'course.html', {'course': course, 'pool': True, 'edit': True})
+
+        elif 'request_new' in request.POST.get('action'):
+            return render(request, 'course.html', {'pool': True, 'edit': True})
+
         if 'new_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
-            course_name = request.POST.get('course_name')
-            course_description = request.POST.get('course_description')
-            course_code = request.POST.get('course_code')
+            course = Course.objects.get(course_id=course_id)
+            course_name = course['course_name']
+            course_description = course['course_description']
+            course_code = course['course_code']
             courseHelper.create_course(course_id, course_name, course_description, course_code)
             return redirect('course/')
 
         elif 'edit_course' in request.POST.get('action'):
-            if not courseHelper.check_existence(request.POST.get('course_id')):
-                return courseHelper.nonexistense_error()
             course_id = request.POST.get('course_id')
-            course_name = request.POST.get('course_name')
-            course_description = request.POST.get('course_description')
-            course_code = request.POST.get('course_code')
+            course = Course.objects.get(course_id=course_id)
+            course_name = course['course_name']
+            course_description = course['course_description']
+            course_code = course['course_code']
             courseHelper.edit_course(course_id, course_name, course_description, course_code)
             return redirect('course/')
 
@@ -69,8 +77,6 @@ class Courses(View):
 
         else:
             return redirect('course/')
-        return render(request, 'test_page.html', {'user_id':request.session['user_id'], 'role':request.session['role']})
-
 
 
 
