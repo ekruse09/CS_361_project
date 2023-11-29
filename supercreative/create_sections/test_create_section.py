@@ -7,33 +7,32 @@ from supercreative.create_sections.section import create_section
 class CreateSectionTest(TestCase):
     course = None
 
-    # done
     def setUp(self):
         # variable values to use in the tests
         self.section_id = 801
         self.section_type = "lab"
         self.role = "administrator"
 
-        # set up a mock course
+        # set up two mock courses
         self.course = Course.objects.create(course_name="Intro to Software Engineering", course_id=1,
                                             course_description="stuff", course_code="COMPSCI-361")
 
-        # set up a mock section (to test for duplicates)
-        self.section = Section.objects.create(section_id=803, course_id=5, section_type="discussion", role=self.role)
+        self.course_two = Course.objects.create(course_name="System Programming", course_id=5,
+                                                course_description="stuff", course_code="COMPSCI-337")
 
-    # done
-    def test_correct_course(self):
+        # set up a mock section (to test for duplicates)
+        self.section = Section.objects.create(section_id=803, course_id=self.course_two,
+                                              section_type="discussion")
+
+    def test_correct_section(self):
         # correctly create a section
         self.assertTrue(
-            create_section(section_id=self.section_id, course_id=self.course.course_id, section_type=self.section_type,
+            create_section(section_id=self.section_id, course=self.course, section_type=self.section_type,
                            role=self.role),
             "create_section did not return true when it should have.")
 
         # get created course and check its values
         created_section = Section.objects.get(section_id=self.section_id)
-
-        self.assertEqual(created_section.course_id, self.course.course_id, "create_section did not correctly set the "
-                                                                           "course_id")
 
         self.assertEqual(created_section.section_id, self.section_id, "create_section did not correctly set the "
                                                                       "section_id")
