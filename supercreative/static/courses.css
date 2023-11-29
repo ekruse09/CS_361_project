@@ -69,7 +69,8 @@ body {
     width: 100%;
 }
 
-.logout {
+.logout,
+.create-course {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -80,13 +81,16 @@ body {
     border-radius: 8px;
     color: white;
     text-decoration: none;
+    cursor: pointer;
 }
 
-.logout:hover {
+.logout:hover,
+.create-course:hover {
     background-color: #da6512;
 }
 
-.logout:active {
+.logout:active,
+.create-course:active {
     background-color: #f97316;
 }
 
@@ -98,6 +102,18 @@ body {
     box-shadow: inset 4px 4px 4px -4px #808080;
     padding: 50px;
 }
+
+.create-course {
+    width: 150px;
+    margin-bottom: 50px;
+}
+
+.content > form > label,
+.content > form > input {
+    display: none;
+}
+
+
 
 table {
     border-collapse: collapse;
@@ -144,6 +160,7 @@ td button {
     background-color: black;
     opacity: .4;
     height: 100%;
+    cursor: default;
     z-index: 1;
 }
 
@@ -213,4 +230,9 @@ td button {
 .edit-pop-up form {
     display: flex;
     flex-direction: column;
+}
+
+.delete > label,
+.delete > input {
+    display: none;
 }
