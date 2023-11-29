@@ -53,7 +53,7 @@ def create_user(uid, email, password, role, first, last, phone, address):
     if len(clean_phone) < 10:
         return False
 
-    if len(address) == 0 or not isinstance(address, str):
+    if not isinstance(address, str) or len(address) == 0:
         return False
 
     new_user = User(user_id=uid, email=email, password=password, role=role, first_name=first, last_name=last,
