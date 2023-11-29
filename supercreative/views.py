@@ -1,6 +1,6 @@
 from django.shortcuts import redirect,render
 from django.views import View
-from supercreative.Course import course
+from supercreative.Course import course_helper as courseHelper
 from supercreative.models import User, Course
 from supercreative.authentication import authentication
 
@@ -37,38 +37,43 @@ class Courses(View):
 
     def post(self, request):
 
+        if 'view_course' in request.POST.get('action'):
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(course_id=course_id)
+            return render(request, 'courses.html', {'course': course, 'pool': True, 'edit': False})
+
+        elif 'request_edit' in request.POST.get('action'):
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(course_id=course_id)
+            return render(request, 'courses.html', {'course': course, 'pool': True, 'edit': True})
+
+        elif 'request_new' in request.POST.get('action'):
+            return render(request, 'courses.html', {'pool': True, 'edit': True})
+
         if 'new_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
-            course.create_course(course_id, course_name, course_description, course_code)
-            return redirect('course/')
+            courseHelper.create_course(course_id, course_name, course_description, course_code)
+            return redirect(request.path)
 
-        elif 'select_edit' in request.POST.get('action'):
-            return redie
-
-        elif 'edit_cousre' in request.POST.get('action'):
-            if not course.check_existence(request.POST.get('course_id')):
-                return course.nonexistense_error()
+        elif 'edit_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
-            course_name = request.POST.get('course_name')
-            course_description = request.POST.get('course_description')
-            course_code = request.POST.get('course_code')
-            course.edit_course(course_id, course_name, course_description, course_code)
-            return redirect('course/')
+            course = Course.objects.get(course_id=course_id)
+            course_name = course.course_name
+            course_description = course.course_description
+            course_code = course.course_code
+            courseHelper.edit_course(course_id, course_name, course_description, course_code)
+            return redirect(request.path)
 
         elif 'delete_course' in request.POST.get('action'):
-            if not course.check_existence(request.POST.get('course_id')):
-                return course.nonexistense_error()
             course_id = request.POST.get('course_id')
-            course.delete_course(course_id)
-            return redirect('course/')
+            courseHelper.delete_course(course_id)
+            return redirect(request.path)
 
         else:
             return redirect('course/')
-        return render(request, 'test_page.html', {'user_id':request.session['user_id'], 'role':request.session['role']})
-
 
 
 

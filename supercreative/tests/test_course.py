@@ -1,51 +1,60 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from supercreative.models import Course
 
+class CoursesViewTest(TestCase):
 
-class CourseViewTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up data for the whole TestCase
+        Course.objects.create(course_id='1', course_name='Test Course', course_description='Test Description', course_code='TC101')
 
-    def setUp(self):
-        self.client = Client()
-        # Set up any initial data here, like creating a test course
+    def test_get_courses(self):
+        response = self.client.get('/course/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'courses.html')
+        self.assertIn('courses', response.context)
+        self.assertTrue(response.context['pool'])
 
-    def test_create_course(self):
-        response = self.client.post('course/', {
-            'action': 'new_user',
-            'course_id': '1',
-            'course_name': 'Test Course',
-            'course_description': 'Description',
-            'course_code': 'TC101'
-        })
-        self.assertEqual(response.status_code, 302)  # Redirect status code
-        self.assertTrue(Course.objects.filter(course_id='1').exists())
+    def test_post_view_course(self):
+        response = self.client.post('/course/', {'action': 'view_course', 'course_id': '1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'course.html')
+        self.assertIn('course', response.context)
+        self.assertTrue(response.context['pool'])
+        self.assertFalse(response.context['edit'])
 
-    def test_edit_course(self):
-        # Assuming a course with course_id '1' already exists
-        response = self.client.post('course/', {
-            'action': 'edit_user',
-            'course_id': '1',
-            'course_name': 'Updated Course',
-            'course_description': 'Updated Description',
-            'course_code': 'TC102'
-        })
-        self.assertEqual(response.status_code, 302)
+    def test_post_request_edit(self):
+        response = self.client.post('/course/', {'action': 'request_edit', 'course_id': '1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'course.html')
+        self.assertIn('course', response.context)
+        self.assertTrue(response.context['pool'])
+        self.assertTrue(response.context['edit'])
+
+    def test_post_request_new(self):
+        response = self.client.post('/course/', {'action': 'request_new'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'course.html')
+        self.assertTrue(response.context['pool'])
+        self.assertTrue(response.context['edit'])
+
+    def test_post_new_course(self):
+        response = self.client.post('/course/', {'action': 'new_course', 'course_id': '2', 'course_name': 'New Course', 'course_description': 'New Description', 'course_code': 'NC102'})
+        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        self.assertEqual(Course.objects.count(), 2)
+
+    def test_post_edit_course(self):
+        response = self.client.post('/course/', {'action': 'edit_course', 'course_id': '1', 'course_name': 'Updated Course', 'course_description': 'Updated Description', 'course_code': 'UC103'})
+        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         updated_course = Course.objects.get(course_id='1')
         self.assertEqual(updated_course.course_name, 'Updated Course')
-        # Add more assertions as needed to verify the fields are updated correctly
 
-    def test_delete_course(self):
-        # Assuming a course with course_id '1' exists
-        response = self.client.post('course/', {
-            'action': 'delete_user',
-            'course_id': '1'
-        })
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(Course.objects.filter(course_id='1').exists())
+    def test_post_delete_course(self):
+        response = self.client.post('/course/', {'action': 'delete_course', 'course_id': '1'})
+        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        self.assertEqual(Course.objects.count(), 0)
 
-    def test_invalid_action(self):
-        response = self.client.post('course/', {
-            'action': 'invalid_action',
-            'course_id': '1'
-        })
-        self.assertEqual(response.status_code, 302)
+    def test_post_invalid_action(self):
+        response = self.client.post('/course/', {'action': 'invalid_action'})
+        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
