@@ -69,8 +69,6 @@ class Courses(View):
             return redirect('course/')
 
         elif 'delete_course' in request.POST.get('action'):
-            if not courseHelper.check_existence(request.POST.get('course_id')):
-                return courseHelper.nonexistense_error()
             course_id = request.POST.get('course_id')
             courseHelper.delete_course(course_id)
             return redirect('course/')
