@@ -24,9 +24,9 @@ class Section(models.Model):
 
 class UserCourseAssignment(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    section_id = models.ForeignKey(Section, on_delete=models.CASCADE)
+    section_id = models.ForeignKey(Section, on_delete=models.CASCADE,null=True)
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-    section_type = models.CharField(max_length=50)
+    section_type = models.CharField(max_length=50,null=True)
 
 
     # # Enforces that a user can only be assigned to a course once
