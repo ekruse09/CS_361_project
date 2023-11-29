@@ -60,12 +60,34 @@ body {
 .header {
     display: flex;
     align-items: center;
-    padding-left: 100px;
+    padding: 0 100px;
 }
 
 .header > p {
     font-size: 48px;
     font-weight: 500;
+    width: 100%;
+}
+
+.logout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f97316;
+    height: 40px;
+    width: 90px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+}
+
+.logout:hover {
+    background-color: #da6512;
+}
+
+.logout:active {
+    background-color: #f97316;
 }
 
 .content {
@@ -104,6 +126,15 @@ tr:nth-child(odd) td {
     background-color: #fafafa;
 }
 
+td > form > label,
+td > form > input {
+    display: none;
+}
+
+td button {
+    padding: 2px;
+}
+
 .shade {
     position: fixed;
     top: 0;
@@ -116,7 +147,8 @@ tr:nth-child(odd) td {
     z-index: 1;
 }
 
-.pop-up, .info-pop-up {
+.info-pop-up,
+.edit-pop-up {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -129,7 +161,11 @@ tr:nth-child(odd) td {
     display: flex;
     padding: 50px;
     flex-direction: column;
-    z-index: 5;
+    z-index: 2;
+}
+
+.info-pop-up > h1 {
+    background-color: #f1f5f9;
 }
 
 .info-pop-up label,
@@ -154,11 +190,17 @@ tr:nth-child(odd) td {
     box-sizing: border-box;
     border: none;
     border-radius: 8px;
+    cursor: pointer;
+}
+
+.buttons button:hover,
+.buttons a:hover {
+    background-color: #da6512;
 }
 
 .buttons button:active,
 .buttons a:active {
-    background-color: #da6512;
+    background-color: #f97316;
 }
 
 .buttons a {
@@ -166,4 +208,9 @@ tr:nth-child(odd) td {
     align-items: center;
     justify-content: center;
     text-decoration: none;
+}
+
+.edit-pop-up form {
+    display: flex;
+    flex-direction: column;
 }

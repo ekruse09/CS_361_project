@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <a class="home">
+        <a class="home" href="/home/">
             <img src="../supercreative/static/images/home.svg" alt="home button">
             Home
         </a>
@@ -28,18 +28,27 @@
     </div>
     <div class="header">
         <p>Course Catalog</p>
+        <a class="logout" href="/">Logout</a>
     </div>
     <div class="content">
+        <form action="/course/" method="post">
+            {% csrf_token %}
+            <label for="action"></label>
+            <input type="text" id="action" name="action" value="request_new">
+            <button>Create New Course</button>
+        </form>
         <table>
             <col style="width:11%">
             <col style="width:14%">
             <col style="width:25%">
-            <col style="width:50%">
+            <col style="width:45%">
+            <col style="width:5%">
             <tr>
                 <th>Course ID</th>
                 <th>Course Code</th>
                 <th>Course Name</th>
                 <th>Course Description</th>
+                <th></th>
             </tr>
             {% for course in courses %}
                 <tr>
@@ -47,26 +56,66 @@
                     <td>{{ course.course_code }}</td>
                     <td>{{ course.course_name }}</td>
                     <td>{{ course.course_description }}</td>
+                    <td>
+                        <form action="/course/" method="post">
+                            {% csrf_token %}
+                            <label for="course_id"></label>
+                            <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                            <label for="action"></label>
+                            <input type="text" id="action" name="action" value="view_course">
+                            <button>View</button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
     </div>
-    {% if flag == 1 %}
+    {% if popup and not edit%}
         <div class="shade"></div>
         <div class="info-pop-up">
             <h1>Course Information:</h1>
-            <p>{{ selection.course_name }}</p>
-            <p>{{ selection.course_id }}</p>
-            <p>{{ selection.course_code }}</p>
-            <p>{{ selection.course_description }}</p>
+            <p>{{ course.course_name }}</p>
+            <p>{{ course.course_id }}</p>
+            <p>{{ course.course_code }}</p>
+            <p>{{ course.course_description }}</p>
             <div class="buttons">
-                <form action="" method="post">
-                    <label for="cid"></label>
-                    <input type="text" id="cid" name="cid" value="{{ selection.course_id }}">
+                <form action="/course/" method="post">
+                    {% csrf_token %}
+                    <label for="action"></label>
+                    <input type="text" id="action" name="action" value="request_edit">
+                    <label for="course_id"></label>
+                    <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
                     <button>Edit</button>
                 </form>
                 <a href="/course/">Back</a>
             </div>
+        </div>
+    {% elif popup and edit %}
+        <div class="shade"></div>
+        <div class="edit-pop-up">
+            {% if new %}
+                <h1>New Course Information:</h1>
+            {% else %}
+                <h1>Edit Course Information:</h1>
+            {% endif %}
+            <form action="/course/" method="post">
+                {% csrf_token %}
+                <label for="course_id"></label>
+                <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <label for="course_code"></label>
+                <input type="text" id="course_code" name="course_code" value="{{ course.course_code }}">
+                <label for="course_name"></label>
+                <input type="text" id="course_name" name="course_name" value="{{ course.course_name }}">
+                <label for="course_description"></label>
+                <input type="text" id="course_description" name="course_description" value="{{ course.course_description }}">
+                <label for="action"></label>
+                {% if new %}
+                    <input type="text" id="action" name="action" value="new_course">
+                {% else %}
+                    <input type="text" id="action" name="action" value="edit_course">
+                {% endif %}
+                <button>Save Changes</button>
+            </form>
         </div>
     {% endif %}
 </body>

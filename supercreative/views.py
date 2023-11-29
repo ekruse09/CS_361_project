@@ -17,7 +17,7 @@ class Login(View):
             return render(request, 'login.html',
                           {'message':"No account found with that email and password"})
         else:
-            return redirect("course/")
+            return redirect("home/")
 
 class Test(View):
     def get(self, request):
@@ -28,29 +28,36 @@ class Test(View):
             return redirect("/")
         return render(request, 'test_page.html')
 
+class Home(View):
+    def get(self, request):
+        user_id = request.session['user_id']
+        user = User.objects.get(user_id=user_id)
+        return render(request, 'index.html', {'user': user})
+
 class Courses(View):
     def get(self, request):
         #get all the courses
         courses = Course.objects.all()
-        val = True
-        return render(request, 'courses.html', {'courses': courses, 'popup': val})
+        return render(request, 'courses.html', {'courses': courses})
 
     def post(self, request):
+
+        courses = Course.objects.all()
 
         if 'view_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
-            return render(request, 'courses.html', {'course': course, 'popup': True, 'edit': False})
+            return render(request, 'courses.html', {'courses': courses, 'course': course, 'popup': True, 'edit': False})
 
         elif 'request_edit' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
-            return render(request, 'courses.html', {'course': course, 'popup': True, 'edit': True})
+            return render(request, 'courses.html', {'courses': courses, 'course': course, 'popup': True, 'edit': True, 'new': False})
 
         elif 'request_new' in request.POST.get('action'):
-            return render(request, 'courses.html', {'popup': True, 'edit': True})
+            return render(request, 'courses.html', {'courses': courses, 'popup': True, 'edit': True, 'new': True})
 
-        if 'new_course' in request.POST.get('action'):
+        elif 'new_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
