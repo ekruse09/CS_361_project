@@ -80,6 +80,10 @@ table {
     width: 100%;
 }
 
+th {
+    background-color: white;
+}
+
 td, th {
     border: 1px solid #bebebe;
     padding: 10px 20px;
@@ -87,14 +91,17 @@ td, th {
 
 td {
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 tr:nth-child(even) td {
-    background-color: #fafafa;
+    background-color: #f5f5f5;
 }
 
 tr:nth-child(odd) td {
-    background-color: #f5f5f5;
+    background-color: #fafafa;
 }
 
 .shade {
