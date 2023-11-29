@@ -61,3 +61,19 @@ def create_user(uid, email, password, role, first, last, phone, address):
     new_user.save()
 
     return True
+
+def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, new_address):
+    if not User.objects.filter(user_id=user_id).exists():
+        return False
+
+    user = User.objects.get(user_id=user_id)
+
+    user.password = new_password
+    user.role = new_role
+    user.first_name = new_first
+    user.last_name = new_last
+    user.phone_number = new_phone
+    user.address = new_address
+    user.save()
+
+    return True
