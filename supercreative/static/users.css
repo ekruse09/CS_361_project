@@ -331,6 +331,6 @@ textarea {
 }
 
 .delete [id="action"],
-.delete [id="course_id"] {
+.delete [name="user_id"] {
     display: none;
 }

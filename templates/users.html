@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'courses.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">FU</div>
+        <a class="home" href="/home/">
+            <img src="../supercreative/static/images/home.svg" alt="home button">
+            Home
+        </a>
+        <a class="users" href="/users/">
+            <img src="../supercreative/static/images/account-group.svg" alt="users button">
+            Users
+        </a>
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
+        <a class="sections">
+            <img src="../supercreative/static/images/monitor-dashboard.svg" alt="sections button">
+            Sections
+        </a>
+    </div>
+    <div class="header">
+        <p>User Directory</p>
+        <a class="logout" href="/">Logout</a>
+    </div>
+    <div class="content">
+        <form action="/users/" method="post">
+            {% csrf_token %}
+            <label for="action"></label>
+            <input type="text" id="action" name="action" value="request_new">
+            <button class="create-course">Create New User</button>
+        </form>
+        <table>
+            <col style="width:15%">
+            <col style="width:25%">
+            <col style="width:20%">
+            <col style="width:35%">
+            <col style="width:5%">
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.first_name}} {{ user.last_name }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <form action="/users/" method="post">
+                            {% csrf_token %}
+                            <label for="user_id"></label>
+                            <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                            <label for="action"></label>
+                            <input type="text" id="action" name="action" value="view_user">
+                            <button>View</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if popup and not edit%}
+        <a href="/users/" class="shade"></a>
+        <div class="info-pop-up">
+            <h1>User Information:</h1>
+            <p class="field">User ID:</p>
+            <p class="data">{{ user.user_id }}</p>
+            <p class="field">First Name:</p>
+            <p class="data">{{ user.first_name }}</p>
+            <p class="field">Last Name:</p>
+            <p class="data">{{ user.last_name }}</p>
+            <p class="field">Role:</p>
+            <p class="data">{{ user.role }}</p>
+            <p class="field">Email:</p>
+            <p class="data">{{ user.email }}</p>
+            <p class="field">Phone Number:</p>
+            <p class="data">{{ user.phone_number }}</p>
+            <p class="field">Address:</p>
+            <p class="data">{{ user.address }}</p>
+            <div class="buttons">
+                <form action="/users/" method="post">
+                    {% csrf_token %}
+                    <label for="action"></label>
+                    <input type="text" id="action" name="action" value="request_edit">
+                    <label for="user_id"></label>
+                    <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                    <button>Edit</button>
+                </form>
+                <a href="/users/">Back</a>
+            </div>
+        </div>
+    {% elif popup and edit %}
+        <a href="/users/" class="shade"></a>
+        <div class="edit-pop-up">
+            {% if new %}
+                <h1>New User Information:</h1>
+            {% else %}
+                <h1>Edit User Information:</h1>
+            {% endif %}
+            <form action="/users/" method="post">
+                {% csrf_token %}
+                {% if new %}
+                    <label for="user_id">User ID:</label>
+                    <input type="text" id="user_id" name="user_id" required>
+                {% else %}
+                    <label class="hidden" for="user_id">User ID:</label>
+                    <input class="hidden" type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                {% endif %}
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                <label for="role">Role:</label>
+                <input type="text" id="role" name="role" value="{{ user.role }}" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                <label for="phone_number">Phone Number:</label>
+                <input type="tel" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ user.address }}" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="{{ user.password }}" required>
+                <label for="action"></label>
+                {% if new %}
+                    <input type="text" id="action" name="action" value="new_user">
+                    <button>Create User</button>
+                {% else %}
+                    <input type="text" id="action" name="action" value="edit_user">
+                    <button>Save Changes</button>
+                {% endif %}
+            </form>
+            {% if not new %}
+                <div class="delete">
+                    <form class="delete" action="/users/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="text" id="action" name="action" value="delete_user">
+                        <label for="user_id"></label>
+                        <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                        <button>Delete User</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
