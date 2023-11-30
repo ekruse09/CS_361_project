@@ -37,7 +37,6 @@ def create_course(id, name, description, code):
 
 
 def edit_course(current_course_id, new_course_name='', new_course_description="", new_course_code=""):
-    course = Course.objects.get(course_id=current_course_id)
     existing_course = None
     try:
         existing_course = Course.objects.get(course_name=new_course_name)
@@ -52,10 +51,16 @@ def edit_course(current_course_id, new_course_name='', new_course_description=""
     if existing_course is not None:
         return False
 
+    if Course.objects.filter(course_id=current_course_id).exists():
+        course = Course.objects.get(course_id=current_course_id)
+    else:
+        return False
+
     course.course_name = new_course_name if new_course_name != '' else course.course_name
     course.course_description = new_course_description if new_course_description != '' else course.course_description
     course.course_code = new_course_code if new_course_code != '' else course.course_code
     course.save()
+
     return True
 
 

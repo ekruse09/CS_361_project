@@ -37,3 +37,19 @@ class TestEditUser(TestCase):
         self.assertFalse(edit_user(self.bad_user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
                                    self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
                                    self.new_user_info["new_phone"], self.new_user_info["new_address"]))
+
+    def test_bad_user_info(self):
+        # bad password
+        self.assertFalse(edit_user(self.user.user_id, "password", self.new_user_info["new_role"],
+                      self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                      self.new_user_info["new_phone"], self.new_user_info["new_address"]), "Allowed bad password")
+
+        # bad role
+        self.assertFalse(edit_user(self.user.user_id, self.new_user_info["new_password"], "role",
+                      self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                      self.new_user_info["new_phone"], self.new_user_info["new_address"]), "Allowed bad role")
+
+        # bad number
+        self.assertFalse(edit_user(self.user.user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
+                      self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                      "123-456-789", self.new_user_info["new_address"]), "ALlowed bad number")
