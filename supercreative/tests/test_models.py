@@ -4,6 +4,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
 from django.test import TestCase
 from supercreative.models import User, Course, Section, UserCourseAssignment
 from datetime import date
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
 
 class UserTestCase(TestCase):
     def setUp(self):

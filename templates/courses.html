@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'courses.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">FU</div>
+        <a class="home" href="/home/">
+            <img src="../supercreative/static/images/home.svg" alt="home button">
+            Home
+        </a>
+        <a class="users">
+            <img src="../supercreative/static/images/account-group.svg" alt="users button">
+            Users
+        </a>
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
+        <a class="sections">
+            <img src="../supercreative/static/images/monitor-dashboard.svg" alt="sections button">
+            Sections
+        </a>
+    </div>
+    <div class="header">
+        <p>Course Catalog</p>
+        <a class="logout" href="/">Logout</a>
+    </div>
+    <div class="content">
+        <form action="/course/" method="post">
+            {% csrf_token %}
+            <label for="action"></label>
+            <input type="text" id="action" name="action" value="request_new">
+            <button class="create-course">Create New Course</button>
+        </form>
+        <table>
+            <col style="width:11%">
+            <col style="width:14%">
+            <col style="width:25%">
+            <col style="width:45%">
+            <col style="width:5%">
+            <tr>
+                <th>Course ID</th>
+                <th>Course Code</th>
+                <th>Course Name</th>
+                <th>Course Description</th>
+                <th></th>
+            </tr>
+            {% for course in courses %}
+                <tr>
+                    <td>{{ course.course_id }}</td>
+                    <td>{{ course.course_code }}</td>
+                    <td>{{ course.course_name }}</td>
+                    <td>{{ course.course_description }}</td>
+                    <td>
+                        <form action="/course/" method="post">
+                            {% csrf_token %}
+                            <label for="course_id"></label>
+                            <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                            <label for="action"></label>
+                            <input type="text" id="action" name="action" value="view_course">
+                            <button>View</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if popup and not edit%}
+        <a href="/course/" class="shade"></a>
+        <div class="info-pop-up">
+            <h1>Course Information:</h1>
+            <p class="field">Course ID:</p>
+            <p class="data">{{ course.course_id }}</p>
+            <p class="field">Course Code:</p>
+            <p class="data">{{ course.course_code }}</p>
+            <p class="field">Course Name:</p>
+            <p class="data">{{ course.course_name }}</p>
+            <p class="field">Course Description:</p>
+            <p class="data">{{ course.course_description }}</p>
+            <div class="buttons">
+                <form action="/course/" method="post">
+                    {% csrf_token %}
+                    <label for="action"></label>
+                    <input type="text" id="action" name="action" value="request_edit">
+                    <label for="course_id"></label>
+                    <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                    <button>Edit</button>
+                </form>
+                <a href="/course/">Back</a>
+            </div>
+        </div>
+    {% elif popup and edit %}
+        <a href="/course/" class="shade"></a>
+        <div class="edit-pop-up">
+            {% if new %}
+                <h1>New Course Information:</h1>
+            {% else %}
+                <h1>Edit Course Information:</h1>
+            {% endif %}
+            <form action="/course/" method="post">
+                {% csrf_token %}
+                {% if new %}
+                    <label for="course_id">Course ID:</label>
+                    <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                {% else %}
+                    <label class="hidden" for="course_id">Course ID:</label>
+                    <input class="hidden" type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                {% endif %}
+                <label for="course_code">Course Code:</label>
+                <input type="text" id="course_code" name="course_code" value="{{ course.course_code }}">
+                <label for="course_name">Course Name:</label>
+                <input type="text" id="course_name" name="course_name" value="{{ course.course_name }}">
+                <label for="course_description">Course Description:</label>
+                <textarea id="course_description" name="course_description">{{ course.course_description }}</textarea>
+                <label for="action"></label>
+                {% if new %}
+                    <input type="text" id="action" name="action" value="new_course">
+                    <button>Create Course</button>
+                {% else %}
+                    <input type="text" id="action" name="action" value="edit_course">
+                    <button>Save Changes</button>
+                {% endif %}
+            </form>
+            {% if not new %}
+                <div class="delete">
+                    <form class="delete" action="/course/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="text" id="action" name="action" value="delete_course">
+                        <label for="course_id"></label>
+                        <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                        <button>Delete Course</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
