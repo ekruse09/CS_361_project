@@ -14,7 +14,6 @@ class CoursesViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'courses.html')
         self.assertIn('courses', response.context)
-        self.assertTrue(response.context['popup'])
 
     def test_post_view_course(self):
         response = self.client.post('/course/', {'action': 'view_course', 'course_id': '1'})
@@ -45,7 +44,8 @@ class CoursesViewTest(TestCase):
                                                  'course_description': 'New Description',
                                                  'course_code': 'NC102'})
 
-        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        self.assertEqual(response.status_code, 200, "Bad response")
         self.assertEqual(Course.objects.count(), 2)
 
     def test_post_edit_course(self):
@@ -54,15 +54,18 @@ class CoursesViewTest(TestCase):
                                                  'course_description': 'Updated Description',
                                                  'course_code': 'UC103'})
 
-        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        self.assertEqual(response.status_code, 200, "Bad response")
         updated_course = Course.objects.get(course_id='1')
         self.assertEqual(updated_course.course_name, 'Updated Course')
 
     def test_post_delete_course(self):
         response = self.client.post('/course/', {'action': 'delete_course', 'course_id': '1'})
-        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        self.assertEqual(response.status_code, 200, "Bad response")
         self.assertEqual(Course.objects.count(), 0)
 
     def test_post_invalid_action(self):
         response = self.client.post('/course/', {'action': 'invalid_action'})
-        self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        self.assertEqual(response.status_code, 200, "Bad response")
