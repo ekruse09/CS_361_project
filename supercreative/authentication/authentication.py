@@ -3,11 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def create_session(session, login_email):
-    try:
-        user = User.objects.get(email=login_email)
-
-    except ObjectDoesNotExist:
+    if not User.objects.filter(email=login_email).exists():
         return False
+
+    user = User.objects.get(email=login_email)
 
     # only store the user_id and role in the session
     session["user_id"] = user.user_id

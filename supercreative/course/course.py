@@ -2,9 +2,9 @@ from supercreative.models import Course, Section
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_course(id, name, description, code):
+def create_course(course_id, name, description, code):
     # check for valid id
-    if not (isinstance(id, int) and id > 0):
+    if not (isinstance(course_id, int) and course_id > 0):
         return False
 
     # check for valid name
@@ -20,13 +20,13 @@ def create_course(id, name, description, code):
         return False
 
     # check database for duplicate ids, names, or course codes
-    if Course.objects.filter(course_id=id).exists() or Course.objects.filter(
+    if Course.objects.filter(course_id=course_id).exists() or Course.objects.filter(
             course_name=name).exists() or Course.objects.filter(course_code=code).exists():
         return False
 
     # create the course
-    new_course = Course(
-        course_id=id,
+    new_course=Course.objects.create(
+        course_id=course_id,
         course_name=name,
         course_description=description,
         course_code=code

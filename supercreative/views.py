@@ -1,6 +1,6 @@
 from django.shortcuts import redirect,render
 from django.views import View
-from supercreative.Course import course_helper as courseHelper
+from supercreative.course import course as courseHelper
 from supercreative.models import User, Course
 from supercreative.authentication import authentication
 
@@ -26,13 +26,19 @@ class Test(View):
                           {'user_id': request.session['user_id'], 'role': request.session['role']})
         else:
             return redirect("/")
-        return render(request, 'test_page.html')
+        #return render(request, 'test_page.html')
 
 class Home(View):
     def get(self, request):
-        user_id = request.session['user_id']
-        user = User.objects.get(user_id=user_id)
-        return render(request, 'index.html', {'user': user})
+        if authentication.active_session_exists(request):
+            name = User.objects.get(user_id=request.session['user_id']).first_name
+            return render(request, 'index.html',
+                          {'first_name':name, 'user_id': request.session['user_id'],
+                           'role': request.session['role']})
+        else:
+            return redirect("/")
+
+
 
 class Courses(View):
     def get(self, request):
@@ -58,7 +64,7 @@ class Courses(View):
             return render(request, 'courses.html', {'courses': courses, 'popup': True, 'edit': True, 'new': True})
 
         elif 'new_course' in request.POST.get('action'):
-            course_id = request.POST.get('course_id')
+            course_id = int(request.POST.get('course_id'))
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
@@ -74,8 +80,7 @@ class Courses(View):
             return redirect(request.path)
 
         elif 'delete_course' in request.POST.get('action'):
-            course_id = request.POST.get('course_id')
-            courseHelper.delete_course(course_id)
+            courseHelper.delete_course(Course.objects.get(course_id=request.POST.get('course_id')))
             return redirect(request.path)
 
         else:
