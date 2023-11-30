@@ -21,6 +21,7 @@ class TestCourseEdit(TestCase):
                       "PY151")
         self.existing_course = Course.objects.get(course_id=102)
 
+
     def test_successful_edit_all(self):
         # Edit all
         self.assertTrue(edit_course(self.base_course.course_id, self.new_course_values["course_name"],

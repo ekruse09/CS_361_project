@@ -1,13 +1,24 @@
-from django.test import TestCase
-from django.urls import reverse
+from django.test import TestCase, Client
 from supercreative.models import Course
+from supercreative.course import course
+from supercreative.authentication import authentication
+from supercreative.user import user
 
-class CoursesViewTest(TestCase):
 
-    @classmethod
-    def setUpTestData(cls):
+class CourseAcceptanceTests(TestCase):
+    client = None
+    existing_course = None
+    user = None
+
+    def setUp(self):
+        self.client = Client()
+
         # Set up data for the whole TestCase
-        Course.objects.create(course_id='1', course_name='Test Course', course_description='Test Description', course_code='TC101')
+        course.create_course(1, 'Test Course', 'Test Description', 'TC101')
+        self.existing_course = Course.objects.get(course_id=1)
+        self.user = user.create_user(1, 'test@uwm.edu', 'P@ssword123', 'ADMINISTRATOR', 'Jayson',
+                                     'Rock', '1234567890', '123 Sesame St')
+        authentication.create_session(self.client.session, 'test@uwm.edu')
 
     def test_get_courses(self):
         response = self.client.get('/course/')
@@ -44,7 +55,7 @@ class CoursesViewTest(TestCase):
                                                  'course_description': 'New Description',
                                                  'course_code': 'NC102'})
 
-        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")
         self.assertEqual(Course.objects.count(), 2)
 
@@ -54,18 +65,18 @@ class CoursesViewTest(TestCase):
                                                  'course_description': 'Updated Description',
                                                  'course_code': 'UC103'})
 
-        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")
         updated_course = Course.objects.get(course_id='1')
         self.assertEqual(updated_course.course_name, 'Updated Course')
 
     def test_post_delete_course(self):
         response = self.client.post('/course/', {'action': 'delete_course', 'course_id': '1'})
-        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")
         self.assertEqual(Course.objects.count(), 0)
 
     def test_post_invalid_action(self):
         response = self.client.post('/course/', {'action': 'invalid_action'})
-        #self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
+        # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")

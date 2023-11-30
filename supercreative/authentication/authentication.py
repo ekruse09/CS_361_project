@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def create_session(session, login_email):
     if not User.objects.filter(email=login_email).exists():
+        print('user not found')
         return False
 
     user = User.objects.get(email=login_email)

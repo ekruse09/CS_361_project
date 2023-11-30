@@ -44,11 +44,15 @@ class Home(View):
 
 class Users(View):
     def get(self, request):
-        # get all the courses
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+        # get all the users
         users = User.objects.all()
         return render(request, 'users.html', {'users': users})
 
     def post(self, request):
+        if not authentication.active_session_exists(request):
+            return redirect("/")
 
         users = User.objects.all()
 
@@ -73,30 +77,34 @@ class Users(View):
                                    request.POST.get('password'), request.POST.get('role'),
                                    request.POST.get('first_name'), request.POST.get('last_name'),
                                    request.POST.get('phone_number'), request.POST.get('address'))
-            return redirect(request.path)
+            return render(request, 'users.html', {'users': users})
 
         elif 'edit_user' in request.POST.get('action'):
             userHelper.edit_user(int(request.POST.get('user_id')), request.POST.get('password'),
                                  request.POST.get('role'), request.POST.get('first_name'),
                                  request.POST.get('last_name'), request.POST.get('phone_number'),
                                  request.POST.get('address'))
-            return redirect(request.path)
+            return render(request, 'users.html', {'users': users})
 
         elif 'delete_user' in request.POST.get('action'):
             userHelper.delete_user(request.POST.get('user_id'))
-            return redirect(request.path)
+            return render(request, 'users.html', {'users': users})
 
         else:
-            return redirect('/user/')
+            return render(request, 'users.html', {'users': users})
 
 
 class Courses(View):
     def get(self, request):
+        if not authentication.active_session_exists(request):
+            return redirect("/")
         # get all the courses
         courses = Course.objects.all()
         return render(request, 'courses.html', {'courses': courses})
 
     def post(self, request):
+        if not authentication.active_session_exists(request):
+            return redirect("/")
 
         courses = Course.objects.all()
 
