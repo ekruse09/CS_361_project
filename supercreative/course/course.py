@@ -2,9 +2,9 @@ from supercreative.models import Course, Section
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_course(id, name, description, code):
+def create_course(course_id, name, description, code):
     # check for valid id
-    if not (isinstance(id, int) and id > 0):
+    if not (isinstance(course_id, int) and course_id > 0):
         return False
 
     # check for valid name
@@ -20,13 +20,13 @@ def create_course(id, name, description, code):
         return False
 
     # check database for duplicate ids, names, or course codes
-    if Course.objects.filter(course_id=id).exists() or Course.objects.filter(
+    if Course.objects.filter(course_id=course_id).exists() or Course.objects.filter(
             course_name=name).exists() or Course.objects.filter(course_code=code).exists():
         return False
 
     # create the course
-    new_course = Course(
-        course_id=id,
+    new_course=Course.objects.create(
+        course_id=course_id,
         course_name=name,
         course_description=description,
         course_code=code
@@ -37,18 +37,20 @@ def create_course(id, name, description, code):
 
 
 def edit_course(current_course_id, new_course_name='', new_course_description="", new_course_code=""):
-    existing_course = None
+    existing_course = False
     try:
-        existing_course = Course.objects.get(course_name=new_course_name)
+        existing_course = (Course.objects.get(course_id=current_course_id) !=
+                           Course.objects.get(course_code=new_course_code))
     except ObjectDoesNotExist:
         pass
 
     try:
-        existing_course = Course.objects.get(course_code=new_course_code)
+        existing_course = (Course.objects.get(course_id=current_course_id) !=
+                           Course.objects.get(course_name=new_course_name))
     except ObjectDoesNotExist:
         pass
 
-    if existing_course is not None:
+    if existing_course is True:
         return False
 
     if Course.objects.filter(course_id=current_course_id).exists():

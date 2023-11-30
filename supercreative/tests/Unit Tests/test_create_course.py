@@ -25,6 +25,8 @@ class CreateCourseTest(TestCase):
         # get created course and check its values
         created_course = Course.objects.get(course_id=self.course_id)
 
+        self.assertTrue(Course.objects.filter(course_id=self.course_id), "Didn't create course")
+
         self.assertEqual(created_course.course_id, self.course_id, "create_course did not correctly set the "
                                                                    "course_id")
 
