@@ -69,6 +69,7 @@ def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, n
         return False
 
     user = User.objects.get(user_id=user_id)
+    print(user)
 
     if (new_password != '' and (any(i.isupper() for i in new_password)) and (any(i.islower() for i in new_password)) and
             (any(i in string.punctuation for i in new_password))):
@@ -76,6 +77,7 @@ def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, n
     else:
         return False
 
+    new_role.upper()
     if new_role != '' and new_role in ["ADMINISTRATOR", "INSTRUCTOR", "TA"]:
         user.role = new_role
     else:

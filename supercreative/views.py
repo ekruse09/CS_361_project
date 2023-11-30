@@ -83,56 +83,7 @@ class Users(View):
             return redirect(request.path)
 
         elif 'delete_user' in request.POST.get('action'):
-            userHelper.delete_user(User.objects.get(user_id=request.POST.get('user_id')))
-            return redirect(request.path)
-
-        else:
-            return redirect('/user/')
-
-
-
-class Users(View):
-    def get(self, request):
-        # get all the courses
-        users = User.objects.all()
-        return render(request, 'users.html', {'users': users})
-
-    def post(self, request):
-
-        users = User.objects.all()
-
-        if 'view_user' in request.POST.get('action'):
-            user_id = request.POST.get('user_id')
-            user = User.objects.get(user_id=user_id)
-            return render(request, 'users.html',
-                          {'users': users, 'user': user, 'popup': True, 'edit': False})
-
-        elif 'request_edit' in request.POST.get('action'):
-            user_id = request.POST.get('user_id')
-            user = User.objects.get(user_id=user_id)
-            return render(request, 'users.html',
-                          {'users': users, 'user': user, 'popup': True, 'edit': True, 'new': False})
-
-        elif 'request_new' in request.POST.get('action'):
-            return render(request, 'users.html',
-                          {'users': users, 'popup': True, 'edit': True, 'new': True})
-
-        elif 'new_user' in request.POST.get('action'):
-            userHelper.create_user(int(request.POST.get('user_id')), request.POST.get('email'),
-                                   request.POST.get('password'), request.POST.get('role'),
-                                   request.POST.get('first_name'), request.POST.get('last_name'),
-                                   request.POST.get('phone_number'), request.POST.get('address'))
-            return redirect(request.path)
-
-        elif 'edit_user' in request.POST.get('action'):
-            userHelper.edit_user(int(request.POST.get('user_id')), request.POST.get('password'),
-                                 request.POST.get('role'), request.POST.get('first_name'),
-                                 request.POST.get('last_name'), request.POST.get('phone_number'),
-                                 request.POST.get('address'))
-            return redirect(request.path)
-
-        elif 'delete_user' in request.POST.get('action'):
-            userHelper.delete_user(User.objects.get(user_id=request.POST.get('user_id')))
+            userHelper.delete_user(request.POST.get('user_id'))
             return redirect(request.path)
 
         else:
