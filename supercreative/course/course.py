@@ -2,7 +2,7 @@ from supercreative.models import Course, Section
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_course(id, name, description, code, role):
+def create_course(id, name, description, code):
     # check for valid id
     if not (isinstance(id, int) and id > 0):
         return False
@@ -17,10 +17,6 @@ def create_course(id, name, description, code, role):
 
     # check for valid course code (just checking for a unique string as of now)
     if not (isinstance(code, str)):
-        return False
-
-    # checking for appropriate privileges
-    if role != "administrator":
         return False
 
     # check database for duplicate ids, names, or course codes
@@ -41,7 +37,6 @@ def create_course(id, name, description, code, role):
 
 
 def edit_course(current_course_id, new_course_name='', new_course_description="", new_course_code=""):
-    course = Course.objects.get(course_id=current_course_id)
     existing_course = None
     try:
         existing_course = Course.objects.get(course_name=new_course_name)
@@ -56,14 +51,21 @@ def edit_course(current_course_id, new_course_name='', new_course_description=""
     if existing_course is not None:
         return False
 
+    if Course.objects.filter(course_id=current_course_id).exists():
+        course = Course.objects.get(course_id=current_course_id)
+    else:
+        return False
+
     course.course_name = new_course_name if new_course_name != '' else course.course_name
     course.course_description = new_course_description if new_course_description != '' else course.course_description
     course.course_code = new_course_code if new_course_code != '' else course.course_code
     course.save()
+
     return True
 
 
 def delete_course(course):
     if Section.objects.filter(course_id=course).exists():
         return False
-    return course.delete()
+    Course.objects.get(course_id=course.course_id).delete()
+    return True

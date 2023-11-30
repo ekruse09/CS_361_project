@@ -4,6 +4,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
 from django.test import TestCase
 from supercreative.models import User, Course, Section, UserCourseAssignment
 from datetime import date
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
 
 class UserTestCase(TestCase):
     def setUp(self):
@@ -34,7 +36,6 @@ class SectionTestCase(TestCase):
                                        course_description="Data Science concepts using Python",
                                        course_code="DS101")
         Section.objects.create(section_id=1, course_id=course, section_type="Lecture")
-        print(UserCourseAssignment.objects.all())
 
     def test_section_creation(self):
         section = Section.objects.get(section_id=1)
