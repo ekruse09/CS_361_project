@@ -9,6 +9,7 @@
 </head>
 <body>
     <div class="sidebar">
+        <div class="logo">FU</div>
         <a class="home" href="/home/">
             <img src="../supercreative/static/images/home.svg" alt="home button">
             Home
@@ -74,10 +75,14 @@
         <a href="/course/" class="shade"></a>
         <div class="info-pop-up">
             <h1>Course Information:</h1>
-            <p>{{ course.course_name }}</p>
-            <p>{{ course.course_id }}</p>
-            <p>{{ course.course_code }}</p>
-            <p>{{ course.course_description }}</p>
+            <p class="field">Course ID:</p>
+            <p class="data">{{ course.course_id }}</p>
+            <p class="field">Course Code:</p>
+            <p class="data">{{ course.course_code }}</p>
+            <p class="field">Course Name:</p>
+            <p class="data">{{ course.course_name }}</p>
+            <p class="field">Course Description:</p>
+            <p class="data">{{ course.course_description }}</p>
             <div class="buttons">
                 <form action="/course/" method="post">
                     {% csrf_token %}
