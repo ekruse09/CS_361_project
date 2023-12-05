@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.course import course as courseHelper
+from supercreative.Course import course as courseHelper
 from supercreative.user import user as userHelper
 from supercreative.models import User, Course
 from supercreative.authentication import authentication
@@ -126,7 +126,7 @@ class Courses(View):
 
         elif 'new_course' in request.POST.get('action'):
             # localize variables
-            course_id = int(request.POST.get('course_id'))
+            course_id = request.POST.get('course_id')
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
