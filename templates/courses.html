@@ -98,6 +98,12 @@
     {% elif popup and edit %}
         <a href="/course/" class="shade"></a>
         <div class="edit-pop-up">
+            {% if error %}
+                <h1>
+                // get the error from the context and display it
+                <label for="error"></label>
+                <input type="text" id="error" name="error" value="{{ error }}">
+                </h1>
             {% if new %}
                 <h1>New Course Information:</h1>
             {% else %}
