@@ -5,24 +5,24 @@ from django.core.exceptions import ObjectDoesNotExist
 def create_course(course_id, name, description, code):
     # check for valid id
     if not (isinstance(course_id, int) and course_id > 0):
-        return False
+        return "Course ID must be a positive integer."
 
     # check for valid name
     if not (isinstance(name, str)):
-        return False
+        return "Course name must be a string."
 
     # check for valid description
     if not isinstance(description, str):
-        return False
+        return "Course description must be a string."
 
     # check for valid course code (just checking for a unique string as of now)
     if not (isinstance(code, str)):
-        return False
+        return "Course code must be a string."
 
     # check database for duplicate ids, names, or course codes
     if Course.objects.filter(course_id=course_id).exists() or Course.objects.filter(
             course_name=name).exists() or Course.objects.filter(course_code=code).exists():
-        return False
+        return "Course ID, name, or code already exists."
 
     # create the course
     new_course=Course.objects.create(
@@ -33,7 +33,7 @@ def create_course(course_id, name, description, code):
     )
     new_course.save()
 
-    return True
+    return "Course created successfully."
 
 
 def edit_course(current_course_id, new_course_name='', new_course_description="", new_course_code=""):

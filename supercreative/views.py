@@ -131,11 +131,14 @@ class Courses(View):
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
-            if (courseHelper.create_course(course_id, course_name, course_description, course_code) is False):
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': True,
-                               'error': 'Some of the course information you entered is invalid please review'})
-            return render(request, 'courses.html', {'courses': courses})
+            response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
+            return render(request,
+                          'courses.html',
+                          {'courses': courses,
+                            'popup': True,
+                            'edit': True,
+                            'new': True,
+                           'error': response})
 
         elif 'edit_course' in request.POST.get('action'):
             # localize variables
