@@ -124,14 +124,30 @@ class Courses(View):
             return render(request, 'courses.html',
                           {'courses': courses, 'popup': True, 'edit': True, 'new': True})
 
-
         elif 'new_course' in request.POST.get('action'):
-            courseHelper.create_course(int(request.POST.get('course_id')), request.POST.get('course_name'), request.POST.get('course_description'), request.POST.get('course_code'))
+            # localize variables
+            course_id = int(request.POST.get('course_id'))
+            course_name = request.POST.get('course_name')
+            course_description = request.POST.get('course_description')
+            course_code = request.POST.get('course_code')
+            if (courseHelper.create_course(course_id, course_name, course_description, course_code) is False):
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': True,
+                               'error': 'Some of the course information you entered is invalid please review'})
             return render(request, 'courses.html', {'courses': courses})
 
         elif 'edit_course' in request.POST.get('action'):
-            courseHelper.edit_course(int(request.POST.get('course_id')), request.POST.get('course_name'),
-                                     request.POST.get('course_description'), request.POST.get('course_code'))
+            # localize variables
+            course_id = int(request.POST.get('course_id'))
+            course_name = request.POST.get('course_name')
+            course_description = request.POST.get('course_description')
+            course_code = request.POST.get('course_code')
+
+            if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False :
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
+                               'error': 'Some of the course information you entered is invalid please review'})
+
             return render(request, 'courses.html', {'courses': courses})
 
         elif 'delete_course' in request.POST.get('action'):
@@ -140,4 +156,19 @@ class Courses(View):
             return render(request, 'courses.html', {'courses': courses})
 
         return render(request, 'courses.html', {'courses': courses})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
