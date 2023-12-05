@@ -124,6 +124,7 @@ class Courses(View):
             return render(request, 'courses.html',
                           {'courses': courses, 'popup': True, 'edit': True, 'new': True})
 
+
         elif 'new_course' in request.POST.get('action'):
             # localize variables
             course_id = request.POST.get('course_id')
