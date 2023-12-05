@@ -99,9 +99,9 @@
         <a href="/course/" class="shade"></a>
         <div class="edit-pop-up">
             {% if error %}
-                <h1>
+                <h1 class="error">
                 <label for="error"></label>
-                <input type="text" id="error" name="error" value="{{ error }}">
+                <p>{{ error }}</p>
                 </h1>
             {% endif %}
             {% if new %}
