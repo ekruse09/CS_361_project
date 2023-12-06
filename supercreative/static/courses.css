@@ -18,6 +18,20 @@ body {
     grid-template: 120px 1fr / 1fr;
 }
 
+.error {
+  width: 100%;        /* Full width to the parent container */
+  min-width: 0;       /* Override minimum width constraints */
+  box-sizing: border-box; /* Makes sure padding doesn't affect the total width */
+  overflow: hidden;   /* Hide the overflow text */
+  white-space: nowrap; /* Prevents the text from wrapping to the next line */
+  text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
+  padding: 8px;       /* Optional: Adjust padding as needed */
+  border: 1px solid #ccc; /* Optional: Adjust border as needed */
+  margin: 5px 0;      /* Optional: Adjust margin as needed */
+}
+
+
+
 .sidebar {
     position: fixed;
     background-color: #0e415f;

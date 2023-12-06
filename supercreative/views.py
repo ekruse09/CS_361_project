@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.course import course as courseHelper
+from supercreative.Course import course as courseHelper
 from supercreative.user import user as userHelper
 from supercreative.models import User, Course
 from supercreative.authentication import authentication
@@ -126,18 +126,68 @@ class Courses(View):
 
 
         elif 'new_course' in request.POST.get('action'):
-            courseHelper.create_course(int(request.POST.get('course_id')), request.POST.get('course_name'), request.POST.get('course_description'), request.POST.get('course_code'))
-            return render(request, 'courses.html', {'courses': courses})
+            # localize variables
+            course_id = request.POST.get('course_id')
+            course_name = request.POST.get('course_name')
+            course_description = request.POST.get('course_description')
+            course_code = request.POST.get('course_code')
+
+            if courseHelper.course_id_to_int(course_id) is None:
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': True,
+                               'error': 'Course ID must be an integer'})
+
+            response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
+            return render(request,
+                          'courses.html',
+                          {'courses': courses,
+                            'popup': True,
+                            'edit': True,
+                            'new': True,
+                           'error': response})
 
         elif 'edit_course' in request.POST.get('action'):
-            courseHelper.edit_course(int(request.POST.get('course_id')), request.POST.get('course_name'),
-                                     request.POST.get('course_description'), request.POST.get('course_code'))
+            # localize variables
+            course_id = int(request.POST.get('course_id'))
+            course_name = request.POST.get('course_name')
+            course_description = request.POST.get('course_description')
+            course_code = request.POST.get('course_code')
+
+            if courseHelper.course_id_to_int(course_id) is None:
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
+                               'error': 'Course ID must be an integer'})
+
+            if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False :
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
+                               'error': 'Some of the course information you entered is invalid please review'})
+
             return render(request, 'courses.html', {'courses': courses})
 
         elif 'delete_course' in request.POST.get('action'):
             if Course.objects.filter(course_id=request.POST.get('course_id')):
                 courseHelper.delete_course(Course.objects.get(course_id=request.POST.get('course_id')))
-            return render(request, 'courses.html', {'courses': courses})
+                return render(request, 'courses.html', {'courses': courses})
+            else:
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': False, 'new': False,
+                               'error': 'Course does not exist'})
 
         return render(request, 'courses.html', {'courses': courses})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
