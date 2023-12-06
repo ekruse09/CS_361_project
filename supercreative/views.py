@@ -168,7 +168,11 @@ class Courses(View):
         elif 'delete_course' in request.POST.get('action'):
             if Course.objects.filter(course_id=request.POST.get('course_id')):
                 courseHelper.delete_course(Course.objects.get(course_id=request.POST.get('course_id')))
-            return render(request, 'courses.html', {'courses': courses})
+                return render(request, 'courses.html', {'courses': courses})
+            else:
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': False, 'new': False,
+                               'error': 'Course does not exist'})
 
         return render(request, 'courses.html', {'courses': courses})
 
