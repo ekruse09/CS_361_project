@@ -131,6 +131,12 @@ class Courses(View):
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
+
+            if courseHelper.course_id_to_int(course_id) is None:
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': True,
+                               'error': 'Course ID must be an integer'})
+
             response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
             return render(request,
                           'courses.html',

@@ -157,3 +157,6 @@ class CreateCourseTest(TestCase):
         with self.assertRaises(ObjectDoesNotExist, msg="Course with different course code should not exist"):
             Course.objects.get(course_code="different course code")
 
+
+
+

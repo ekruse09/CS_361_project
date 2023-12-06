@@ -71,3 +71,9 @@ def delete_course(course):
         return False
     Course.objects.get(course_id=course.course_id).delete()
     return True
+
+def course_id_to_int(course_id):
+    try:
+        return int(course_id)
+    except:
+        return None
