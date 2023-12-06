@@ -153,6 +153,11 @@ class Courses(View):
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
+            if courseHelper.course_id_to_int(course_id) is None:
+                return render(request, 'courses.html',
+                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
+                               'error': 'Course ID must be an integer'})
+
             if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False :
                 return render(request, 'courses.html',
                               {'courses': courses, 'popup': True, 'edit': True, 'new': False,
