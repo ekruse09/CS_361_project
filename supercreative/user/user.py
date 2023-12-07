@@ -68,7 +68,7 @@ def create_user(uid, email, password, role, first, last, phone, address):
 
 def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, new_address):
     if not User.objects.filter(user_id=user_id).exists():
-        return False
+        return "User ID does not exist."
 
     user = User.objects.get(user_id=user_id)
     print(user)
@@ -77,23 +77,23 @@ def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, n
             (any(i in string.punctuation for i in new_password))):
         user.password = new_password
     else:
-        return False
+        return "Password must contain at least one uppercase letter, one lowercase letter, and one special character."
 
     new_role.upper()
     if new_role != '' and new_role in ["ADMINISTRATOR", "INSTRUCTOR", "TA"]:
         user.role = new_role
     else:
-        return False
+        return "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA."
 
     if new_first != '':
         user.first_name = new_first
     else:
-        return False
+        return "First name must be a string and non-empty."
 
     if new_last != '':
         user.last_name = new_last
     else:
-        return False
+        return "Last name must be a string and non-empty."
 
     clean_phone = ''
     for char in new_phone:
@@ -103,16 +103,16 @@ def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, n
     if len(clean_phone) == 10:
         user.phone_number = new_phone
     else:
-        return False
+        return "Phone number must be 10 digits."
 
     if new_address != '':
         user.address = new_address
     else:
-        return False
+        return "Address must be a string and non-empty."
 
     user.save()
 
-    return True
+    return "User edited successfully."
 
 def delete_user(user_id):
     # Preconditions
