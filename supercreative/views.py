@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.Course import course as courseHelper
+from supercreative.course import course as courseHelper
+from supercreative.course.assign_user import assign_user_to
 from supercreative.user import user as userHelper
-from supercreative.models import User, Course
+from supercreative.models import User, Course, Section, UserCourseAssignment
 from supercreative.authentication import authentication
 
 
@@ -135,15 +136,15 @@ class Courses(View):
             if courseHelper.course_id_to_int(course_id) is None:
                 return render(request, 'courses.html',
                               {'courses': courses, 'popup': True, 'edit': True, 'new': True,
-                               'error': 'Course ID must be an integer'})
+                               'error': 'course ID must be an integer'})
 
             response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
             return render(request,
                           'courses.html',
                           {'courses': courses,
-                            'popup': True,
-                            'edit': True,
-                            'new': True,
+                           'popup': True,
+                           'edit': True,
+                           'new': True,
                            'error': response})
 
         elif 'edit_course' in request.POST.get('action'):
@@ -156,9 +157,9 @@ class Courses(View):
             if courseHelper.course_id_to_int(course_id) is None:
                 return render(request, 'courses.html',
                               {'courses': courses, 'popup': True, 'edit': True, 'new': False,
-                               'error': 'Course ID must be an integer'})
+                               'error': 'course ID must be an integer'})
 
-            if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False :
+            if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False:
                 return render(request, 'courses.html',
                               {'courses': courses, 'popup': True, 'edit': True, 'new': False,
                                'error': 'Some of the course information you entered is invalid please review'})
@@ -172,22 +173,57 @@ class Courses(View):
             else:
                 return render(request, 'courses.html',
                               {'courses': courses, 'popup': True, 'edit': False, 'new': False,
-                               'error': 'Course does not exist'})
+                               'error': 'course does not exist'})
 
         return render(request, 'courses.html', {'courses': courses})
 
 
+class ManageCourses(View):
+    def get(self, request, course_id):
+        # Check if an active session exists
+        if not authentication.active_session_exists(request):
+            return redirect("/")
 
+        try:
+            # Retrieve the course and its assigned users
+            course = Course.objects.get(course_id=course_id)
+            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
 
+            return render(request, 'manage_courses.html', {'course': course, 'assigned_users': assigned_users})
 
+        except Course.DoesNotExist:
+            return render(request, 'manage_courses.html', {'error': 'Course not found'})
 
+    def post(self, request, course_id):
+        # Check if an active session exists
+        if not authentication.active_session_exists(request):
+            return redirect("/")
 
+        try:
+            # Retrieve the course
+            course = Course.objects.get(course_id=course_id)
 
+            # Handle user course assignment and (optional) section assignment
+            if 'assign_user' in request.POST.get('action'):
+                user_id = request.POST.get('user_id')
+                if 'section_id' in request.POST:
+                    section_id = request.POST.get('section_id')
+                else:
+                    section_id = None
 
+                # Check if the user is already assigned to the course and section (optional)
+                if UserCourseAssignment.objects.filter(user_id=user_id, course_id=course_id,
+                                                       section_id=section_id).exists():
+                    return render(request, 'manage_courses.html', {'course': course,
+                                                                   'error': 'User is already assigned to the course '
+                                                                            'and section'})
+                # Assign the user to the course
+                assign_user_to(assigned_user=user_id, assigned_course=course_id, assigned_section=section_id)
 
+                # Retrieve the updated list of assigned users
+                assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
 
+                return render(request, 'manage_courses.html', {'course': course, 'assigned_users': assigned_users})
 
-
-
-
-
+        except Course.DoesNotExist:
+            return render(request, 'manage_courses.html', {'error': 'Course not found'})
