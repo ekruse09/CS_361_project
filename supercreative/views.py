@@ -132,11 +132,6 @@ class Courses(View):
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
-            if courseHelper.course_id_to_int(course_id) is None:
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': True,
-                               'error': 'Course ID must be an integer'})
-
             response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
             return render(request,
                           'courses.html',
@@ -153,17 +148,10 @@ class Courses(View):
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
-            if courseHelper.course_id_to_int(course_id) is None:
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
-                               'error': 'Course ID must be an integer'})
-
-            if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False :
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
-                               'error': 'Some of the course information you entered is invalid please review'})
-
-            return render(request, 'courses.html', {'courses': courses})
+            response = courseHelper.edit_course(course_id, course_name, course_description, course_code)
+            return render(request, 'courses.html',
+                          {'courses': courses, 'popup': True, 'edit': True, 'new': False,
+                           'error': response})
 
         elif 'delete_course' in request.POST.get('action'):
             if Course.objects.filter(course_id=request.POST.get('course_id')):
