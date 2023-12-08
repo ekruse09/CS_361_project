@@ -1,8 +1,11 @@
 from supercreative.models import Section, UserCourseAssignment
-def delete_section(user, delsection):
-    if user in ["administrator"]
+
+
+def delete_section(delsection):
     if not Section.objects.filter(delsection.section).exists():
-        return False
+        return "Section does not exist"
+    if delsection in "":
+        return "No Section detected"
     UserCourseAssignment.objects.filter(delsection.section).delete()
     Section.objects.get(section_id=delsection).delete()
-    return True
+    return "Section deletion was successful"
