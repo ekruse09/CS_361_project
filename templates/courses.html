@@ -74,6 +74,12 @@
     {% if popup and not edit%}
         <a href="/course/" class="shade"></a>
         <div class="info-pop-up">
+            {% if error %}
+                <h1 class="error">
+                <label for="error"></label>
+                <p>{{ error }}</p>
+                </h1>
+            {% endif %}
             <h1>Course Information:</h1>
             <p class="field">Course ID:</p>
             <p class="data">{{ course.course_id }}</p>
@@ -98,6 +104,12 @@
     {% elif popup and edit %}
         <a href="/course/" class="shade"></a>
         <div class="edit-pop-up">
+            {% if error %}
+                <h1 class="error">
+                <label for="error"></label>
+                <p>{{ error }}</p>
+                </h1>
+            {% endif %}
             {% if new %}
                 <h1>New Course Information:</h1>
             {% else %}
