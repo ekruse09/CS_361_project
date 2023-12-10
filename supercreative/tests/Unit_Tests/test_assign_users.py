@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from supercreative.models import Course, User, Section, UserCourseAssignment
 from supercreative.course.assign_user import assign_user_to
 
@@ -21,15 +21,18 @@ class TestUserAssignment(TestCase):
         pass
 
     def test_assignment(self):
-        self.assertTrue(assign_user_to(self.user, self.course, self.section), "Failed to create assignment")
+        self.assertEqual(assign_user_to(self.user, self.course, self.section), "user successfully assigned to course "
+                                                                                "and section", msg="Failed to create "
+                                                                                                   "assignment")
         self.assertTrue(UserCourseAssignment.objects.filter(user_id=self.user, course_id=self.course,
                                                             section_id=self.section).exists(),
                         "Failed to assign course")
 
     def test_assignment_no_section(self):
-        self.assertTrue(assign_user_to(self.user, self.course), "Failed to create assignment")
+        self.assertEqual(assign_user_to(self.user, self.course), "user successfully assigned to course and section",
+                          msg="Failed to create assignment")
         self.assertTrue(UserCourseAssignment.objects.filter(user_id=self.user.user_id).exists())
-        print(UserCourseAssignment.objects.filter(user_id=self.user.user_id).exists())
+        # print(UserCourseAssignment.objects.filter(user_id=self.user.user_id).exists())
 
 
 class TestBadAssignment(TestCase):
@@ -49,16 +52,21 @@ class TestBadAssignment(TestCase):
         self.section = Section.objects.create(section_id=1, course_id=self.course, section_type="Lecture")
 
     def test_no_course(self):
-        self.assertFalse(assign_user_to(self.user, None, self.section), "Created null course assignment")
+        self.assertEqual(assign_user_to(self.user, None, self.section), "user must have a course to be assigned to",
+                          msg="Created null course assignment")
 
     def test_duplicate_assignment(self):
         UserCourseAssignment.objects.create(user_id=self.user, course_id=self.course,
                                             section_id=self.section,
                                             section_type=self.section.section_type)
-        self.assertFalse(assign_user_to(self.user, self.course, self.section), "Created duplicate assignment")
+        self.assertEqual(assign_user_to(self.user, self.course, self.section), "user already assigned to that course "
+                                                                                "and section", msg="Created duplicate "
+                                                                                                   "assignment")
 
     def test_duplicate_assignment_no_section(self):
         UserCourseAssignment.objects.create(user_id=self.user, course_id=self.course,
                                             section_id=None,
                                             section_type='')
-        self.assertFalse(assign_user_to(self.user, self.course, None), "Created duplicate assignment")
+        self.assertEqual(assign_user_to(self.user, self.course, None), "user already assigned to that course "
+                                                                        "and section", msg="Created duplicate "
+                                                                                           "assignment")
