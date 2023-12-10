@@ -22,10 +22,6 @@
             <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
             Courses
         </a>
-        <a class="sections">
-            <img src="../supercreative/static/images/monitor-dashboard.svg" alt="sections button">
-            Sections
-        </a>
     </div>
     <div class="header">
         <p>Course Catalog</p>
@@ -35,7 +31,7 @@
         <form action="/course/" method="post">
             {% csrf_token %}
             <label for="action"></label>
-            <input type="text" id="action" name="action" value="request_new">
+            <input type="hidden" id="action" name="action" value="request_new">
             <button class="create-course">Create New Course</button>
         </form>
         <table>
@@ -61,9 +57,9 @@
                         <form action="/course/" method="post">
                             {% csrf_token %}
                             <label for="course_id"></label>
-                            <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                            <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                             <label for="action"></label>
-                            <input type="text" id="action" name="action" value="view_course">
+                            <input type="hidden" id="action" name="action" value="view_course">
                             <button>View</button>
                         </form>
                     </td>
@@ -90,15 +86,23 @@
             <p class="field">Course Description:</p>
             <p class="data">{{ course.course_description }}</p>
             <div class="buttons">
+                <a href="/course/">Back</a>
                 <form action="/course/" method="post">
                     {% csrf_token %}
                     <label for="action"></label>
-                    <input type="text" id="action" name="action" value="request_edit">
+                    <input type="hidden" id="action" name="action" value="request_edit">
                     <label for="course_id"></label>
-                    <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                    <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                     <button>Edit</button>
                 </form>
-                <a href="/course/">Back</a>
+                <form action="/course/" method="post">
+                    {% csrf_token %}
+                    <label for="action"></label>
+                    <input type="hidden" id="action" name="action" value="manage_course">
+                    <label for="course_id"></label>
+                    <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                    <button>Manage Course</button>
+                </form>
             </div>
         </div>
     {% elif popup and edit %}
@@ -119,7 +123,7 @@
                 {% csrf_token %}
                 {% if new %}
                     <label for="course_id">Course ID:</label>
-                    <input type="text" id="course_id" name="course_id" required>
+                    <input type="number" id="course_id" name="course_id" required>
                 {% else %}
                     <label class="hidden" for="course_id">Course ID:</label>
                     <input class="hidden" type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
@@ -144,9 +148,9 @@
                     <form class="delete" action="/course/" method="post">
                         {% csrf_token %}
                         <label for="action"></label>
-                        <input type="text" id="action" name="action" value="delete_course">
+                        <input type="hidden" id="action" name="action" value="delete_course">
                         <label for="course_id"></label>
-                        <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                        <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                         <button>Delete Course</button>
                     </form>
             {% endif %}
