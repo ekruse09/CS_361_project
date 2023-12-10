@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 from supercreative.course import course as courseHelper
 from supercreative.course.assign_user import assign_user_to
+from supercreative.create_sections import section as section_helper
 from supercreative.user import user as userHelper
 from supercreative.models import User, Course, Section, UserCourseAssignment
 from supercreative.authentication import authentication
@@ -175,55 +176,133 @@ class Courses(View):
                               {'courses': courses, 'popup': True, 'edit': False, 'new': False,
                                'error': 'course does not exist'})
 
+        elif 'manage_course' in request.POST.get('action'):
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(course_id=course_id)
+            return render(request, 'manage-course.html', {'course': course})
+
         return render(request, 'courses.html', {'courses': courses})
 
 
 class ManageCourses(View):
-    def get(self, request, course_id):
+    def get(self, request):
         # Check if an active session exists
         if not authentication.active_session_exists(request):
             return redirect("/")
 
-        try:
-            # Retrieve the course and its assigned users
-            course = Course.objects.get(course_id=course_id)
+        # Retrieve the course and its assigned users
+        course_id = request.POST.get('course_id')
+        course = Course.objects.get(course_id=course_id)
+        assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+
+        return render(request,
+                      'manage-courses.html',
+                      {'course': course,
+                       'assigned_users': assigned_users})
+
+    def post(self, request):
+        # Check if an active session exists
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+
+        # Retrieve the course
+        course_id = request.POST.get('course_id')
+        course = Course.objects.get(course_id=course_id)
+
+        # Retrieve the assigned users
+        assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+
+        # Handle user course assignment and (optional) section assignment
+        if 'assign_user' in request.POST.get('action'):
+            user_id = request.POST.get('user_id')
+            if 'section_id' in request.POST:
+                section_id = request.POST.get('section_id')
+            else:
+                section_id = None
+
+            # Assign the user to the course
+            response = assign_user_to(assigned_user=user_id, assigned_course=course_id, assigned_section=section_id)
+
+            # Retrieve the updated list of assigned users
             assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
 
-            return render(request, 'manage_courses.html', {'course': course, 'assigned_users': assigned_users})
+            return render(request,
+                          'manage-courses.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'error': response})
 
-        except Course.DoesNotExist:
-            return render(request, 'manage_courses.html', {'error': 'Course not found'})
+        elif 'request_edit' in request.POST.get('action'):
+            section_id = request.POST.get('section_id')
+            section = Section.objects.get(section_id=section_id)
+            return render(request, 'manage-course.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'section': section,
+                           'popup': True,
+                           'edit': True,
+                           'new': False})
 
-    def post(self, request, course_id):
-        # Check if an active session exists
-        if not authentication.active_session_exists(request):
-            return redirect("/")
+        elif 'request_new' in request.POST.get('action'):
+            return render(request, 'manage-course.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'popup': True,
+                           'edit': True,
+                           'new': True})
 
-        try:
-            # Retrieve the course
-            course = Course.objects.get(course_id=course_id)
+        elif 'new_section' in request.POST.get('action'):
+            # Localize variables
+            section_id = request.POST.get('section_id')
+            section_type = request.POST.get('section_type')
 
-            # Handle user course assignment and (optional) section assignment
-            if 'assign_user' in request.POST.get('action'):
-                user_id = request.POST.get('user_id')
-                if 'section_id' in request.POST:
-                    section_id = request.POST.get('section_id')
-                else:
-                    section_id = None
+            response = section_helper.create_section(section_id, course, section_type)
 
-                # Check if the user is already assigned to the course and section (optional)
-                if UserCourseAssignment.objects.filter(user_id=user_id, course_id=course_id,
-                                                       section_id=section_id).exists():
-                    return render(request, 'manage_courses.html', {'course': course,
-                                                                   'error': 'User is already assigned to the course '
-                                                                            'and section'})
-                # Assign the user to the course
-                assign_user_to(assigned_user=user_id, assigned_course=course_id, assigned_section=section_id)
+            # Get updated list of assigned users
+            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
 
-                # Retrieve the updated list of assigned users
-                assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+            return render(request,
+                          'manage-course.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'popup': True,
+                           'edit': True,
+                           'new': True,
+                           'error': response})
 
-                return render(request, 'manage_courses.html', {'course': course, 'assigned_users': assigned_users})
+        elif 'edit_course' in request.POST.get('action'):
+            # Localize variables
+            section_id = request.POST.get('section_id')
+            section_type = request.POST.get('section_type')
 
-        except Course.DoesNotExist:
-            return render(request, 'manage_courses.html', {'error': 'Course not found'})
+            response = section_helper.edit_section(section_id, course, section_type)
+
+            # Get updated list of assigned users
+            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+
+            return render(request,
+                          'courses.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'popup': True,
+                           'edit': True,
+                           'new': False,
+                           'error': response})
+
+        elif 'delete_course' in request.POST.get('action'):
+            # Localize variables
+            section_id = request.POST.get('section_id')
+
+            response = section_helper.delete_section(section_id)
+
+            # Get updated list of assigned users
+            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+
+            return render(request,
+                          'courses.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'popup': True,
+                           'edit': True,
+                           'new': False,
+                           'error': response})
