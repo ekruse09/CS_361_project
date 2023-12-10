@@ -4,8 +4,8 @@
 }
 
 * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
 }
 
@@ -86,11 +86,15 @@ button {
     font-size: 20px;
     font-weight: bold;
     width: 380px;
+    cursor: pointer;
 }
 
 button:hover {
     background-color: #da6512;
-    cursor: pointer;
+}
+
+button:hover {
+    background-color: #f97316;
 }
 
 .forgot-pass {

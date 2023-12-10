@@ -16,10 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from supercreative.views import Login, Test
+from supercreative.views import Login, Test, Courses, Home, Users
+from supercreative import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('test/', Test.as_view()),
+    path('users/', Users.as_view()),
+    path('course/', Courses.as_view()),
+    path('home/', Home.as_view()),
+    path('course/nonexistantcourse/', Courses.as_view()),
     path('', Login.as_view()),
 ]

@@ -1,38 +1,44 @@
 from django.test import TestCase
 from supercreative.models import (Course)
-from supercreative.create_course.course import edit_course
+from supercreative.course.course import edit_course, create_course
+
 
 class TestCourseEdit(TestCase):
     base_course = None
-    updated_course = None
+    new_course_values = None
     existing_course = None
+
     def setUp(self):
-        self.base_course = Course.objects.create(course_id=101, course_name="Introduction to Python",
-                              course_description="A basic course on Python programming",
-                              course_code="PY101")
-        self.updated_course = {"course_name":"New Intro to Python",
-                               "course_description":"An up to date introductory course on Python",
-                               "good_course_code":"PY102", "bad_course_code":"PY151"}
-        self.existing_course = Course.objects.create(course_id=102, course_name="Intermediate Python Programming",
-                              course_description="A basic course on Python programming",
-                              course_code="PY151")
+        create_course(101, "Introduction to Python",
+                      "A basic course on Python programming",
+                      "PY101")
+        self.base_course = Course.objects.get(course_id=101)
+        self.new_course_values = {"course_name": "New Intro to Python",
+                                  "course_description": "An up to date introductory course on Python",
+                                  "good_course_code": "PY102", "bad_course_code": "PY151"}
+        create_course(102, "Intermediate Python Programming",
+                      "A basic course on Python programming",
+                      "PY151")
+        self.existing_course = Course.objects.get(course_id=102)
+
 
     def test_successful_edit_all(self):
         # Edit all
-        self.assertTrue(edit_course(self.base_course.course_id, self.updated_course["course_name"],
-                    self.updated_course["course_description"], self.updated_course["good_course_code"]))
+        self.assertTrue(edit_course(self.base_course.course_id, self.new_course_values["course_name"],
+                                    self.new_course_values["course_description"],
+                                    self.new_course_values["good_course_code"]))
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_name,
-                         self.updated_course["course_name"], "Course name change failed")
+                         self.new_course_values["course_name"], "Course name change failed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_description,
-                         self.updated_course["course_description"], "Course description change failed")
+                         self.new_course_values["course_description"], "Course description change failed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_code,
-                         self.updated_course["good_course_code"], "Course code change failed")
+                         self.new_course_values["good_course_code"], "Course code change failed")
 
     def test_successful_edit_name(self):
         # Edit name only
-        self.assertTrue(edit_course(self.base_course.course_id, self.updated_course["course_name"], '', ''))
+        self.assertTrue(edit_course(self.base_course.course_id, self.new_course_values["course_name"], '', ''))
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_name,
-                         self.updated_course["course_name"], "Course name change failed")
+                         self.new_course_values["course_name"], "Course name change failed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_description,
                          self.base_course.course_description, "Course description changed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_code,
@@ -40,23 +46,23 @@ class TestCourseEdit(TestCase):
 
     def test_successful_edit_description(self):
         # Edit description only
-        self.assertTrue(edit_course(self.base_course.course_id, '', self.updated_course["course_description"], ''))
+        self.assertTrue(edit_course(self.base_course.course_id, '', self.new_course_values["course_description"], ''))
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_name,
                          self.base_course.course_name, "Course name changed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_description,
-                         self.updated_course["course_description"], "Course description change failed")
+                         self.new_course_values["course_description"], "Course description change failed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_code,
                          self.base_course.course_code, "Course code changed")
 
     def test_successful_edit_code(self):
         # Edit code only
-        self.assertTrue(edit_course(self.base_course.course_id, '', '', self.updated_course["good_course_code"]))
+        self.assertTrue(edit_course(self.base_course.course_id, '', '', self.new_course_values["good_course_code"]))
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_name,
                          self.base_course.course_name, "Course name changed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_description,
                          self.base_course.course_description, "Course description changed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_code,
-                         self.updated_course["good_course_code"], "Course code change failed")
+                         self.new_course_values["good_course_code"], "Course code change failed")
 
     def test_duplicates(self):
         # Duplicate name
