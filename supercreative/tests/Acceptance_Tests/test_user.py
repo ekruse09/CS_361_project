@@ -77,3 +77,14 @@ class UserAcceptanceTests(TestCase):
         response = self.client.post('/users/', {'action': 'invalid_action'})
         # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")
+
+    def test_create_existing_user(self):
+        response = self.client.post('/users/',
+                                    {'action': 'new_user',
+                                    'user_id': '1',
+                                    'password': 'P@ssword123',
+                                    'email': 'email@email.com'
+                                     })
+        self.assertIn('error', response.context)
+        self.assertEqual(response.context['error'], 'User ID already exists.')
+
