@@ -270,7 +270,7 @@ class ManageCourses(View):
                            'new': True,
                            'error': response})
 
-        elif 'edit_course' in request.POST.get('action'):
+        elif 'edit_section' in request.POST.get('action'):
             # Localize variables
             section_id = request.POST.get('section_id')
             section_type = request.POST.get('section_type')
@@ -289,7 +289,7 @@ class ManageCourses(View):
                            'new': False,
                            'error': response})
 
-        elif 'delete_course' in request.POST.get('action'):
+        elif 'delete_section' in request.POST.get('action'):
             # Localize variables
             section_id = request.POST.get('section_id')
 
