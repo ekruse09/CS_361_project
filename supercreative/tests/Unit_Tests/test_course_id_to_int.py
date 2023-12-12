@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 # Adjust the import path according to where course_id_to_int function is located in your project
-from supercreative.Course.course import course_id_to_int
+from supercreative.course.course import course_id_to_int
 
 class CourseIdToIntTest(TestCase):
 
