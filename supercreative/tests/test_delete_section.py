@@ -3,7 +3,7 @@ from supercreative.models import Section, UserCourseAssignment, Course, User
 from supercreative.delete_section.delete_section import delete_section
 
 
-class MyTestCase(TestCase):
+class TestDeleteSection(TestCase):
     def setUp(self):
         self.good_user = User(user_id=1, email="test@uwm.edu", password="test", role="Administrator", first_name="testfirst",
                               last_name="testlast", phone_number="5555555555", address="123")
