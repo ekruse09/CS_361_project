@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from supercreative.models import Course
-from supercreative.course import course
+from supercreative.Course import course
 from supercreative.authentication import authentication
 from supercreative.user import user
 
@@ -80,3 +80,12 @@ class CourseAcceptanceTests(TestCase):
         response = self.client.post('/course/', {'action': 'invalid_action'})
         # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")
+
+    def test_post_existing_course_name(self):
+        response = self.client.post('/course/',
+                                    {'action': 'new_course',
+                                                 'course_id': '2', 'course_name': 'Test Course',
+                                                 'course_description': 'New Description',
+                                                 'course_code': 'NC102'})
+        self.assertIn('Course ID, name, or code already exists.', response.context['error'])
+
