@@ -38,8 +38,8 @@
             <form action="/manage-course/" method="post">
                 {% csrf_token %}
                 <label for="action"></label>
-                <input type="hidden" id="action" name="action" value="assign_user">
-                <button class="assign-user">Assign User</button>
+                <input type="hidden" id="action" name="action" value="add_user">
+                <button class="add-user">Add User</button>
             </form>
         </div>
         <table>
@@ -129,7 +129,7 @@
         </div>
     {% elif add_user %}
         <a href="/manage-course/" class="shade"></a>
-        <div class="add-user-pop-up">
+        <div class="assign-user-pop-up">
             <h1>Assign User to Course</h1>
             <form action="/manage-course/" method="post">
                 <label for="user">User:</label>
@@ -139,7 +139,7 @@
                     {% endfor %}
                 </select>
                 <label for="action"></label>
-                <input type="hidden" id="action" name="action" value="add_user">
+                <input type="hidden" id="action" name="action" value="assign_user">
                 <button>Add User</button>
             </form>
         </div>

@@ -80,7 +80,7 @@ body {
 
 .logout,
 .create-section,
-.assign-user {
+.add-user {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -96,13 +96,13 @@ body {
 
 .logout:hover,
 .create-section:hover,
-.assign-user:hover {
+.add-user:hover {
     background-color: #da6512;
 }
 
 .logout:active,
 .create-section:active,
-.assign-user:active {
+.add-user:active {
     background-color: #f97316;
 }
 
@@ -121,7 +121,7 @@ body {
 }
 
 .create-section,
-.assign-user {
+.add-user {
     width: 150px;
     margin-bottom: 50px;
 }
@@ -172,7 +172,7 @@ td button {
 
 .info-pop-up,
 .edit-pop-up,
-.add-user-pop-up {
+.assign-user-pop-up {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -212,7 +212,7 @@ td button {
 
 .info-pop-up > h1,
 .edit-pop-up > h1,
-.add-user-pop-up > h1 {
+.assign-user-pop-up > h1 {
     background-color: white;
     box-shadow: 0 2px 4px -4px black;
     font-size: 24px;
@@ -280,7 +280,7 @@ textarea {
 }
 
 .edit-pop-up > form button,
-.add-user-pop-up > form button {
+.assign-user-pop-up > form button {
     height: 40px;
     width: 120px;
     border: none;
