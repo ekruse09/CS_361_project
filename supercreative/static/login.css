@@ -70,7 +70,7 @@ input {
 }
 
 input::placeholder {
-    color: gray;
+    color: darkgray;
     opacity: .75;
 }
 
