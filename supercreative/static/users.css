@@ -79,7 +79,7 @@ body {
 }
 
 .logout,
-.create-course {
+.create-user {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -94,12 +94,12 @@ body {
 }
 
 .logout:hover,
-.create-course:hover {
+.create-user:hover {
     background-color: #da6512;
 }
 
 .logout:active,
-.create-course:active {
+.create-user:active {
     background-color: #f97316;
 }
 
@@ -112,21 +112,14 @@ body {
     padding: 50px 50px 50px 250px;
 }
 
-.create-course {
+.create-user {
     width: 150px;
     margin-bottom: 50px;
 }
 
-.content > form > label,
-.content > form > input {
-    display: none;
-}
-
-
-
 table {
     border-collapse: collapse;
-    border: 2px solid black;
+    border: 1px solid darkgray;
     width: 100%;
 }
 
@@ -170,7 +163,6 @@ td button {
     opacity: .4;
     height: 100%;
     cursor: default;
-    z-index: 1;
 }
 
 .info-pop-up,
@@ -189,10 +181,7 @@ td button {
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 12px -4px black;
-    z-index: 2;
 }
-
-
 
 .info-pop-up p {
     margin: 0 50px 5px;
@@ -208,10 +197,6 @@ td button {
     font-size: 18px;
 }
 
-.hidden {
-    display: none;
-}
-
 .info-pop-up > h1 {
     margin-bottom: 25px;
 }
@@ -223,11 +208,6 @@ td button {
     font-size: 24px;
     padding: 25px 50px;
     border-radius: 6px 6px 0 0;
-}
-
-.info-pop-up label,
-.info-pop-up input {
-    display: none;
 }
 
 .buttons {
@@ -289,11 +269,6 @@ textarea {
     resize: none;
 }
 
-.edit-pop-up > form > [for="action"],
-.edit-pop-up > form > [id="action"] {
-    display: none;
-}
-
 .edit-pop-up > form button,
 .delete > form button {
     height: 40px;
@@ -321,16 +296,7 @@ textarea {
     margin-bottom: -5px;
 }
 
-.delete {
-    display: grid;
-}
-
 .delete button {
     margin-top: -5px;
     margin-bottom: 25px;
-}
-
-.delete [id="action"],
-.delete [name="user_id"] {
-    display: none;
 }
