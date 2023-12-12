@@ -28,15 +28,20 @@
         <a class="logout" href="/">Logout</a>
     </div>
     <div class="content">
-        <form action="/manage-course/" method="post">
-            {% csrf_token %}
-            <label for="action"></label>
-            <input type="hidden" id="action" name="action" value="request_new">
-            <div class="add-buttons">
+        <div class="add-buttons">
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_new">
                 <button class="create-section">Add Section</button>
+            </form>
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="assign_user">
                 <button class="assign-user">Assign User</button>
-            </div>
-        </form>
+            </form>
+        </div>
         <table>
             <col style="width:30%">
             <col style="width:20%">
