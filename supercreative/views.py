@@ -107,7 +107,7 @@ class Users(View):
             phone_number = request.POST.get('phone_number')
             address = request.POST.get('address')
 
-            respone = userHelper.edit_user(user_id,
+            response = userHelper.edit_user(user_id,
                                            password,
                                            role,
                                            first_name,
@@ -116,7 +116,7 @@ class Users(View):
                                            address)
 
             return render(request, 'users.html',
-                          {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': respone})
+                          {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': response})
 
         elif 'delete_user' in request.POST.get('action'):
             userHelper.delete_user(request.POST.get('user_id'))
@@ -156,21 +156,19 @@ class Courses(View):
             return render(request, 'courses.html',
                           {'courses': courses, 'popup': True, 'edit': True, 'new': True})
 
-
         elif 'new_course' in request.POST.get('action'):
             # localize variables
-            course_id = request.POST.get('course_id')
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
-            response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
+            response = courseHelper.create_course(course_name, course_description, course_code)
             return render(request,
                           'courses.html',
                           {'courses': courses,
-                            'popup': True,
-                            'edit': True,
-                            'new': True,
+                           'popup': True,
+                           'edit': True,
+                           'new': True,
                            'error': response})
 
         elif 'edit_course' in request.POST.get('action'):
@@ -241,7 +239,7 @@ class ManageCourses(View):
             assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
 
             return render(request,
-                          'manage-courses.html',
+                          'manage-course.html',
                           {'course': course,
                            'assigned_users': assigned_users,
                            'error': response})
