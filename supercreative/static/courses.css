@@ -18,20 +18,6 @@ body {
     grid-template: 120px 1fr / 1fr;
 }
 
-.error {
-  width: 100%;        /* Full width to the parent container */
-  min-width: 0;       /* Override minimum width constraints */
-  box-sizing: border-box; /* Makes sure padding doesn't affect the total width */
-  overflow: hidden;   /* Hide the overflow text */
-  white-space: nowrap; /* Prevents the text from wrapping to the next line */
-  text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
-  padding: 8px;       /* Optional: Adjust padding as needed */
-  border: 1px solid #ccc; /* Optional: Adjust border as needed */
-  margin: 5px 0;      /* Optional: Adjust margin as needed */
-}
-
-
-
 .sidebar {
     position: fixed;
     background-color: #0e415f;
@@ -131,16 +117,9 @@ body {
     margin-bottom: 50px;
 }
 
-.content > form > label,
-.content > form > input {
-    display: none;
-}
-
-
-
 table {
     border-collapse: collapse;
-    border: 2px solid black;
+    border: 1px solid darkgray;
     width: 100%;
 }
 
@@ -163,11 +142,6 @@ tr:nth-child(even) td {
 
 tr:nth-child(odd) td {
     background-color: #fafafa;
-}
-
-td > form > label,
-td > form > input {
-    display: none;
 }
 
 td button {
@@ -206,8 +180,6 @@ td button {
     z-index: 2;
 }
 
-
-
 .info-pop-up p {
     margin: 0 50px 5px;
 }
@@ -220,10 +192,6 @@ td button {
 .info-pop-up > .data {
     margin-bottom: 20px;
     font-size: 18px;
-}
-
-.hidden {
-    display: none;
 }
 
 .info-pop-up > h1 {
@@ -239,16 +207,10 @@ td button {
     border-radius: 6px 6px 0 0;
 }
 
-.info-pop-up label,
-.info-pop-up input {
-    display: none;
-}
-
 .buttons {
     margin: 30px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    gap: 25px;
     justify-content: center;
     align-items: center;
 }
@@ -257,7 +219,8 @@ td button {
 .buttons a {
     background-color: #f97316;
     height: 40px;
-    width: 90px;
+    width: auto;
+    padding: 0 20px;
     font-size: 16px;
     color: white;
     box-sizing: border-box;
@@ -303,11 +266,6 @@ textarea {
     resize: none;
 }
 
-.edit-pop-up > form > [for="action"],
-.edit-pop-up > form > [id="action"] {
-    display: none;
-}
-
 .edit-pop-up > form button,
 .delete > form button {
     height: 40px;
@@ -335,16 +293,7 @@ textarea {
     margin-bottom: -5px;
 }
 
-.delete {
-    display: grid;
-}
-
 .delete button {
     margin-top: -5px;
     margin-bottom: 25px;
-}
-
-.delete [id="action"],
-.delete [id="course_id"] {
-    display: none;
 }

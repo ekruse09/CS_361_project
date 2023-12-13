@@ -22,10 +22,6 @@
             <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
             Courses
         </a>
-        <a class="sections">
-            <img src="../supercreative/static/images/monitor-dashboard.svg" alt="sections button">
-            Sections
-        </a>
     </div>
     <div class="header">
         <p>User Directory</p>
@@ -35,8 +31,8 @@
         <form action="/users/" method="post">
             {% csrf_token %}
             <label for="action"></label>
-            <input type="text" id="action" name="action" value="request_new">
-            <button class="create-course">Create New User</button>
+            <input type="hidden" id="action" name="action" value="request_new">
+            <button class="create-user">Create New User</button>
         </form>
         <table>
             <col style="width:15%">
@@ -61,19 +57,26 @@
                         <form action="/users/" method="post">
                             {% csrf_token %}
                             <label for="user_id"></label>
-                            <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                            <input type="hidden" id="user_id" name="user_id" value="{{ user.user_id }}">
                             <label for="action"></label>
-                            <input type="text" id="action" name="action" value="view_user">
+                            <input type="hidden" id="action" name="action" value="view_user">
                             <button>View</button>
                         </form>
                     </td>
                 </tr>
             {% endfor %}
         </table>
+
     </div>
     {% if popup and not edit%}
         <a href="/users/" class="shade"></a>
         <div class="info-pop-up">
+            {% if error %}
+                <h1 class="error">
+                <label for="error"></label>
+                <p>{{ error }}</p>
+                </h1>
+            {% endif %}
             <h1>User Information:</h1>
             <p class="field">User ID:</p>
             <p class="data">{{ user.user_id }}</p>
@@ -104,6 +107,12 @@
     {% elif popup and edit %}
         <a href="/users/" class="shade"></a>
         <div class="edit-pop-up">
+            {% if error %}
+                <h1 class="error">
+                <label for="error"></label>
+                <p>{{ error }}</p>
+                </h1>
+            {% endif %}
             {% if new %}
                 <h1>New User Information:</h1>
             {% else %}
@@ -145,15 +154,51 @@
                 <div class="delete">
                     <form class="delete" action="/users/" method="post">
                         {% csrf_token %}
+                        {% if new %}
+                            <label for="user_id">User ID:</label>
+                            <input type="number" id="user_id" name="user_id" required>
+                        {% else %}
+                            <label for="user_id"></label>
+                            <input type="hidden" id="user_id" name="user_id" value="{{ user.user_id }}">
+                        {% endif %}
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                        <label for="role">Role:</label>
+                        <input type="text" id="role" name="role" value="{{ user.role }}" required>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="tel" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+                        <label for="address">Address:</label>
+                        <input type="text" id="address" name="address" value="{{ user.address }}" required>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" value="{{ user.password }}" required>
                         <label for="action"></label>
-                        <input type="text" id="action" name="action" value="delete_user">
-                        <label for="user_id"></label>
-                        <input class="hidden" type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
-                        <button>Delete User</button>
+                        {% if new %}
+                            <input type="hidden" id="action" name="action" value="new_user">
+                            <button>Create User</button>
+                        {% else %}
+                            <input type="hidden" id="action" name="action" value="edit_user">
+                            <button>Save Changes</button>
+                        {% endif %}
                     </form>
+                    {% if not new %}
+                        <div class="delete">
+                            <form class="delete" action="/users/" method="post">
+                                {% csrf_token %}
+                                <label for="action"></label>
+                                <input type="hidden" id="action" name="action" value="delete_user">
+                                <label for="user_id"></label>
+                                <input type="hidden" id="user_id" name="user_id" value="{{ user.user_id }}">
+                                <button>Delete User</button>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-        </div>
-    {% endif %}
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>

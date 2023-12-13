@@ -4,46 +4,48 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def create_user(uid, email, password, role, first, last, phone, address):
-    if not isinstance(uid, int) or User.objects.filter(user_id=uid).exists() or uid <= 0:
-        return False
+    if not isinstance(uid, int) or uid < 0:
+        return "User ID must be a positive integer."
+    elif User.objects.filter(user_id=uid).exists():
+        return "User ID already exists."
 
     if len(email) == 0 or (not isinstance(email, str) or User.objects.filter(email=email).exists()):
-        return False
+        return "Email must be a unique string."
 
     hold = email
     if '@' in hold:
         site = hold.partition('@')
         if site[2] != 'uwm.edu':
-            return False
+            return "Email must be a uwm.edu address."
     else:
-        return False
+        return "email must contain an @ symbol."
 
     if len(password) == 0 or not isinstance(password, str):
-        return False
+        return "Password must be a string and non-empty."
 
     upper = any(i.isupper() for i in password)
     lower = any(i.islower() for i in password)
     special = any(i in string.punctuation for i in password)
 
     if not upper or not lower or not special:
-        return False
+        return "Password must contain at least one uppercase letter, one lowercase letter, and one special character."
 
     if len(role) == 0 or not isinstance(role, str):
-        return False
+        return "Role must be a string and non-empty."
 
     role.capitalize()
     valid_roles = ["ADMINISTRATOR", "INSTRUCTOR", "TA"]
     if role not in valid_roles:
-        return False
+        return "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA."
 
     if len(first) == 0 or not isinstance(first, str):
-        return False
+        return "First name must be a string and non-empty."
 
     if len(last) == 0 or not isinstance(last, str):
-        return False
+        return "Last name must be a string and non-empty."
 
     if len(phone) == 0 or not isinstance(phone, str):
-        return False
+        return "Phone number must be a string and non-empty."
 
     clean_phone = ''
 
@@ -52,21 +54,21 @@ def create_user(uid, email, password, role, first, last, phone, address):
             clean_phone += char
 
     if len(clean_phone) != 10:
-        return False
+        return "Phone number must be 10 digits."
 
     if not isinstance(address, str) or len(address) == 0:
-        return False
+        return "Address must be a string and non-empty."
 
     new_user = User(user_id=uid, email=email, password=password, role=role, first_name=first, last_name=last,
                     phone_number=clean_phone, address=address)
     new_user.save()
 
-    return True
+    return "User created successfully."
 
 
 def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, new_address):
     if not User.objects.filter(user_id=user_id).exists():
-        return False
+        return "User ID does not exist."
 
     user = User.objects.get(user_id=user_id)
     print(user)
@@ -75,23 +77,23 @@ def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, n
             (any(i in string.punctuation for i in new_password))):
         user.password = new_password
     else:
-        return False
+        return "Password must contain at least one uppercase letter, one lowercase letter, and one special character."
 
     new_role.upper()
     if new_role != '' and new_role in ["ADMINISTRATOR", "INSTRUCTOR", "TA"]:
         user.role = new_role
     else:
-        return False
+        return "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA."
 
     if new_first != '':
         user.first_name = new_first
     else:
-        return False
+        return "First name must be a string and non-empty."
 
     if new_last != '':
         user.last_name = new_last
     else:
-        return False
+        return "Last name must be a string and non-empty."
 
     clean_phone = ''
     for char in new_phone:
@@ -101,16 +103,16 @@ def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, n
     if len(clean_phone) == 10:
         user.phone_number = new_phone
     else:
-        return False
+        return "Phone number must be 10 digits."
 
     if new_address != '':
         user.address = new_address
     else:
-        return False
+        return "Address must be a string and non-empty."
 
     user.save()
 
-    return True
+    return "User edited successfully."
 
 def delete_user(user_id):
     # Preconditions
