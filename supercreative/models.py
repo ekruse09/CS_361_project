@@ -6,10 +6,6 @@ class UserRole(models.Model):
     role_name = models.CharField(max_length=50)
 
 
-class UserSkill(models.Model):
-    skill_id = models.BigAutoField(unique=True, primary_key=True)
-    skill_name = models.CharField(max_length=50)
-
 class User(models.Model):
     user_id = models.BigAutoField(unique=True, primary_key=True)
     email = models.EmailField(unique=True)
@@ -19,6 +15,8 @@ class User(models.Model):
     last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
+    skills = models.TextField(max_length=1000)
+
 
 class Course(models.Model):
     course_id = models.BigAutoField(unique=True, primary_key=True)
