@@ -215,13 +215,9 @@ class ManageCourses(View):
         # Handle user course assignment and (optional) section assignment
         if 'assign_user' in request.POST.get('action'):
             user_id = request.POST.get('user_id')
-            if 'section_id' in request.POST:
-                section_id = request.POST.get('section_id')
-            else:
-                section_id = None
 
             # Assign the user to the course
-            response = assign_user_to(assigned_user=user_id, assigned_course=course_id, assigned_section=section_id)
+            response = assign_user_to(assigned_user=user_id, assigned_course=course_id)
 
             # Retrieve the updated list of assigned users
             assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
