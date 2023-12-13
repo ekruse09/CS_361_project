@@ -31,7 +31,9 @@ def create_course(name, description, code):
 
 
 def edit_course(current_course_id, new_course_name='', new_course_description="", new_course_code=""):
+
     existing_course = False
+
     try:
         existing_course = (Course.objects.get(course_id=current_course_id) !=
                            Course.objects.get(course_code=new_course_code))
@@ -45,26 +47,26 @@ def edit_course(current_course_id, new_course_name='', new_course_description=""
         pass
 
     if existing_course is True:
-        return False
+        return "Course code, or name already exists."
 
     if Course.objects.filter(course_id=current_course_id).exists():
         course = Course.objects.get(course_id=current_course_id)
     else:
-        return False
+        return "Course does not exist."
 
     course.course_name = new_course_name if new_course_name != '' else course.course_name
     course.course_description = new_course_description if new_course_description != '' else course.course_description
     course.course_code = new_course_code if new_course_code != '' else course.course_code
     course.save()
 
-    return True
+    return "Course edited successfully."
 
 
 def delete_course(course):
-    if Section.objects.filter(course_id=course).exists():
-        return False
-    Course.objects.get(course_id=course.course_id).delete()
-    return True
+    if Course.objects.filter(course_id=course.course_id).exists():
+        Course.objects.get(course_id=course.course_id).delete()
+        return "Course deleted successfully."
+    return "Course does not exist."
 
 def course_id_to_int(course_id):
     try:

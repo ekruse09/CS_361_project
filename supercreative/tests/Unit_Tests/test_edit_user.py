@@ -4,7 +4,6 @@ from supercreative.user.user import create_user, edit_user
 from supercreative.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-
 class TestEditUser(TestCase):
     user = None
     new_user_info = None
@@ -20,9 +19,10 @@ class TestEditUser(TestCase):
         self.bad_user_id = 3
 
     def test_successful_edit_all(self):
-        edit_user(self.user.user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
-                  self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
-                  self.new_user_info["new_phone"], self.new_user_info["new_address"])
+        result = edit_user(self.user.user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
+                           self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                           self.new_user_info["new_phone"], self.new_user_info["new_address"])
+        self.assertEqual(result, "User edited successfully.")
 
         self.user = User.objects.get(user_id=self.user.user_id)
 
@@ -34,22 +34,26 @@ class TestEditUser(TestCase):
         self.assertEqual(self.user.address, self.new_user_info["new_address"], "Address failed to update")
 
     def test_bad_user_id(self):
-        self.assertFalse(edit_user(self.bad_user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
-                                   self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
-                                   self.new_user_info["new_phone"], self.new_user_info["new_address"]))
+        result = edit_user(self.bad_user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
+                           self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                           self.new_user_info["new_phone"], self.new_user_info["new_address"])
+        self.assertEqual(result, "User ID does not exist.")
 
     def test_bad_user_info(self):
         # bad password
-        self.assertFalse(edit_user(self.user.user_id, "password", self.new_user_info["new_role"],
-                      self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
-                      self.new_user_info["new_phone"], self.new_user_info["new_address"]), "Allowed bad password")
+        result = edit_user(self.user.user_id, "password", self.new_user_info["new_role"],
+                           self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                           self.new_user_info["new_phone"], self.new_user_info["new_address"])
+        self.assertEqual(result, "Password must contain at least one uppercase letter, one lowercase letter, and one special character.")
 
         # bad role
-        self.assertFalse(edit_user(self.user.user_id, self.new_user_info["new_password"], "role",
-                      self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
-                      self.new_user_info["new_phone"], self.new_user_info["new_address"]), "Allowed bad role")
+        result = edit_user(self.user.user_id, self.new_user_info["new_password"], "role",
+                           self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                           self.new_user_info["new_phone"], self.new_user_info["new_address"])
+        self.assertEqual(result, "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA.")
 
         # bad number
-        self.assertFalse(edit_user(self.user.user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
-                      self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
-                      "123-456-789", self.new_user_info["new_address"]), "ALlowed bad number")
+        result = edit_user(self.user.user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
+                           self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
+                           "123-456-789", self.new_user_info["new_address"])
+        self.assertEqual(result, "Phone number must be 10 digits.")

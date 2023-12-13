@@ -73,18 +73,48 @@ class Users(View):
                           {'users': users, 'popup': True, 'edit': True, 'new': True})
 
         elif 'new_user' in request.POST.get('action'):
-            userHelper.create_user(int(request.POST.get('user_id')), request.POST.get('email'),
-                                   request.POST.get('password'), request.POST.get('role'),
-                                   request.POST.get('first_name'), request.POST.get('last_name'),
-                                   request.POST.get('phone_number'), request.POST.get('address'))
-            return render(request, 'users.html', {'users': users})
+            # localize variables
+            user_id = int(request.POST.get('user_id'))
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            role = request.POST.get('role')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            phone_number = request.POST.get('phone_number')
+            address = request.POST.get('address')
+
+            response = userHelper.create_user(user_id,
+                                              email,
+                                              password,
+                                              role,
+                                              first_name,
+                                              last_name,
+                                              phone_number,
+                                              address)
+
+            return render(request, 'users.html',
+                          {'users': users, 'popup': True, 'edit': True, 'new': True, 'error': response})
 
         elif 'edit_user' in request.POST.get('action'):
-            userHelper.edit_user(int(request.POST.get('user_id')), request.POST.get('password'),
-                                 request.POST.get('role'), request.POST.get('first_name'),
-                                 request.POST.get('last_name'), request.POST.get('phone_number'),
-                                 request.POST.get('address'))
-            return render(request, 'users.html', {'users': users})
+            # localize variables
+            user_id = int(request.POST.get('user_id'))
+            password = request.POST.get('password')
+            role = request.POST.get('role')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            phone_number = request.POST.get('phone_number')
+            address = request.POST.get('address')
+
+            respone = userHelper.edit_user(user_id,
+                                           password,
+                                           role,
+                                           first_name,
+                                           last_name,
+                                           phone_number,
+                                           address)
+
+            return render(request, 'users.html',
+                          {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': respone})
 
         elif 'delete_user' in request.POST.get('action'):
             userHelper.delete_user(request.POST.get('user_id'))
@@ -132,11 +162,6 @@ class Courses(View):
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
-            if courseHelper.course_id_to_int(course_id) is None:
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': True,
-                               'error': 'Course ID must be an integer'})
-
             response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
             return render(request,
                           'courses.html',
@@ -153,17 +178,10 @@ class Courses(View):
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
-            if courseHelper.course_id_to_int(course_id) is None:
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
-                               'error': 'Course ID must be an integer'})
-
-            if courseHelper.edit_course(course_id, course_name, course_description, course_code) is False :
-                return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': True, 'new': False,
-                               'error': 'Some of the course information you entered is invalid please review'})
-
-            return render(request, 'courses.html', {'courses': courses})
+            response = courseHelper.edit_course(course_id, course_name, course_description, course_code)
+            return render(request, 'courses.html',
+                          {'courses': courses, 'popup': True, 'edit': True, 'new': False,
+                           'error': response})
 
         elif 'delete_course' in request.POST.get('action'):
             if Course.objects.filter(course_id=request.POST.get('course_id')):
