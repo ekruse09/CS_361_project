@@ -1,9 +1,12 @@
-from supercreative.models import Course, Section
+from supercreative.models import Course, Section, User, UserCourseAssignment
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_section(section_id, course, section_type):
+def create_section(section_id, course, section_type, user):
     # Preconditions
+
+    if not isinstance(user, User):
+        return "invalid input for user"
 
     # Check if the SectionID is a valid int
     if not isinstance(section_id, int) or section_id < 1:
@@ -37,6 +40,15 @@ def create_section(section_id, course, section_type):
         section_type=section_type.lower()
     )
     new_section.save()
+
+    new_user_course_assignment = UserCourseAssignment(
+        user_id=user,
+        section_id=new_section,
+        course_id=course,
+        section_type=section_type
+    )
+
+    new_user_course_assignment.save()
 
     # Return true if input was valid
     return "section was successfully created"
