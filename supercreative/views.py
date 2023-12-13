@@ -232,17 +232,6 @@ class ManageCourses(View):
                            'assigned_users': assigned_users,
                            'error': response})
 
-        elif 'request_edit' in request.POST.get('action'):
-            section_id = request.POST.get('section_id')
-            section = Section.objects.get(section_id=section_id)
-            return render(request, 'manage-course.html',
-                          {'course': course,
-                           'assigned_users': assigned_users,
-                           'section': section,
-                           'popup': True,
-                           'edit': True,
-                           'new': False})
-
         elif 'request_new' in request.POST.get('action'):
             return render(request, 'manage-course.html',
                           {'course': course,
@@ -255,8 +244,9 @@ class ManageCourses(View):
             # Localize variables
             section_id = request.POST.get('section_id')
             section_type = request.POST.get('section_type')
+            user = request.POST.get('user')
 
-            response = section_helper.create_section(section_id, course, section_type)
+            response = section_helper.create_section(section_id, course, section_type, user)
 
             # Get updated list of assigned users
             assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
@@ -268,25 +258,6 @@ class ManageCourses(View):
                            'popup': True,
                            'edit': True,
                            'new': True,
-                           'error': response})
-
-        elif 'edit_section' in request.POST.get('action'):
-            # Localize variables
-            section_id = request.POST.get('section_id')
-            section_type = request.POST.get('section_type')
-
-            response = section_helper.edit_section(section_id, course, section_type)
-
-            # Get updated list of assigned users
-            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
-
-            return render(request,
-                          'courses.html',
-                          {'course': course,
-                           'assigned_users': assigned_users,
-                           'popup': True,
-                           'edit': True,
-                           'new': False,
                            'error': response})
 
         elif 'delete_section' in request.POST.get('action'):
@@ -306,3 +277,22 @@ class ManageCourses(View):
                            'edit': True,
                            'new': False,
                            'error': response})
+
+        elif 'view_section' in request.POST.get('action'):
+
+            return render(request, 'courses.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'popup': True,
+                           'edit': False})
+
+        elif 'add_user' in request.POST.get('action'):
+
+            all_users = User.objects.all()
+            eligible_users = all_users.exclude(user_id__in=assigned_users.values_list('user_id'))
+
+            return render(request, 'courses.html',
+                          {'course': course,
+                           'eligible_users': eligible_users,
+                           'popup': True,
+                           'edit': False})
