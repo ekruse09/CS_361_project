@@ -9,17 +9,18 @@ class TestCourseEdit(TestCase):
     existing_course = None
 
     def setUp(self):
-        create_course(101, "Introduction to Python",
+        create_course("Introduction to Python",
                       "A basic course on Python programming",
                       "PY101")
-        self.base_course = Course.objects.get(course_id=101)
+        self.base_course = Course.objects.get(course_name="Introduction to Python")
         self.new_course_values = {"course_name": "New Intro to Python",
                                   "course_description": "An up to date introductory course on Python",
                                   "good_course_code": "PY102", "bad_course_code": "PY151"}
-        create_course(102, "Intermediate Python Programming",
+        create_course("Intermediate Python Programming",
                       "A basic course on Python programming",
                       "PY151")
-        self.existing_course = Course.objects.get(course_id=102)
+        
+        self.existing_course = Course.objects.get(course_name="Intermediate Python Programming")
 
     def test_successful_edit_all(self):
         # Edit all
