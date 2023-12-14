@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'manage-course.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">FU</div>
+        <a class="home" href="/home/">
+            <img src="../supercreative/static/images/home.svg" alt="home button">
+            Home
+        </a>
+        <a class="users" href="/users/">
+            <img src="../supercreative/static/images/account-group.svg" alt="users button">
+            Users
+        </a>
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
+    </div>
+    <div class="header">
+        <p>{{ course.course_code }} {{ course.course_name }}</p>
+        <a class="logout" href="/">Logout</a>
+    </div>
+    <div class="content">
+        <div class="add-buttons">
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_new">
+                <button class="create-section">Add Section</button>
+            </form>
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="add_user">
+                <button class="add-user">Add User</button>
+            </form>
+        </div>
+        <table>
+            <col style="width:30%">
+            <col style="width:20%">
+            <col style="width:20%">
+            <col style="width:25%">
+            <col style="width:5%">
+            <tr>
+                <th>Section ID</th>
+                <th>Type</th>
+                <th>Role</th>
+                <th>User</th>
+                <th></th>
+            </tr>
+            {% for uca in user_course_assignments %}
+                <tr>
+                    <td>{{ uca.section_id }}</td>
+                    <td>{{ uca.section_type }}</td>
+                    {% if uca.section_type == 'lab' %}
+                        <td>Lab</td>
+                    {% else %}
+                        <td>Lecture</td>
+                    {% endif %}
+                    <td>{{ uca.user_id }}</td>
+                    <td>
+                        <form action="/manage-course/" method="post">
+                            {% csrf_token %}
+                            <label for="section_id"></label>
+                            <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
+                            <label for="action"></label>
+                            <input type="hidden" id="action" name="action" value="view_section">
+                            <button>View</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if popup and not edit%}
+        <a href="/manage-course/" class="shade"></a>
+        <div class="info-pop-up">
+            <h1>Section Information:</h1>
+            <p class="field">Course Name:</p>
+            <p class="data">{{ course.course_name }}</p>
+            <p class="field">Course Code:</p>
+            <p class="data">{{ course.course_code }}</p>
+            <p class="field">Section Number:</p>
+            <p class="data">{{ uca.section_id }}</p>
+            <p class="field">Section Type:</p>
+            <p class="data">{{ uca.section_type }}</p>
+            <p class="field">Instructor:</p>
+            <p class="data">{{ uca.user_id }}</p>
+            <div class="buttons">
+                <form action="/manage-course/" method="post">
+                    {% csrf_token %}
+                    <label for="action"></label>
+                    <input type="hidden" id="action" name="action" value="delete_section">
+                    <label for="section_id"></label>
+                    <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
+                    <button>Delete</button>
+                </form>
+                <a href="/manage-course/">Back</a>
+            </div>
+        </div>
+    {% elif popup and edit %}
+        <a href="/manage-course/" class="shade"></a>
+        <div class="edit-pop-up">
+            <h1>New Section Information:</h1>
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="section_id">Section Number:</label>
+                <input type="number" id="section_id" name="section_id" required>
+                <label for="section_type">Section Type:</label>
+                <input type="text" id="section_type" name="section_type" required>
+                <label for="user">Instructor:</label>
+                <select id="user" name="user" required>
+                    <option value="" disabled>Select an Instructor</option>
+                    {% for user in assigned_users %}
+                        <option value="{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="new_section">
+                <button>Create Section</button>
+            </form>
+        </div>
+    {% elif add_user %}
+        <a href="/manage-course/" class="shade"></a>
+        <div class="assign-user-pop-up">
+            <h1>Add User to Course</h1>
+            <form action="/manage-course/" method="post">
+                <label for="user">User:</label>
+                <select name="user" id="user" required>
+                    {% for user in eligible_users %}
+                        <option value="{{ user.user_id }}"></option>
+                    {% endfor %}
+                </select>
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="assign_user">
+                <button>Add User</button>
+            </form>
+        </div>
+    {% endif %}
+</body>
+</html>
