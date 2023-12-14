@@ -200,7 +200,7 @@ class Courses(View):
         return render(request, 'courses.html', {'courses': courses})
 
 
-class ManageCourses(View):
+class ManageCourse(View):
     def get(self, request):
         # Check if an active session exists
         if not authentication.active_session_exists(request):
@@ -226,7 +226,7 @@ class ManageCourses(View):
         course = Course.objects.get(course_id=course_id)
 
         # Retrieve the assigned users
-        assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+        user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
 
         # Handle user course assignment and (optional) section assignment
         if 'assign_user' in request.POST.get('action'):
@@ -236,15 +236,18 @@ class ManageCourses(View):
             response = assign_user_to(assigned_user=user_id, assigned_course=course_id)
 
             # Retrieve the updated list of assigned users
-            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
 
             return render(request,
                           'manage-course.html',
                           {'course': course,
-                           'assigned_users': assigned_users,
+                           'user_assignments': user_assignments,
                            'error': response})
 
         elif 'request_new' in request.POST.get('action'):
+
+            assigned_users = User.objects.filter(user_id__in=user_assignments.values_list('user_id'))
+
             return render(request, 'manage-course.html',
                           {'course': course,
                            'assigned_users': assigned_users,
@@ -261,12 +264,12 @@ class ManageCourses(View):
             response = section_helper.create_section(section_id, course, section_type, user)
 
             # Get updated list of assigned users
-            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
 
             return render(request,
                           'manage-course.html',
                           {'course': course,
-                           'assigned_users': assigned_users,
+                           'user_assignments': user_assignments,
                            'popup': True,
                            'edit': True,
                            'new': True,
@@ -279,12 +282,12 @@ class ManageCourses(View):
             response = section_helper.delete_section(section_id)
 
             # Get updated list of assigned users
-            assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
 
             return render(request,
                           'courses.html',
                           {'course': course,
-                           'assigned_users': assigned_users,
+                           'user_assignments': user_assignments,
                            'popup': True,
                            'edit': True,
                            'new': False,
@@ -294,14 +297,14 @@ class ManageCourses(View):
 
             return render(request, 'courses.html',
                           {'course': course,
-                           'assigned_users': assigned_users,
+                           'user_assignments': user_assignments,
                            'popup': True,
                            'edit': False})
 
         elif 'add_user' in request.POST.get('action'):
 
             all_users = User.objects.all()
-            eligible_users = all_users.exclude(user_id__in=assigned_users.values_list('user_id'))
+            eligible_users = all_users.exclude(user_id__in=user_assignments.values_list('user_id'))
 
             return render(request, 'courses.html',
                           {'course': course,
