@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from supercreative.models import User
+from supercreative.models import User, UserRole
 from supercreative.user import user
 from supercreative.authentication import authentication
 
@@ -7,14 +7,15 @@ from supercreative.authentication import authentication
 class UserAcceptanceTests(TestCase):
     client = None
     existing_user = None
-
+    user_role = None
     def setUp(self):
         self.client = Client()
         # Set up data for the whole TestCase
-        user.create_user(1, "test@uwm.edu", "P@ssword123", "ADMINISTRATOR", "John", "Doe",
-                         "1234567890", "123 Main St")
-        self.existing_user = User.objects.get(user_id=1)
-        authentication.create_session(self.client.session, 'test@uwm.edu')
+        self.user_role = UserRole.objects.create(role_name="Administrator")
+        self.assertTrue(UserRole.objects.filter(role_name=self.user_role.role_name).exists(), "Failed to create role.")
+        user.create_user("test@uwm.edu", "P@ssword123", self.user_role.role_name, "John", "Doe", "1234567890", "123 Main St")
+        self.existing_user = User.objects.get(email="test@uwm.edu")
+        authentication.create_session(self.client.session, self.existing_user.email)
 
     def test_get_users(self):
         response = self.client.get('/users/')
@@ -47,8 +48,8 @@ class UserAcceptanceTests(TestCase):
 
     def test_post_new_user(self):
         response = self.client.post('/users/', {'action': 'new_user',
-                                                'user_id': '2', 'password': 'P@ssword123', 'email': 'jane@uwm.edu',
-                                                'role': 'ADMINISTRATOR', 'first_name': 'Jane', 'last_name': 'Smith',
+                                                'password': 'P@ssword123', 'email': 'jane@uwm.edu',
+                                                'role': self.user_role.role_name, 'first_name': 'Jane', 'last_name': 'Smith',
                                                 'phone_number': '0987654321', 'address': '456 Sesame St'})
 
         # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
@@ -57,14 +58,15 @@ class UserAcceptanceTests(TestCase):
 
     def test_post_edit_user(self):
         response = self.client.post('/users/', {'action': 'edit_user',
-                                                'user_id': 1, 'password': 'P@ssword123', 'role': 'INSTRUCTOR',
+                                                'user_id': self.existing_user.user_id,
+                                                'password': 'P@ssword123', 'role': self.user_role.role_name,
                                                 'first_name': 'Jayson', 'last_name': 'Rock',
                                                 'phone_number': '0987654321',
                                                 'address': '456 Sesame St'})
 
         # self.assertRedirects(response, '/course/', status_code=302, target_status_code=200)
         self.assertEqual(response.status_code, 200, "Bad response")
-        updated_user = User.objects.get(user_id='1')
+        updated_user = User.objects.get(user_id=self.existing_user.user_id)
         self.assertEqual(updated_user.first_name, 'Jayson')
 
     def test_post_delete_user(self):
@@ -81,10 +83,10 @@ class UserAcceptanceTests(TestCase):
     def test_create_existing_user(self):
         response = self.client.post('/users/',
                                     {'action': 'new_user',
-                                    'user_id': '1',
                                     'password': 'P@ssword123',
-                                    'email': 'email@email.com'
-                                     })
+                                    'email': 'test@uwm.edu',
+                                    'role':self.user_role.role_name,
+                                    'first_name':"John",'last_name':'Doe','phone':"1234567890", 'address':"123 Main St"})
         self.assertIn('error', response.context)
-        self.assertEqual(response.context['error'], 'User ID already exists.')
+        self.assertEqual(response.context['error'], 'Email already exists.')
 

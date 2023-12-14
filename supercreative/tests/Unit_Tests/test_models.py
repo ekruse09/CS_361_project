@@ -3,7 +3,7 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "supercreative.settings")
 
 from django.test import TestCase
-from supercreative.models import User, Course, Section, UserCourseAssignment, UserRole, SectionType, UserSkill
+from supercreative.models import User, Course, Section, UserCourseAssignment, UserRole, SectionType
 from datetime import date
 import os
 
@@ -95,11 +95,3 @@ class SectionTypeTestCase(TestCase):
     def test_section_type_creation(self):
         self.assertTrue(SectionType.objects.filter(section_type_name=self.section_type.section_type_name).exists(),
                         "Failed to create new section type")
-
-
-class UserSkillsTestCase(TestCase):
-    def setUp(self):
-        self.skill = UserSkill.objects.create(skill_name="Python")
-
-    def test_skill_creation(self):
-        self.assertTrue(UserSkill.objects.filter(skill_name="Python").exists())

@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from supercreative.user import user
-from supercreative.models import User
+from supercreative.models import User, UserRole
 
 
 class LoginAcceptanceTest(TestCase):
@@ -11,9 +11,13 @@ class LoginAcceptanceTest(TestCase):
     def setUp(self):
         # same user setup as everyone else used
         self.client = Client()
-        user.create_user(1, "test@uwm.edu", "P@ssword123", "ADMINISTRATOR", "John", "Doe",
-                    "1234567890", "123 Main St")
-        self.user = User.objects.get(user_id=1)
+        user.create_user("test@uwm.edu", "P@ssword123",
+                         UserRole.objects.create(role_name="Administrator").role_name,
+                         "John",
+                         "Doe",
+                         "1234567890",
+                         "123 Main St")
+        self.user = User.objects.get(email="test@uwm.edu")
         self.session = self.client.session
 
     def test_successful_login(self):

@@ -17,7 +17,7 @@ def create_course(name, description, code):
 
     # check database for duplicate ids, names, or course codes
     if Course.objects.filter(course_name=name).exists() or Course.objects.filter(course_code=code).exists():
-        return "Course name, or code already exists."
+        return "Course name or code already exists."
 
     # create the course
     new_course=Course.objects.create(
@@ -47,7 +47,7 @@ def edit_course(current_course_id, new_course_name='', new_course_description=""
         pass
 
     if existing_course is True:
-        return "Course code, or name already exists."
+        return "Course code or name already exists."
 
     if Course.objects.filter(course_id=current_course_id).exists():
         course = Course.objects.get(course_id=current_course_id)

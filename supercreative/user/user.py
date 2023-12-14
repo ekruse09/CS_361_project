@@ -1,15 +1,12 @@
 import string
-from supercreative.models import User, UserCourseAssignment
+from supercreative.models import User, UserCourseAssignment, UserRole
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def create_user(uid, email, password, role, first, last, phone, address):
-    if not isinstance(uid, int) or uid < 0:
-        return "User ID must be a positive integer."
-    elif User.objects.filter(user_id=uid).exists():
-        return "User ID already exists."
-
-    if len(email) == 0 or (not isinstance(email, str) or User.objects.filter(email=email).exists()):
+def create_user(email, password, role, first, last, phone, address):
+    if User.objects.filter(email=email).exists():
+        return "Email already exists."
+    elif len(email) == 0 or (not isinstance(email, str)):
         return "Email must be a unique string."
 
     hold = email
@@ -30,13 +27,8 @@ def create_user(uid, email, password, role, first, last, phone, address):
     if not upper or not lower or not special:
         return "Password must contain at least one uppercase letter, one lowercase letter, and one special character."
 
-    if len(role) == 0 or not isinstance(role, str):
-        return "Role must be a string and non-empty."
-
-    role.capitalize()
-    valid_roles = ["ADMINISTRATOR", "INSTRUCTOR", "TA"]
-    if role not in valid_roles:
-        return "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA."
+    if not UserRole.objects.filter(role_name=role).exists():
+        return "Invalid role selected."
 
     if len(first) == 0 or not isinstance(first, str):
         return "First name must be a string and non-empty."
@@ -59,31 +51,32 @@ def create_user(uid, email, password, role, first, last, phone, address):
     if not isinstance(address, str) or len(address) == 0:
         return "Address must be a string and non-empty."
 
-    new_user = User(user_id=uid, email=email, password=password, role=role, first_name=first, last_name=last,
-                    phone_number=clean_phone, address=address)
-    new_user.save()
+    User.objects.create(email=email,
+                        password=password,
+                        role_id=UserRole.objects.get(role_name=role),
+                        first_name=first,
+                        last_name=last,
+                        phone_number=clean_phone,
+                        address=address)
 
     return "User created successfully."
 
 
 def edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, new_address):
-    if not User.objects.filter(user_id=user_id).exists():
+    try:
+        user = User.objects.get(user_id=user_id)
+    except ObjectDoesNotExist:
         return "User ID does not exist."
 
-    user = User.objects.get(user_id=user_id)
-    print(user)
-
-    if (new_password != '' and (any(i.isupper() for i in new_password)) and (any(i.islower() for i in new_password)) and
-            (any(i in string.punctuation for i in new_password))):
+    if new_password != '' and (any(i.isupper() for i in new_password)) and (any(i.islower() for i in new_password)) and (any(i in string.punctuation for i in new_password)):
         user.password = new_password
     else:
         return "Password must contain at least one uppercase letter, one lowercase letter, and one special character."
 
-    new_role.upper()
-    if new_role != '' and new_role in ["ADMINISTRATOR", "INSTRUCTOR", "TA"]:
-        user.role = new_role
+    if UserRole.objects.filter(role_name=new_role).exists():
+        user.role_id = UserRole.objects.get(role_name=new_role)
     else:
-        return "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA."
+        return "Invalid role selected."
 
     if new_first != '':
         user.first_name = new_first
@@ -121,7 +114,7 @@ def delete_user(user_id):
         # Check if the target userID exists in the Users table
         user = User.objects.get(user_id=user_id)
     except ObjectDoesNotExist:
-        return False
+        return "User not found."
 
     # Postconditions
     # Remove all entries from the User-Course Assignments table that have the deleted UserID
@@ -131,4 +124,4 @@ def delete_user(user_id):
     user.delete()
 
     # Return true if the selected User account was deleted
-    return True
+    return "Successfully deleted user."
