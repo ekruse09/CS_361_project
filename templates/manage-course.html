@@ -55,21 +55,21 @@
                 <th>User</th>
                 <th></th>
             </tr>
-            {% for ua in assigned_users %}
+            {% for uca in user_course_assignments %}
                 <tr>
-                    <td>{{ ua.section_id }}</td>
-                    <td>{{ ua.section_type }}</td>
-                    {% if ua.section_type == 'lab' %}
+                    <td>{{ uca.section_id }}</td>
+                    <td>{{ uca.section_type }}</td>
+                    {% if uca.section_type == 'lab' %}
                         <td>Lab</td>
                     {% else %}
                         <td>Lecture</td>
                     {% endif %}
-                    <td>{{ ua.user_id }}</td>
+                    <td>{{ uca.user_id }}</td>
                     <td>
                         <form action="/manage-course/" method="post">
                             {% csrf_token %}
                             <label for="section_id"></label>
-                            <input type="hidden" id="section_id" name="section_id" value="{{ section.section_id }}">
+                            <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
                             <label for="action"></label>
                             <input type="hidden" id="action" name="action" value="view_section">
                             <button>View</button>
@@ -114,11 +114,11 @@
                 <label for="section_id">Section Number:</label>
                 <input type="number" id="section_id" name="section_id" required>
                 <label for="section_type">Section Type:</label>
-                <input type="text" id="section_type" name="section_type" value="{{ uca.section_type }}" required>
-                <label for="instructor">Instructor:</label>
-                <select id="instructor" name="instructor" required>
+                <input type="text" id="section_type" name="section_type" required>
+                <label for="user">Instructor:</label>
+                <select id="user" name="user" required>
                     <option value="" disabled>Select an Instructor</option>
-                    {% for user in available_instructors %}
+                    {% for user in assigned_users %}
                         <option value="{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</option>
                     {% endfor %}
                 </select>
@@ -130,11 +130,11 @@
     {% elif add_user %}
         <a href="/manage-course/" class="shade"></a>
         <div class="assign-user-pop-up">
-            <h1>Assign User to Course</h1>
+            <h1>Add User to Course</h1>
             <form action="/manage-course/" method="post">
                 <label for="user">User:</label>
                 <select name="user" id="user" required>
-                    {% for user in users %}
+                    {% for user in eligible_users %}
                         <option value="{{ user.user_id }}"></option>
                     {% endfor %}
                 </select>
