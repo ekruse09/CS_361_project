@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
-from supercreative.models import User, Course, Section, UserCourseAssignment
-from supercreative.CreateAccount.delete_account import delete_user
+from supercreative.models import User, Course, Section, UserCourseAssignment, UserRole, SectionType
+from supercreative.user import user
 
 
 class TestAccountDelete(TestCase):
@@ -11,38 +11,37 @@ class TestAccountDelete(TestCase):
     course2 = None
     section1 = None
     section2 = None
+    role = None
 
     def setUp(self):
         # create an admin user
-        self.admin_user = User.objects.create(user_id=1, email="test@example.com",
+        self.role = UserRole.objects.create(role_name="Administrator")
+        self.admin_user = User.objects.create(email="test@example.com",
                                               password="password123",
-                                              role="administrator", first_name="John", last_name="Doe",
-                                              phone_number="1234567890", address="123 Main St")
+                                              role_id=self.role,
+                                              first_name="John",
+                                              last_name="Doe",
+                                              phone_number="1234567890",
+                                              address="123 Main St")
 
         # create a couple of courses
-        self.course1 = Course.objects.create(course_id=1, course_name="Course 1", course_description="stuff",
+        self.course1 = Course.objects.create(course_name="Course 1", course_description="stuff",
                                              course_code="COURSE-1")
-        self.course2 = Course.objects.create(course_id=2, course_name="Course 2", course_description="stuff",
+        self.course2 = Course.objects.create(course_name="Course 2", course_description="stuff",
                                              course_code="COURSE-2")
 
         # create a couple of sections
-        self.section1 = Section.objects.create(section_id=1, course_id=self.course1, section_type="Lecture")
-        self.section2 = Section.objects.create(section_id=2, course_id=self.course2, section_type="Lab")
+        self.section1 = Section.objects.create(course_id=self.course1, section_type=SectionType.objects.create(section_type_name="Lecture"))
+        self.section2 = Section.objects.create(course_id=self.course2, section_type=SectionType.objects.create(section_type_name="Lab"))
 
         # assign the admin user to the sections
         UserCourseAssignment.objects.create(user_id=self.admin_user, section_id=self.section1, course_id=self.course1,
-                                            section_type="Lecture")
+                                            section_type=self.section1.section_type)
         UserCourseAssignment.objects.create(user_id=self.admin_user, section_id=self.section2, course_id=self.course2,
-                                            section_type="Lab")
-
-        # create a student user
-        self.student_user = User.objects.create(user_id=2, email="student@example.com",
-                                                password="password123",
-                                                role="student", first_name="Jane", last_name="Doe",
-                                                phone_number="0987654321", address="321 Main St")
+                                            section_type=self.section2.section_type)
 
     def test_successful_delete(self):
-        self.assertTrue(delete_user(self.admin_user.user_id), "delete user should've returned "
+        self.assertEqual(user.delete_user(self.admin_user.user_id), "Successfully deleted user.", "delete user should've returned "
                                                               "true here!")
 
         # check to see if the user was actually deleted from the Users table
@@ -56,5 +55,4 @@ class TestAccountDelete(TestCase):
 
     def test_no_user(self):
         # trying to delete a user that doesn't exist
-        self.assertFalse(delete_user(24), "delete user should've "
-                                          "returned false here!")
+        self.assertEqual(user.delete_user(24),"User not found.", "Deleted a non-existent user")

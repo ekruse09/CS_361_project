@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from supercreative.models import (User)
+from supercreative.models import (User, UserRole)
 from supercreative.authentication.authentication import create_session
 from supercreative.user.user import create_user
 from supercreative.authentication.authentication import create_session
@@ -14,9 +14,9 @@ class LoginUnitTest(TestCase):
         # same user setup as everyone else used
         self.client = Client()
 
-        create_user(1, "test@uwm.edu", "P@ssword123", "ADMINISTRATOR", "John", "Doe",
+        create_user("test@uwm.edu", "P@ssword123", UserRole.objects.create(role_name="Administrator").role_name, "John", "Doe",
                     "1234567890", "123 Main St")
-        self.user = User.objects.get(user_id=1)
+        self.user = User.objects.get(email="test@uwm.edu")
         self.session = self.client.session
 
     # we log in with email and password
@@ -31,7 +31,7 @@ class LoginUnitTest(TestCase):
         # tests to see if the complete list of user's data is correct
         create_session(self.session, self.user.email)
         self.assertEqual(self.session["user_id"], self.user.user_id, "incorrect session!")
-        self.assertEqual(self.session["role"], self.user.role, "incorrect role!")
+        self.assertEqual(self.session["role"], self.user.role_id.role_name, "incorrect role!")
         '''
         not stored in the session but can be added
         

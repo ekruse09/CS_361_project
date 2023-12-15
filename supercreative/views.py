@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.Course import course as courseHelper
+from supercreative.course import course as courseHelper
 from supercreative.user import user as userHelper
 from supercreative.models import User, Course
 from supercreative.authentication import authentication
@@ -74,7 +74,6 @@ class Users(View):
 
         elif 'new_user' in request.POST.get('action'):
             # localize variables
-            user_id = int(request.POST.get('user_id'))
             email = request.POST.get('email')
             password = request.POST.get('password')
             role = request.POST.get('role')
@@ -83,15 +82,13 @@ class Users(View):
             phone_number = request.POST.get('phone_number')
             address = request.POST.get('address')
 
-            response = userHelper.create_user(user_id,
-                                              email,
+            response = userHelper.create_user(email,
                                               password,
                                               role,
                                               first_name,
                                               last_name,
                                               phone_number,
                                               address)
-
             return render(request, 'users.html',
                           {'users': users, 'popup': True, 'edit': True, 'new': True, 'error': response})
 
@@ -105,16 +102,16 @@ class Users(View):
             phone_number = request.POST.get('phone_number')
             address = request.POST.get('address')
 
-            respone = userHelper.edit_user(user_id,
-                                           password,
-                                           role,
-                                           first_name,
-                                           last_name,
-                                           phone_number,
-                                           address)
-
+            response = userHelper.edit_user(user_id,
+                                            password,
+                                            role,
+                                            first_name,
+                                            last_name,
+                                            phone_number,
+                                            address)
+            print(response)
             return render(request, 'users.html',
-                          {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': respone})
+                          {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': response})
 
         elif 'delete_user' in request.POST.get('action'):
             userHelper.delete_user(request.POST.get('user_id'))
@@ -157,18 +154,17 @@ class Courses(View):
 
         elif 'new_course' in request.POST.get('action'):
             # localize variables
-            course_id = request.POST.get('course_id')
             course_name = request.POST.get('course_name')
             course_description = request.POST.get('course_description')
             course_code = request.POST.get('course_code')
 
-            response = courseHelper.create_course(int(course_id), course_name, course_description, course_code)
+            response = courseHelper.create_course(course_name, course_description, course_code)
             return render(request,
                           'courses.html',
                           {'courses': courses,
-                            'popup': True,
-                            'edit': True,
-                            'new': True,
+                           'popup': True,
+                           'edit': True,
+                           'new': True,
                            'error': response})
 
         elif 'edit_course' in request.POST.get('action'):
@@ -193,19 +189,3 @@ class Courses(View):
                                'error': 'Course does not exist'})
 
         return render(request, 'courses.html', {'courses': courses})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

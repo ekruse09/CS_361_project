@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
-from supercreative.models import (User)
+from supercreative.models import (User, UserRole)
 from supercreative.authentication.authentication import active_session_exists
+from supercreative.user import user
 
 
 class UnitTestActiveSessionExists(TestCase):
@@ -11,14 +12,19 @@ class UnitTestActiveSessionExists(TestCase):
     user = None
 
     def setUp(self):
-        self.user = User.objects.create(user_id=1, email="test@example.com",
-                                        password="password123",
-                                        role="student", first_name="John", last_name="Doe",
-                                        phone_number="1234567890", address="123 Main St")
+        user.create_user("test@uwm.edu",
+                         "P@ssword123",
+                         UserRole.objects.create(role_name="Administrator").role_name,
+                         "John",
+                         "Doe",
+                         "1234567890",
+                         "123 Main St")
+
+        self.user = User.objects.get(email="test@uwm.edu")
         self.good_client = Client()
         self.good_session = self.good_client.session
         self.good_session['user_id'] = self.user.user_id
-        self.good_session['role'] = self.user.role
+        self.good_session['role'] = self.user.role_id.role_name
         self.good_session.save()
 
         self.bad_client = Client()
@@ -41,14 +47,19 @@ class AcceptanceTestActiveSessionExists(TestCase):
     user = None
 
     def setUp(self):
-        self.user = User.objects.create(user_id=1, email="test@example.com",
-                                        password="password123",
-                                        role="student", first_name="John", last_name="Doe",
-                                        phone_number="1234567890", address="123 Main St")
+        user.create_user("test@uwm.edu",
+                         "P@ssword123",
+                         UserRole.objects.create(role_name="Administrator").role_name,
+                         "John",
+                         "Doe",
+                         "1234567890",
+                         "123 Main St")
+
+        self.user = User.objects.get(email="test@uwm.edu")
         self.good_client = Client()
         self.good_session = self.good_client.session
         self.good_session['user_id'] = self.user.user_id
-        self.good_session['role'] = self.user.role
+        self.good_session['role'] = self.user.role_id.role_name
         self.good_session.save()
 
         self.bad_client = Client()

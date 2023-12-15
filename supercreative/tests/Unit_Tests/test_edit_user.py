@@ -1,7 +1,7 @@
 import os
 from django.test import TestCase
 from supercreative.user.user import create_user, edit_user
-from supercreative.models import User
+from supercreative.models import User, UserRole
 from django.core.exceptions import ObjectDoesNotExist
 
 class TestEditUser(TestCase):
@@ -10,11 +10,11 @@ class TestEditUser(TestCase):
     bad_user_id = None
 
     def setUp(self):
-        create_user(1, "test@uwm.edu", "P@ssword123", "ADMINISTRATOR", "John", "Doe",
+        create_user("test@uwm.edu", "P@ssword123", UserRole.objects.create(role_name="Administrator").role_name, "John", "Doe",
                     "1234567890", "123 Main St")
-        self.user = User.objects.get(user_id=1)
+        self.user = User.objects.get(email="test@uwm.edu")
 
-        self.new_user_info = {"new_password": "p@SSWORD123", "new_role": "TA", "new_first_name": "Jane",
+        self.new_user_info = {"new_password": "p@SSWORD123", "new_role": UserRole.objects.create(role_name="Instructor").role_name, "new_first_name": "Jane",
                               "new_last_name": "Smith", "new_phone": "0987654321", "new_address": "456 Sesame St"}
         self.bad_user_id = 3
 
@@ -23,11 +23,11 @@ class TestEditUser(TestCase):
                            self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
                            self.new_user_info["new_phone"], self.new_user_info["new_address"])
         self.assertEqual(result, "User edited successfully.")
-
+        print(result)
         self.user = User.objects.get(user_id=self.user.user_id)
 
         self.assertEqual(self.user.password, self.new_user_info["new_password"], "Password failed to update")
-        self.assertEqual(self.user.role, self.new_user_info["new_role"], "Role failed to update")
+        self.assertEqual(self.user.role_id.role_name, self.new_user_info["new_role"], "Role failed to update")
         self.assertEqual(self.user.first_name, self.new_user_info["new_first_name"], "First name failed to update")
         self.assertEqual(self.user.last_name, self.new_user_info["new_last_name"], "Last name failed to update")
         self.assertEqual(self.user.phone_number, self.new_user_info["new_phone"], "Phone number failed to update")
@@ -50,7 +50,7 @@ class TestEditUser(TestCase):
         result = edit_user(self.user.user_id, self.new_user_info["new_password"], "role",
                            self.new_user_info["new_first_name"], self.new_user_info["new_last_name"],
                            self.new_user_info["new_phone"], self.new_user_info["new_address"])
-        self.assertEqual(result, "Role must be one of the following: ADMINISTRATOR, INSTRUCTOR, TA.")
+        self.assertEqual(result, "Invalid role selected.")
 
         # bad number
         result = edit_user(self.user.user_id, self.new_user_info["new_password"], self.new_user_info["new_role"],
