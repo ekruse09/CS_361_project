@@ -3,6 +3,7 @@ from django.views import View
 from supercreative.course import course as courseHelper
 from supercreative.course.assign_user import assign_user_to
 from supercreative.create_sections import section as section_helper
+from supercreative.course import course as courseHelper
 from supercreative.user import user as userHelper
 from supercreative.models import User, Course, Section, UserCourseAssignment
 from supercreative.authentication import authentication
@@ -76,7 +77,6 @@ class Users(View):
 
         elif 'new_user' in request.POST.get('action'):
             # localize variables
-            user_id = int(request.POST.get('user_id'))
             email = request.POST.get('email')
             password = request.POST.get('password')
             role = request.POST.get('role')
@@ -85,15 +85,13 @@ class Users(View):
             phone_number = request.POST.get('phone_number')
             address = request.POST.get('address')
 
-            response = userHelper.create_user(user_id,
-                                              email,
+            response = userHelper.create_user(email,
                                               password,
                                               role,
                                               first_name,
                                               last_name,
                                               phone_number,
                                               address)
-
             return render(request, 'users.html',
                           {'users': users, 'popup': True, 'edit': True, 'new': True, 'error': response})
 
@@ -108,13 +106,13 @@ class Users(View):
             address = request.POST.get('address')
 
             response = userHelper.edit_user(user_id,
-                                           password,
-                                           role,
-                                           first_name,
-                                           last_name,
-                                           phone_number,
-                                           address)
-
+                                            password,
+                                            role,
+                                            first_name,
+                                            last_name,
+                                            phone_number,
+                                            address)
+            print(response)
             return render(request, 'users.html',
                           {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': response})
 

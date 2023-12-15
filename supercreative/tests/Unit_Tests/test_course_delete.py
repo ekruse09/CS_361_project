@@ -34,5 +34,6 @@ class TestCourseDelete(TestCase):
         with self.assertRaises(ObjectDoesNotExist):
             Course.objects.get(course_id=self.good_course.course_id)
 
-    def test_failed_delete(self):
-        self.assertFalse(delete_course(self.bad_course), "Deleted course with sections")
+    def test_delete_course_with_sections(self):
+        delete_course(self.bad_course)
+        self.assertFalse(Section.objects.filter(section_id=self.section1.section_id).exists(), "failed to delete sections")

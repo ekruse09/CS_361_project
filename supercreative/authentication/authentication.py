@@ -11,7 +11,7 @@ def create_session(session, login_email):
 
     # only store the user_id and role in the session
     session["user_id"] = user.user_id
-    session["role"] = user.role
+    session["role"] = user.role_id.role_name
     session.save()
     return True
 
@@ -36,7 +36,7 @@ def active_session_exists(request):
     except KeyError:
         return False
 
-    if active_user.role != request.session['role']:
+    if active_user.role_id.role_name != request.session['role']:
         return False
     else:
         return True

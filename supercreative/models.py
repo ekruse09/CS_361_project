@@ -15,7 +15,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
-    skills = models.TextField(max_length=1000)
+    skills = models.TextField(max_length=1000, default='')
 
 
 class Course(models.Model):

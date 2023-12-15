@@ -1,6 +1,6 @@
 from django.test import TestCase
 from supercreative.models import (Course)
-from supercreative.Course.course import edit_course, create_course
+from supercreative.course.course import edit_course, create_course
 
 
 class TestCourseEdit(TestCase):
