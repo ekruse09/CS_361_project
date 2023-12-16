@@ -132,6 +132,7 @@
         <div class="assign-user-pop-up">
             <h1>Add User to Course</h1>
             <form action="/manage-course/" method="post">
+                {% csrf_token %}
                 <label for="user">User:</label>
                 <select name="user" id="user" required>
                     {% for user in eligible_users %}
