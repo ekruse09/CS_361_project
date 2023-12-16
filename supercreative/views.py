@@ -299,7 +299,7 @@ class ManageCourse(View):
             response = section_helper.delete_section(section_id)
 
             return render(request,
-                          'courses.html',
+                          'manage-course.html',
                           {'course': course,
                            'uca_sections': uca_sections,
                            'popup': True,
