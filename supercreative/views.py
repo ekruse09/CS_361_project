@@ -46,31 +46,50 @@ class Users(View):
     def get(self, request):
         if not authentication.active_session_exists(request):
             return redirect("/")
+        role = request.session['role']
         # get all the users
         users = User.objects.all()
-        return render(request, 'users.html', {'users': users})
+        return render(request, 'users.html',
+                      {'users': users,
+                                'role': role})
 
     def post(self, request):
         if not authentication.active_session_exists(request):
             return redirect("/")
 
         users = User.objects.all()
+        role = request.session['role']
 
         if 'view_user' in request.POST.get('action'):
             user_id = request.POST.get('user_id')
             user = User.objects.get(user_id=user_id)
-            return render(request, 'users.html',
-                          {'users': users, 'user': user, 'popup': True, 'edit': False})
+            return render(request,
+                          'users.html',
+                          {'users': users,
+                                   'user': user,
+                                   'popup': True,
+                                   'edit': False,
+                                   'new': False,
+                                   'role': role})
 
         elif 'request_edit' in request.POST.get('action'):
             user_id = request.POST.get('user_id')
             user = User.objects.get(user_id=user_id)
             return render(request, 'users.html',
-                          {'users': users, 'user': user, 'popup': True, 'edit': True, 'new': False})
+                          {'users': users,
+                                   'user': user,
+                                   'popup': True,
+                                   'edit': True,
+                                   'new': False,
+                                   'role': role})
 
         elif 'request_new' in request.POST.get('action'):
             return render(request, 'users.html',
-                          {'users': users, 'popup': True, 'edit': True, 'new': True})
+                          {'users': users,
+                           'popup': True,
+                           'edit': True,
+                           'new': True,
+                           'role': role})
 
         elif 'new_user' in request.POST.get('action'):
             # localize variables
@@ -89,8 +108,14 @@ class Users(View):
                                               last_name,
                                               phone_number,
                                               address)
+
             return render(request, 'users.html',
-                          {'users': users, 'popup': True, 'edit': True, 'new': True, 'error': response})
+                          {'users': users,
+                                   'popup': True,
+                                   'edit': True,
+                                   'new': True,
+                                   'error': response,
+                                   'role': role})
 
         elif 'edit_user' in request.POST.get('action'):
             # localize variables
@@ -109,27 +134,34 @@ class Users(View):
                                             last_name,
                                             phone_number,
                                             address)
-            print(response)
+
             return render(request, 'users.html',
-                          {'users': users, 'popup': True, 'edit': True, 'new': False, 'error': response})
+                          {'users': users,
+                                   'popup': True,
+                                   'edit': True,
+                                   'new': False,
+                                   'error': response,
+                                   'role': role})
 
         elif 'delete_user' in request.POST.get('action'):
             userHelper.delete_user(request.POST.get('user_id'))
-            return render(request, 'users.html', {'users': users})
+            return render(request, 'users.html', {'users': users, 'role': role})
 
         else:
-            return render(request, 'users.html', {'users': users})
+            return render(request, 'users.html', {'users': users, 'role': role})
 
 
 class Courses(View):
     def get(self, request):
+        role = request.session['role']
         if not authentication.active_session_exists(request):
             return redirect("/")
         # get all the courses
         courses = Course.objects.all()
-        return render(request, 'courses.html', {'courses': courses})
+        return render(request, 'courses.html', {'courses': courses, 'role': role})
 
     def post(self, request):
+        role = request.session['role']
         if not authentication.active_session_exists(request):
             return redirect("/")
 
@@ -139,17 +171,31 @@ class Courses(View):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
             return render(request, 'courses.html',
-                          {'courses': courses, 'course': course, 'popup': True, 'edit': False})
+                          {'courses': courses,
+                                   'course': course,
+                                   'popup': True,
+                                   'edit': False,
+                                   'role': role,
+                                   'new': False})
 
         elif 'request_edit' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
             return render(request, 'courses.html',
-                          {'courses': courses, 'course': course, 'popup': True, 'edit': True, 'new': False})
+                          {'courses': courses,
+                                   'course': course,
+                                   'popup': True,
+                                   'edit': True,
+                                   'new': False,
+                                   'role': role})
 
         elif 'request_new' in request.POST.get('action'):
             return render(request, 'courses.html',
-                          {'courses': courses, 'popup': True, 'edit': True, 'new': True})
+                                  {'courses': courses,
+                                   'popup': True,
+                                   'edit': True,
+                                   'new': True,
+                                   'role': role})
 
 
         elif 'new_course' in request.POST.get('action'):
@@ -176,8 +222,12 @@ class Courses(View):
 
             response = courseHelper.edit_course(course_id, course_name, course_description, course_code)
             return render(request, 'courses.html',
-                          {'courses': courses, 'popup': True, 'edit': True, 'new': False,
-                           'error': response})
+                          {'courses': courses,
+                                   'popup': True,
+                                   'edit': True,
+                                   'new': False,
+                                   'error': response,
+                                   'role': role})
 
         elif 'delete_course' in request.POST.get('action'):
             if Course.objects.filter(course_id=request.POST.get('course_id')):
@@ -185,7 +235,11 @@ class Courses(View):
                 return render(request, 'courses.html', {'courses': courses})
             else:
                 return render(request, 'courses.html',
-                              {'courses': courses, 'popup': True, 'edit': False, 'new': False,
-                               'error': 'Course does not exist'})
+                              {'courses': courses,
+                               'popup': True,
+                               'edit': False,
+                               'new': False,
+                               'error': 'Course does not exist',
+                               'role': role})
 
         return render(request, 'courses.html', {'courses': courses})
