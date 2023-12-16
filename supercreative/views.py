@@ -236,10 +236,10 @@ class Courses(View):
             else:
                 return render(request, 'courses.html',
                               {'courses': courses,
-                               'popup': True,
-                               'edit': False,
-                               'new': False,
-                               'error': 'Course does not exist',
-                               'role': role})
+                                       'popup': True,
+                                       'edit': False,
+                                       'new': False,
+                                       'error': 'Course does not exist',
+                                       'role': role})
 
         return render(request, 'courses.html', {'courses': courses})

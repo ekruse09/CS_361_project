@@ -18,10 +18,12 @@
             <img src="../supercreative/static/images/account-group.svg" alt="users button">
             Users
         </a>
-        <a class="courses" href="/course/">
-            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
-            Courses
-        </a>
+        {% if role != 'TA' %}
+            <a class="courses" href="/course/">
+                <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+                Courses
+            </a>
+        {% endif %}
     </div>
     <div class="header">
         <p>{{ first_name }}'s Dashboard</p>

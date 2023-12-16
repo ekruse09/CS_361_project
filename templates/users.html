@@ -18,22 +18,26 @@
             <img src="../supercreative/static/images/account-group.svg" alt="users button">
             Users
         </a>
-        <a class="courses" href="/course/">
-            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
-            Courses
-        </a>
+        {% if role != 'TA' %}
+            <a class="courses" href="/course/">
+                <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+                Courses
+            </a>
+        {% endif %}
     </div>
     <div class="header">
         <p>User Directory</p>
         <a class="logout" href="/">Logout</a>
     </div>
     <div class="content">
-        <form action="/users/" method="post">
-            {% csrf_token %}
-            <label for="action"></label>
-            <input type="hidden" id="action" name="action" value="request_new">
-            <button class="create-user">Create New User</button>
-        </form>
+        {% if role == 'Administrator' %}
+            <form action="/users/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_new">
+                <button class="create-user">Create New User</button>
+            </form>
+        {% endif %}
         <table>
             <col style="width:15%">
             <col style="width:25%">
@@ -93,14 +97,16 @@
             <p class="field">Address:</p>
             <p class="data">{{ user.address }}</p>
             <div class="buttons">
-                <form action="/users/" method="post">
-                    {% csrf_token %}
-                    <label for="action"></label>
-                    <input type="text" id="action" name="action" value="request_edit">
-                    <label for="user_id"></label>
-                    <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
-                    <button>Edit</button>
-                </form>
+                {% if role == 'Administrator' %}
+                    <form action="/users/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="text" id="action" name="action" value="request_edit">
+                        <label for="user_id"></label>
+                        <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                        <button>Edit</button>
+                    </form>
+                {% endif %}
                 <a href="/users/">Back</a>
             </div>
         </div>
