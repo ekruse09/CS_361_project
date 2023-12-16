@@ -10,12 +10,12 @@ class User(models.Model):
     user_id = models.BigAutoField(unique=True, primary_key=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    role_id = models.ForeignKey(UserRole, on_delete=models.CASCADE, default=0)
+    role_id = models.ForeignKey(UserRole, on_delete=models.DO_NOTHING)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
-    skills = models.TextField(max_length=1000, default='')
+    skills = models.TextField(max_length=1000, default='', null=True)
 
 
 class Course(models.Model):
@@ -33,7 +33,7 @@ class SectionType(models.Model):
 class Section(models.Model):
     section_id = models.BigAutoField(unique=True, primary_key=True)
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-    section_type = models.CharField(max_length=50)
+    section_type = models.ForeignKey(SectionType, on_delete=models.DO_NOTHING)
 
 
 class UserCourseAssignment(models.Model):

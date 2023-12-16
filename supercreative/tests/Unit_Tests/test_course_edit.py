@@ -71,7 +71,7 @@ class TestCourseEdit(TestCase):
     def test_duplicate_name(self):
         # Duplicate name
         result = edit_course(self.base_course.course_id, self.existing_course.course_name, '', '')
-        self.assertEqual(result, "Course code, or name already exists.")
+        self.assertEqual(result, "Course code or name already exists.")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_name,
                          self.base_course.course_name, "Course name should not have changed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_description,
@@ -92,7 +92,7 @@ class TestCourseEdit(TestCase):
 
     def test_duplicate_code(self):
         result = edit_course(self.base_course.course_id, '', '', self.existing_course.course_code)
-        self.assertEqual(result, "Course code, or name already exists.")
+        self.assertEqual(result, "Course code or name already exists.")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_name,
                          self.base_course.course_name, "Course name should not have changed")
         self.assertEqual(Course.objects.get(course_id=self.base_course.course_id).course_description,
