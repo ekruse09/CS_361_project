@@ -106,12 +106,12 @@ class CreateCourseTest(TestCase):
 
         # Try to create additional courses with duplicate course name
         self.assertEqual(create_course(self.course_name, self.course_description, "different course code"),
-                         "Course name, or code already exists.",
+                         "Course name or code already exists.",
                          "create_course didn't return the correct error message for duplicate course name.")
 
         # Try to create additional courses with duplicate course code
         self.assertEqual(create_course("different course name", self.course_description, self.course_code),
-                         "Course name, or code already exists.",
+                         "Course name or code already exists.",
                          "create_course didn't return the correct error message for duplicate course code.")
 
         # Make sure none of the courses with duplicate values were created
