@@ -43,21 +43,21 @@ class ManageCoursesAcceptanceTests(TestCase):
 
         # Set up 2nd user
         self.role_2 = UserRole.objects.create(role_name="TA")
-        self.email_2 = 'new@uwm.edu'
+        self.email_2 = 'user2@uwm.edu'
         user.create_user(email=self.email_2,
-                         password='user123',
+                         password='uSer1!23',
                          role=self.role_2.role_name,
                          first='New',
                          last='User',
-                         phone='1234567891',
+                         phone='1234567491',
                          address='321 Sesame St')
         self.existing_user_2 = User.objects.get(email=self.email_2)
 
         # Set up 3rd user
-        self.role_3 = UserRole.objects.create(role_name="TA")
+        self.role_3 = UserRole.objects.create(role_name="Administrator")
         self.email_3 = 'user@uwm.edu'
         user.create_user(email=self.email_3,
-                         password='use23',
+                         password='u1E#23',
                          role=self.role_3.role_name,
                          first='User',
                          last='New',
@@ -66,14 +66,19 @@ class ManageCoursesAcceptanceTests(TestCase):
         self.existing_user_3 = User.objects.get(email=self.email_3)
 
         # Set up section
+        section_type_1 = SectionType.objects.create(section_type_name="discussion")
         section.create_section(course=self.existing_course,
-                               section_type=SectionType.objects.create(section_type_name="discussion"))
-        self.existing_section_1 = Section.objects.filter(course=course).first()
+                               section_type=section_type_1.section_type_name)
 
         # Set up section 2nd section
+        section_type_2 = SectionType.objects.create(section_type_name="LAB")
         section.create_section(course=self.existing_course,
-                               section_type=SectionType.objects.create(section_type_name="lab"))
-        self.existing_section_2 = Section.objects.filter(course=course).second()
+                               section_type=section_type_2.section_type_name)
+
+        # Get the sections
+        section_objects = Section.objects.all()
+        self.existing_section_1 = section_objects[0]
+        self.existing_section_2 = section_objects[1]
 
         # assign user #1 to section #2
         assign_user.assign_user_to(assigned_course=self.existing_course,
@@ -86,7 +91,7 @@ class ManageCoursesAcceptanceTests(TestCase):
 
         # make the expected user course assignment/section dictionary
         self.expected_uca = {self.existing_section_1: "",
-                             self.existing_section_2: UserCourseAssignment.objects.get(self.existing_section_2)}
+                             self.existing_section_2: UserCourseAssignment.objects.get(section_id=self.existing_section_2)}
 
         authentication.create_session(self.client.session, 'test@uwm.edu')
 
