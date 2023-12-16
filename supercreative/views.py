@@ -316,7 +316,7 @@ class ManageCourse(View):
                            'popup': True,
                            'edit': False})
 
-        # add user to a course
+        # request to add user to a course
         elif 'add_user' in request.POST.get('action'):
 
             all_users = User.objects.all()
