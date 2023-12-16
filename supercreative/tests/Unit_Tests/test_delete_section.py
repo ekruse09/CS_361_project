@@ -1,17 +1,25 @@
 from django.test import TestCase
-from supercreative.models import Section, UserCourseAssignment, Course, User
-from supercreative.delete_section.delete_section import delete_section
+from supercreative.models import Section, UserCourseAssignment, Course, User, UserRole, SectionType
+from supercreative.section.section import delete_section
 
 
 class TestDeleteSection(TestCase):
     def setUp(self):
-        self.good_user = User(user_id=1, email="test@uwm.edu", password="test", role="Administrator", first_name="testfirst",
-                              last_name="testlast", phone_number="5555555555", address="123")
-        self.good_course = Course(course_id=1, course_name="test", course_description="test", course_code="test")
-        self.good_course.save()
-        self.good_section = Section(section_id=1, course_id=self.good_course, section_type="LEC")
-        self.good_section.save()
-        self.good_assign = UserCourseAssignment(user_id=self.good_user, section_id=self.good_section, course_id=self.good_course, section_type="LEC")
+        self.good_user = User.objects.create(email="test@uwm.edu",
+                              password="test",
+                              role_id=UserRole.objects.create(role_name="Administrator"),
+                              first_name="testfirst",
+                              last_name="testlast",
+                              phone_number="5555555555",
+                              address="123")
+        self.good_course = Course.objects.create(course_name="test",
+                              course_description="test",
+                              course_code="test")
+        self.good_section = Section.objects.create(course_id=self.good_course, section_type=SectionType.objects.create(section_type_name="Lecture"))
+        self.good_assign = UserCourseAssignment.objects.create(user_id=self.good_user,
+                                                               section_id=self.good_section,
+                                                               course_id=self.good_course,
+                                                               section_type=SectionType.objects.create(section_type_name="Lecture"))
 
     def test_delete_section(self):
 
