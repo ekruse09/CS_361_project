@@ -1,8 +1,11 @@
 from django.shortcuts import redirect, render
 from django.views import View
 from supercreative.course import course as courseHelper
+from supercreative.course.assign_user import assign_user_to
+from supercreative.create_sections import section as section_helper
+from supercreative.course import course as courseHelper
 from supercreative.user import user as userHelper
-from supercreative.models import User, Course
+from supercreative.models import User, Course, Section, UserCourseAssignment
 from supercreative.authentication import authentication
 
 
@@ -151,7 +154,6 @@ class Courses(View):
             return render(request, 'courses.html',
                           {'courses': courses, 'popup': True, 'edit': True, 'new': True})
 
-
         elif 'new_course' in request.POST.get('action'):
             # localize variables
             course_name = request.POST.get('course_name')
@@ -186,6 +188,124 @@ class Courses(View):
             else:
                 return render(request, 'courses.html',
                               {'courses': courses, 'popup': True, 'edit': False, 'new': False,
-                               'error': 'Course does not exist'})
+                               'error': 'course does not exist'})
+
+        elif 'manage_course' in request.POST.get('action'):
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(course_id=course_id)
+            return render(request, 'manage-course.html', {'course': course})
 
         return render(request, 'courses.html', {'courses': courses})
+
+
+class ManageCourse(View):
+    def get(self, request):
+        # Check if an active session exists
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+
+        # Retrieve the course and its assigned users
+        course_id = request.POST.get('course_id')
+        course = Course.objects.get(course_id=course_id)
+        assigned_users = UserCourseAssignment.objects.filter(course_id=course_id)
+
+        return render(request,
+                      'manage-courses.html',
+                      {'course': course,
+                       'assigned_users': assigned_users})
+
+    def post(self, request):
+        # Check if an active session exists
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+
+        # Retrieve the course
+        course_id = request.POST.get('course_id')
+        course = Course.objects.get(course_id=course_id)
+
+        # Retrieve the assigned users
+        user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
+
+        # Handle user course assignment and (optional) section assignment
+        if 'assign_user' in request.POST.get('action'):
+            user_id = request.POST.get('user_id')
+
+            # Assign the user to the course
+            response = assign_user_to(assigned_user=user_id, assigned_course=course_id)
+
+            # Retrieve the updated list of assigned users
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
+
+            return render(request,
+                          'manage-course.html',
+                          {'course': course,
+                           'user_assignments': user_assignments,
+                           'error': response})
+
+        elif 'request_new' in request.POST.get('action'):
+
+            assigned_users = User.objects.filter(user_id__in=user_assignments.values_list('user_id'))
+
+            return render(request, 'manage-course.html',
+                          {'course': course,
+                           'assigned_users': assigned_users,
+                           'popup': True,
+                           'edit': True,
+                           'new': True})
+
+        elif 'new_section' in request.POST.get('action'):
+            # Localize variables
+            section_id = request.POST.get('section_id')
+            section_type = request.POST.get('section_type')
+            user = request.POST.get('user')
+
+            response = section_helper.create_section(section_id, course, section_type, user)
+
+            # Get updated list of assigned users
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
+
+            return render(request,
+                          'manage-course.html',
+                          {'course': course,
+                           'user_assignments': user_assignments,
+                           'popup': True,
+                           'edit': True,
+                           'new': True,
+                           'error': response})
+
+        elif 'delete_section' in request.POST.get('action'):
+            # Localize variables
+            section_id = request.POST.get('section_id')
+
+            response = section_helper.delete_section(section_id)
+
+            # Get updated list of assigned users
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
+
+            return render(request,
+                          'courses.html',
+                          {'course': course,
+                           'user_assignments': user_assignments,
+                           'popup': True,
+                           'edit': True,
+                           'new': False,
+                           'error': response})
+
+        elif 'view_section' in request.POST.get('action'):
+
+            return render(request, 'courses.html',
+                          {'course': course,
+                           'user_assignments': user_assignments,
+                           'popup': True,
+                           'edit': False})
+
+        elif 'add_user' in request.POST.get('action'):
+
+            all_users = User.objects.all()
+            eligible_users = all_users.exclude(user_id__in=user_assignments.values_list('user_id'))
+
+            return render(request, 'courses.html',
+                          {'course': course,
+                           'eligible_users': eligible_users,
+                           'popup': True,
+                           'edit': False})
