@@ -18,12 +18,10 @@
             <img src="../supercreative/static/images/account-group.svg" alt="users button">
             Users
         </a>
-        {% if role != 'TA' %}
-            <a class="courses" href="/course/">
-                <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
-                Courses
-            </a>
-        {% endif %}
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
     </div>
     <div class="header">
         <p>Course Catalog</p>
@@ -43,13 +41,17 @@
             <col style="width:14%">
             <col style="width:25%">
             <col style="width:45%">
-            <col style="width:5%">
+            {% if role != 'TA' %}
+                <col style="width:5%">
+            {% endif %}
             <tr>
                 <th>Course ID</th>
                 <th>Course Code</th>
                 <th>Course Name</th>
                 <th>Course Description</th>
-                <th></th>
+                {% if role != 'TA' %}
+                    <th></th>
+                {% endif %}
             </tr>
             {% for course in courses %}
                 <tr>
@@ -57,16 +59,16 @@
                     <td>{{ course.course_code }}</td>
                     <td>{{ course.course_name }}</td>
                     <td>{{ course.course_description }}</td>
-                    <td>
-                        <form action="/course/" method="post">
-                            {% csrf_token %}
-                            <label for="course_id"></label>
-                            <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
-                            <label for="action"></label>
-                            <input type="hidden" id="action" name="action" value="view_course">
-                            <button>View</button>
-                        </form>
-                    </td>
+                        <td>
+                            <form action="/course/" method="post">
+                                {% csrf_token %}
+                                <label for="course_id"></label>
+                                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                                <label for="action"></label>
+                                <input type="hidden" id="action" name="action" value="view_course">
+                                <button>View</button>
+                            </form>
+                        </td>
                 </tr>
             {% endfor %}
         </table>

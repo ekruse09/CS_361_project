@@ -18,12 +18,10 @@
             <img src="../supercreative/static/images/account-group.svg" alt="users button">
             Users
         </a>
-        {% if role != 'TA' %}
-            <a class="courses" href="/course/">
-                <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
-                Courses
-            </a>
-        {% endif %}
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
     </div>
     <div class="header">
         <p>User Directory</p>
@@ -92,10 +90,12 @@
             <p class="data">{{ user.role }}</p>
             <p class="field">Email:</p>
             <p class="data">{{ user.email }}</p>
-            <p class="field">Phone Number:</p>
-            <p class="data">{{ user.phone_number }}</p>
-            <p class="field">Address:</p>
-            <p class="data">{{ user.address }}</p>
+            {% if role == 'Administrator' %}
+                <p class="field">Phone Number:</p>
+                <p class="data">{{ user.phone_number }}</p>
+                <p class="field">Address:</p>
+                <p class="data">{{ user.address }}</p>
+            {% endif %}
             <div class="buttons">
                 {% if role == 'Administrator' %}
                     <form action="/users/" method="post">
