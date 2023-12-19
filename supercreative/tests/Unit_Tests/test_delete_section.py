@@ -23,17 +23,17 @@ class TestDeleteSection(TestCase):
 
     def test_delete_section(self):
 
-        self.assertEqual(delete_section(self.good_section.section_id), "Section deletion was successful",
+        self.assertEqual(delete_section(self.good_section.course_id,self.good_section.section_id), "Section deletion was successful",
                          "Failed delete section")
-        self.assertFalse(Section.objects.filter(section_id=1).exists(), "Failed section still exist")
+        self.assertFalse(Section.objects.filter(course_id=self.good_section.course_id,section_id=self.good_section.section_id).exists(), "Failed section still exist")
         self.assertFalse(UserCourseAssignment.objects.filter(section_id=self.good_section).exists(),
                          "Section exist on User_Course_Assignment")
 
     def test_no_parameter(self):
-        self.assertEqual(delete_section(""), "No Section detected", "Failed no section pass")
+        self.assertEqual(delete_section(self.good_section.course_id,None), "No Section detected", "Failed no section pass")
 
     def test_non_existing_section(self):
-        self.assertEqual(delete_section(-1),
+        self.assertEqual(delete_section(self.good_section.course_id,-1),
                          "Section does not exist", "Section_id is invalid")
-        self.assertEqual(delete_section(2),
+        self.assertEqual(delete_section(self.good_section.course_id,2),
                          "Section does not exist", "Section does not exist")
