@@ -214,7 +214,8 @@ class Courses(View):
                            'popup': True,
                            'edit': True,
                            'new': True,
-                           'error': response})
+                           'error': response,
+                           'role': role})
 
         elif 'edit_course' in request.POST.get('action'):
             # localize variables
@@ -249,7 +250,7 @@ class Courses(View):
         elif 'manage_course' in request.POST.get('action'):
             course_id = request.POST.get('course_id')
             course = Course.objects.get(course_id=course_id)
-            return render(request, 'manage-course.html', {'course': course})
+            return render(request, 'manage-course.html', {'course': course,'role': role})
 
         return render(request, 'courses.html', {'courses': courses, 'role': role})
 
@@ -280,7 +281,7 @@ class ManageCourse(View):
                       'manage-course.html',
                       {'course': course_id,
                        'uca_sections': uca_sections,
-                       'role':request.session['role']})
+                       'role': request.session['role']})
 
     def post(self, request):
         # Check if an active session exists
@@ -317,7 +318,8 @@ class ManageCourse(View):
                           'manage-course.html',
                           {'course': course,
                            'uca_sections': uca_sections,
-                           'error': response})
+                           'error': response,
+                           'role': request.session['role']})
 
         # Loads the popup for a new section
         elif 'request_new' in request.POST.get('action'):
@@ -331,7 +333,8 @@ class ManageCourse(View):
                            'section_types': SectionType.objects.all(),
                            'popup': True,
                            'edit': True,
-                           'new': True})
+                           'new': True,
+                           'role': request.session['role']})
 
         elif 'new_section' in request.POST.get('action'):
 
@@ -347,7 +350,8 @@ class ManageCourse(View):
                            'popup': True,
                            'edit': True,
                            'new': True,
-                           'error': response})
+                           'error': response,
+                           'role': request.session['role']})
 
         elif 'delete_section' in request.POST.get('action'):
 
@@ -362,7 +366,8 @@ class ManageCourse(View):
                            'popup': True,
                            'edit': True,
                            'new': False,
-                           'error': response})
+                           'error': response,
+                           'role': request.session['role']})
 
         # view the sections
         elif 'view_section' in request.POST.get('action'):
@@ -371,7 +376,8 @@ class ManageCourse(View):
                           {'course': course,
                            'uca_sections': uca_sections,
                            'popup': True,
-                           'edit': False})
+                           'edit': False,
+                           'role': request.session['role']})
 
         # request to add user to a course
         elif 'add_user' in request.POST.get('action'):
@@ -384,7 +390,8 @@ class ManageCourse(View):
                           {'course': course,
                            'eligible_users': eligible_users,
                            'popup': True,
-                           'edit': False})
+                           'edit': False,
+                           'role': request.session['role']})
 
         return render(request,
                       'manage-course.html',
