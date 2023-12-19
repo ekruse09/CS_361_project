@@ -28,24 +28,30 @@
         <a class="logout" href="/">Logout</a>
     </div>
     <div class="content">
-        <form action="/course/" method="post">
-            {% csrf_token %}
-            <label for="action"></label>
-            <input type="hidden" id="action" name="action" value="request_new">
-            <button class="create-course">Create New Course</button>
-        </form>
+        {% if role == 'Administrator' %}
+            <form action="/course/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_new">
+                <button class="create-course">Create New Course</button>
+            </form>
+        {% endif %}
         <table>
             <col style="width:11%">
             <col style="width:14%">
             <col style="width:25%">
             <col style="width:45%">
-            <col style="width:5%">
+            {% if role != 'TA' %}
+                <col style="width:5%">
+            {% endif %}
             <tr>
                 <th>Course ID</th>
                 <th>Course Code</th>
                 <th>Course Name</th>
                 <th>Course Description</th>
-                <th></th>
+                {% if role != 'TA' %}
+                    <th></th>
+                {% endif %}
             </tr>
             {% for course in courses %}
                 <tr>
@@ -53,16 +59,16 @@
                     <td>{{ course.course_code }}</td>
                     <td>{{ course.course_name }}</td>
                     <td>{{ course.course_description }}</td>
-                    <td>
-                        <form action="/course/" method="post">
-                            {% csrf_token %}
-                            <label for="course_id"></label>
-                            <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
-                            <label for="action"></label>
-                            <input type="hidden" id="action" name="action" value="view_course">
-                            <button>View</button>
-                        </form>
-                    </td>
+                        <td>
+                            <form action="/course/" method="post">
+                                {% csrf_token %}
+                                <label for="course_id"></label>
+                                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                                <label for="action"></label>
+                                <input type="hidden" id="action" name="action" value="view_course">
+                                <button>View</button>
+                            </form>
+                        </td>
                 </tr>
             {% endfor %}
         </table>
@@ -87,14 +93,16 @@
             <p class="data">{{ course.course_description }}</p>
             <div class="buttons">
                 <a href="/course/">Back</a>
-                <form action="/course/" method="post">
-                    {% csrf_token %}
-                    <label for="action"></label>
-                    <input type="hidden" id="action" name="action" value="request_edit">
-                    <label for="course_id"></label>
-                    <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
-                    <button>Edit</button>
-                </form>
+                {% if role == 'Administrator' %}
+                    <form action="/course/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="hidden" id="action" name="action" value="request_edit">
+                        <label for="course_id"></label>
+                        <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                        <button>Edit</button>
+                    </form>
+                {% endif %}
                 <form action="/course/" method="post">
                     {% csrf_token %}
                     <label for="action"></label>
