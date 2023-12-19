@@ -1,6 +1,6 @@
 from django.test import TestCase
 from supercreative.models import Course, Section, SectionType
-from supercreative.create_sections.section import create_section
+from supercreative.section.section import create_section
 
 
 class CreateSectionTest(TestCase):
@@ -10,7 +10,6 @@ class CreateSectionTest(TestCase):
 
     def setUp(self):
         # variable values to use in the tests
-        self.section_id = 801
         self.section_type = SectionType.objects.create(section_type_name="lab")
 
         # set up a mock user
@@ -24,7 +23,7 @@ class CreateSectionTest(TestCase):
         # set up a mock section (to test for duplicates)
         self.section = Section.objects.create(course_id=self.course_two,
                                               section_type=SectionType.objects.create(
-                                                  section_type_name="discussion").section_type_name)
+                                                  section_type_name="discussion"))
 
     def test_correct_section(self):
         self.assertEqual(create_section(self.course, self.section_type.section_type_name),

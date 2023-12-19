@@ -1,7 +1,9 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.course.assign_user import assign_user_to
-from supercreative.create_sections import section as section_helper
+
+from supercreative.course import course as courseHelper
+from supercreative.course.user_assignments import assign_user_to
+from supercreative.section import section as section_helper
 from supercreative.course import course as courseHelper
 from supercreative.user import user as userHelper
 from supercreative.models import User, Course, Section, UserCourseAssignment, SectionType
