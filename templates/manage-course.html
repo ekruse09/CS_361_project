@@ -29,12 +29,14 @@
     </div>
     <div class="content">
         <div class="add-buttons">
-            <form action="/manage-course/" method="post">
-                {% csrf_token %}
-                <label for="action"></label>
-                <input type="hidden" id="action" name="action" value="request_new">
-                <button class="create-section">Add Section</button>
-            </form>
+            {% if role == 'Administrator' %}
+                <form action="/manage-course/" method="post">
+                    {% csrf_token %}
+                    <label for="action"></label>
+                    <input type="hidden" id="action" name="action" value="request_new">
+                    <button class="create-section">Add Section</button>
+                </form>
+            {% endif %}
             <form action="/manage-course/" method="post">
                 {% csrf_token %}
                 <label for="action"></label>
@@ -94,14 +96,16 @@
             <p class="field">Instructor:</p>
             <p class="data">{{ uca.user_id }}</p>
             <div class="buttons">
-                <form action="/manage-course/" method="post">
-                    {% csrf_token %}
-                    <label for="action"></label>
-                    <input type="hidden" id="action" name="action" value="delete_section">
-                    <label for="section_id"></label>
-                    <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
-                    <button>Delete</button>
-                </form>
+                {% if role == 'Administrator' %}
+                    <form action="/manage-course/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="hidden" id="action" name="action" value="delete_section">
+                        <label for="section_id"></label>
+                        <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
+                        <button>Delete</button>
+                    </form>
+                {% endif %}
                 <a href="/manage-course/">Back</a>
             </div>
         </div>
