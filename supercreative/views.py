@@ -189,3 +189,95 @@ class Courses(View):
                                'error': 'Course does not exist'})
 
         return render(request, 'courses.html', {'courses': courses})
+
+
+class UserPage(View):
+    def get(self, request):
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+        # get the user signed in on this session
+        user = User.objects.get(user_id=request.session['user_id'])
+        return render(request, 'users.html', {'user': user})
+
+    def post(self, request):
+        user = User.objects.get(user_id=request.session['user_id'])
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+
+        elif 'edit_user' in request.POST.get('action'):
+
+            # localize variables
+            user_id = int(request.POST.get('user_id'))
+            password = request.POST.get('password')
+            role = request.POST.get('role')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            phone_number = request.POST.get('phone_number')
+            address = request.POST.get('address')
+            skills = request.POST.get('skills')
+
+            response = userHelper.edit_user_with_skills(user_id,
+                                            password,
+                                            role,
+                                            first_name,
+                                            last_name,
+                                            phone_number,
+                                            address,
+                                            skills)
+            print(response)
+            return render(request, 'users.html',
+                          {'user': user, 'popup': True, 'edit': True, 'new': False, 'error': response})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
