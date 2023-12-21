@@ -1,0 +1,273 @@
+@font-face {
+    font-family: college-font;
+    src: url(/supercreative/static/CollegiateheavyoutlineMedium-B0yx.ttf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: grid;
+    grid-template: 120px 1fr / 1fr;
+}
+
+.sidebar {
+    position: fixed;
+    background-color: #0e415f;
+    height: 100vh;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar > div {
+    background-color: #f97316;
+    font-size: 96px;
+    font-family: college-font;
+    color: #0e415f;
+    height: 120px;
+    margin-bottom: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar > a {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 30px;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.sidebar > a:hover {
+    background-color: #f97316;
+}
+
+.sidebar > a:active {
+    background-color: #da6512;
+}
+
+.sidebar img {
+    justify-self: center;
+    align-self: center;
+    filter: invert(100%) sepia(33%) saturate(2%) hue-rotate(293deg) brightness(107%) contrast(101%);
+    width: 25px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 0 100px 0 300px;
+}
+
+.header > p {
+    font-size: 48px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.logout,
+.edit-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f97316;
+    font-size: 16px;
+    height: 40px;
+    width: 90px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logout:hover,
+.edit-info:hover {
+    background-color: #da6512;
+}
+
+.logout:active,
+.edit-info:active {
+    background-color: #f97316;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.message {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    background-color: #f1f5f9;
+    box-shadow: inset 4px 4px 4px -4px #808080;
+    padding: 50px 50px 50px 250px;
+}
+
+.user-info {
+    padding-left: 50px;
+    font-size: 22px;
+}
+
+.field {
+    margin-bottom: 15px;
+}
+
+.course-assignments {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.course-assignments > p {
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid darkgray;
+    width: 100%;
+}
+
+th {
+    background-color: white;
+}
+
+td, th {
+    border: 1px solid #bebebe;
+    padding: 10px 20px;
+}
+
+td {
+    text-align: left;
+}
+
+tr:nth-child(even) td {
+    background-color: #f5f5f5;
+}
+
+tr:nth-child(odd) td {
+    background-color: #fafafa;
+}
+
+.shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: .4;
+    height: 100%;
+    cursor: default;
+    z-index: 1;
+}
+
+.pop-up {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: fit-content;
+    width: 500px;
+    box-sizing: border-box;
+    background-color: #f1f5f9;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 12px -4px black;
+    z-index: 2;
+}
+
+.pop-up > h1 {
+    background-color: white;
+    box-shadow: 0 2px 4px -4px black;
+    font-size: 24px;
+    padding: 25px 50px;
+    border-radius: 6px 6px 0 0;
+}
+
+.pop-up > form {
+    padding: 25px 50px;
+    display: grid;
+    gap: 20px;
+}
+
+.edit-pop-up > form > label {
+    margin-bottom: -15px;
+}
+
+.pop-up > form > input {
+    padding: 4px;
+}
+
+textarea {
+    height: 100px;
+    padding: 4px;
+    resize: none;
+}
+
+.pop-up > form button,
+.back a {
+    height: 40px;
+    width: 120px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f97316;
+    color: white;
+    cursor: pointer;
+    justify-self: center;
+}
+
+.pop-up > form button:hover,
+.back a:hover {
+    background-color: #da6512;
+}
+
+.pop-up > form button:active,
+.back a {
+    background-color: #f97316;
+}
+
+.back,
+.back a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.back {
+    margin-top: -5px;
+    margin-bottom: 40px;
+}
+
+.back a {
+    text-decoration: none;
+}

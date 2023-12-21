@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'account.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">FU</div>
+        <a class="home" href="/home/">
+            <img src="../supercreative/static/images/home.svg" alt="home button">
+            Home
+        </a>
+        <a class="users" href="/users/">
+            <img src="../supercreative/static/images/account-group.svg" alt="users button">
+            Users
+        </a>
+        <a class="courses" href="/course/">
+            <img src="../supercreative/static/images/book-open-variant.svg" alt="courses button">
+            Courses
+        </a>
+        <a class="account" href="/account/">
+            <img src="../supercreative/static/images/account.svg" alt="account button">
+            Account
+        </a>
+    </div>
+    <div class="header">
+        <p>My Account</p>
+        <a class="logout" href="/">Logout</a>
+    </div>
+    <div class="content">
+        <div class="button-container">
+            <form action="/account/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_edit">
+                <button class="edit-info">Edit Info</button>
+            </form>
+        </div>
+        <p class="message">{{ error }}</p>
+        <div class="user-info">
+            <p class="field name"><strong>Name:&nbsp;</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p class="field email"><strong>Email:&nbsp;</strong> {{ user.email }}</p>
+            <p class="field phone_number"><strong>Phone Number:&nbsp;</strong> {{ user.phone_number }}</p>
+            <p class="field address"><strong>Address:&nbsp;</strong> {{ user.address }}</p>
+            <p class="field skills"><strong>Skills:&nbsp;</strong> {{ user.skills }}</p>
+        </div>
+        <div class="course-assignments">
+            <p>Course Assignments</p>
+            <table>
+                <col style="width:25%">
+                <col style="width:55%">
+                <col style="width:20%">
+                <tr>
+                    <th>Assignment ID</th>
+                    <th>Course</th>
+                    <th>Section Type</th>
+                </tr>
+                {% for assignment in user_assignments %}
+                    <tr>
+                        <td>{{ assignment.course_id.course_code }} {{ assignment.section_id.section_id }}</td>
+                        <td>{{ assignment.course_id.course_name }}</td>
+                        <td>{{ assignment.section_type.section_type_name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% if popup %}
+            <a href="/account/" class="shade"></a>
+            <div class="pop-up">
+                <h1>Edit User Details</h1>
+                <form action="/account/" method="post">
+                    {% csrf_token %}
+                    <label for="user_id"></label>
+                    <input type="hidden" id="user_id" name="user_id" value="{{ user.user_id }}">
+                    <label for="phone_number">Phone Number:</label>
+                    <input type="tel" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" value="{{ user.address }}" required>
+                    <label for="skills">Skills:</label>
+                    <textarea id="skills" name="skills" required>{{ user.skills }}</textarea>
+                    <label for="action"></label>
+                    <input type="hidden" id="action" name="action" value="edit_user">
+                    <button>Save Changes</button>
+                </form>
+                <div class="back">
+                    <a href="/account/">Back</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
