@@ -97,7 +97,6 @@ class ManageCoursesAcceptanceTests(TestCase):
         authentication.create_session(self.client.session, self.existing_user_1.email)
 
     def test_get_manage_course(self):
-        print(self.existing_course.course_id)
         response = self.client.get('/manage-course/', {'course_id': self.existing_course.course_id})
 
         self.assertEqual(response.status_code, 200)
