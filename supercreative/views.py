@@ -346,6 +346,7 @@ class UserPage(View):
 
     def post(self, request):
         user = User.objects.get(user_id=request.session['user_id'])
+
         if not authentication.active_session_exists(request):
             return redirect("/")
 

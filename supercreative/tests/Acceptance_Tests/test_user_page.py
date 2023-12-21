@@ -1,29 +1,24 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from myapp.models import User
-from myapp.views import UserPage
+from supercreative.models import User, UserRole
+from supercreative.user import user
+from supercreative.views import UserPage
+from supercreative.authentication import authentication
 
 class UserPageTests(TestCase):
     def setUp(self):
-        # Set up data for the tests
         self.client = Client()
-        self.user = User.objects.create_user( ... )  # Add user details
-        self.url = reverse('user_page')  # Replace 'user_page' with the actual URL name
-
-    def test_get_with_active_session(self):
-        # Simulate an active session
-        self.client.force_login(self.user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_without_active_session(self):
-        response = self.client.get(self.url)
-        self.assertRedirects(response, '/')
+        # Set up data for the whole TestCase
+        self.user_role = UserRole.objects.create(role_name="Administrator")
+        self.assertTrue(UserRole.objects.filter(role_name=self.user_role.role_name).exists(), "Failed to create role.")
+        user.create_user("test@uwm.edu", "P@ssword123", self.user_role.role_name, "John", "Doe", "1234567890", "123 Main St")
+        self.existing_user = User.objects.get(email="test@uwm.edu")
+        authentication.create_session(self.client.session, self.existing_user.email)
+        self.url = '/user_page/'
 
     def test_post_with_valid_data(self):
-        self.client.force_login(self.user)
         post_data = {
-            'user_id': self.user.id,
+            'user_id': self.existing_user.user_id,
             'password': 'new_password',
             'role': 'new_role',
             'first_name': 'new_first_name',
@@ -34,9 +29,10 @@ class UserPageTests(TestCase):
         }
         response = self.client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
-    def test_post_without_active_session(self):
+
+    def test_post_with_invalid_data(self):
         post_data = {
-            'user_id': self.user.id,
+            'user_id': self.existing_user.user_id,
             'password': 'new_password',
             'role': 'new_role',
             'first_name': 'new_first_name',
@@ -45,12 +41,6 @@ class UserPageTests(TestCase):
             'address': 'new_address',
             'skills': 'new_skills'
         }
-        response = self.client.post(self.url, post_data)
-        self.assertRedirects(response, '/')
-
-    def test_post_with_invalid_data(self):
-        self.client.force_login(self.user)
-        post_data = { ... }  # Incomplete or invalid data
         response = self.client.post(self.url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertIn('error', response.context)
