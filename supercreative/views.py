@@ -334,10 +334,6 @@ class ManageCourse(View):
                            'uca_sections': uca_sections,
                            'role': request.session['role']})
 
-        elif 'new_section' in request.POST.get('action'):
-
-            section_type = request.POST.get('section_type')
-
             # create the new section
             response = section_helper.create_section(Course.objects.get(course_id=course_id), section_type)
             uca_sections = section_helper.get_sections(course=course_id)
@@ -462,3 +458,60 @@ class ManageCourse(View):
                       {'course': course,
                        'uca_sections': uca_sections,
                        'role': request.session['role']})
+
+
+class UserPage(View):
+    def get(self, request):
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+        # get the user signed in on this session
+        user = User.objects.get(user_id=request.session['user_id'])
+        user_assignments = UserCourseAssignment.objects.filter(user_id=user.user_id)
+        return render(request, 'account.html',
+                      {'user': user,
+                       'user_assignments': user_assignments})
+
+    def post(self, request):
+        user = User.objects.get(user_id=request.session['user_id'])
+        user_assignments = UserCourseAssignment.objects.filter(user_id=user.user_id)
+
+        if not authentication.active_session_exists(request):
+            return redirect("/")
+
+        elif 'request_edit' in request.POST.get('action'):
+            return render(request, 'account.html',
+                          {'user': user,
+                           'user_assignments': user_assignments,
+                           'popup': True})
+
+        elif 'edit_user' in request.POST.get('action'):
+
+            # localize variables
+            user_id = int(request.POST.get('user_id'))
+            phone_number = request.POST.get('phone_number')
+            address = request.POST.get('address')
+            skills = request.POST.get('skills')
+            password = user.password
+            role = user.role_id.role_name
+            first_name = user.first_name
+            last_name = user.last_name
+
+
+            response = userHelper.edit_user_with_skills(user_id,
+                                                        password,
+                                                        role,
+                                                        first_name,
+                                                        last_name,
+                                                        phone_number,
+                                                        address,
+                                                        skills)
+            user = User.objects.get(user_id=user_id)
+
+            return render(request, 'account.html',
+                          {'user': user,
+                           'user_assignments': user_assignments,
+                           'error': response})
+
+        return render(request, 'account.html',
+                      {'user': user,
+                       'user_assignments': user_assignments})
