@@ -28,12 +28,14 @@
         <a class="logout" href="/">Logout</a>
     </div>
     <div class="content">
-        <form action="/users/" method="post">
-            {% csrf_token %}
-            <label for="action"></label>
-            <input type="hidden" id="action" name="action" value="request_new">
-            <button class="create-user">Create New User</button>
-        </form>
+        {% if role == 'Administrator' %}
+            <form action="/users/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_new">
+                <button class="create-user">Create New User</button>
+            </form>
+        {% endif %}
         <table>
             <col style="width:15%">
             <col style="width:25%">
@@ -88,19 +90,23 @@
             <p class="data">{{ user.role }}</p>
             <p class="field">Email:</p>
             <p class="data">{{ user.email }}</p>
-            <p class="field">Phone Number:</p>
-            <p class="data">{{ user.phone_number }}</p>
-            <p class="field">Address:</p>
-            <p class="data">{{ user.address }}</p>
+            {% if role == 'Administrator' %}
+                <p class="field">Phone Number:</p>
+                <p class="data">{{ user.phone_number }}</p>
+                <p class="field">Address:</p>
+                <p class="data">{{ user.address }}</p>
+            {% endif %}
             <div class="buttons">
-                <form action="/users/" method="post">
-                    {% csrf_token %}
-                    <label for="action"></label>
-                    <input type="text" id="action" name="action" value="request_edit">
-                    <label for="user_id"></label>
-                    <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
-                    <button>Edit</button>
-                </form>
+                {% if role == 'Administrator' %}
+                    <form action="/users/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="text" id="action" name="action" value="request_edit">
+                        <label for="user_id"></label>
+                        <input type="text" id="user_id" name="user_id" value="{{ user.user_id }}">
+                        <button>Edit</button>
+                    </form>
+                {% endif %}
                 <a href="/users/">Back</a>
             </div>
         </div>
