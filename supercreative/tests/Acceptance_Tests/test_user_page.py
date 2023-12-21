@@ -14,7 +14,7 @@ class UserPageTests(TestCase):
         user.create_user("test@uwm.edu", "P@ssword123", self.user_role.role_name, "John", "Doe", "1234567890", "123 Main St")
         self.existing_user = User.objects.get(email="test@uwm.edu")
         authentication.create_session(self.client.session, self.existing_user.email)
-        self.url = '/user_page/'
+        self.url = '/account/'
 
     def test_post_with_valid_data(self):
         post_data = {

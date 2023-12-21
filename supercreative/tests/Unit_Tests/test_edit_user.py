@@ -82,6 +82,6 @@ class TestEditUser(TestCase):
                                        self.user.address,
                                        self.skills)
 
-        self.assertEqual(result, "User edited successfully. (with skills)", "Failed to edit user skills")
+        self.assertEqual(result, "User edited successfully.", "Failed to edit user skills")
         self.assertEqual(User.objects.get(user_id=self.user.user_id).skills, self.skills,
                          "Failed to update skills")

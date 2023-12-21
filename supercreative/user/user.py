@@ -132,4 +132,4 @@ def edit_user_with_skills(user_id, new_password, new_role, new_first, new_last, 
     user.skills = skills
     user.save()
 
-    return result + " (with skills)"
+    return result
