@@ -1,7 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.views import View
-
 from supercreative.course.user_assignments import assign_user_to
 from supercreative.section import section as section_helper
 from supercreative.course import course as courseHelper
