@@ -259,9 +259,8 @@ class ManageCourse(View):
         # Check if an active session exists
         if not authentication.active_session_exists(request):
             return redirect("/")
-
         # Retrieve the course, its sections, and its assigned users
-        course_id = request.POST.get('course_id')
+        course_id = request.GET.get('course_id')
         course = Course.objects.get(course_id=course_id)
         user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
         course_sections = Section.objects.filter(course_id=course_id)
