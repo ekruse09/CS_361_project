@@ -37,7 +37,6 @@
             </form>
         {% endif %}
         <table>
-            <col style="width:11%">
             <col style="width:14%">
             <col style="width:25%">
             <col style="width:45%">
@@ -45,7 +44,6 @@
                 <col style="width:5%">
             {% endif %}
             <tr>
-                <th>Course ID</th>
                 <th>Course Code</th>
                 <th>Course Name</th>
                 <th>Course Description</th>
@@ -55,7 +53,6 @@
             </tr>
             {% for course in courses %}
                 <tr>
-                    <td>{{ course.course_id }}</td>
                     <td>{{ course.course_code }}</td>
                     <td>{{ course.course_name }}</td>
                     <td>{{ course.course_description }}</td>
@@ -83,8 +80,6 @@
                 </h1>
             {% endif %}
             <h1>Course Information:</h1>
-            <p class="field">Course ID:</p>
-            <p class="data">{{ course.course_id }}</p>
             <p class="field">Course Code:</p>
             <p class="data">{{ course.course_code }}</p>
             <p class="field">Course Name:</p>
@@ -129,12 +124,9 @@
             {% endif %}
             <form action="/course/" method="post">
                 {% csrf_token %}
-                {% if new %}
-                    <label for="course_id">Course ID:</label>
-                    <input type="number" id="course_id" name="course_id" required>
-                {% else %}
-                    <label class="hidden" for="course_id">Course ID:</label>
-                    <input class="hidden" type="text" id="course_id" name="course_id" value="{{ course.course_id }}">
+                {% if not new %}
+                    <label for="course_id"></label>
+                    <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                 {% endif %}
                 <label for="course_code">Course Code:</label>
                 <input type="text" id="course_code" name="course_code" value="{{ course.course_code }}" required>
@@ -144,10 +136,10 @@
                 <textarea id="course_description" name="course_description" required>{{ course.course_description }}</textarea>
                 <label for="action"></label>
                 {% if new %}
-                    <input type="text" id="action" name="action" value="new_course">
+                    <input type="hidden" id="action" name="action" value="new_course">
                     <button>Create Course</button>
                 {% else %}
-                    <input type="text" id="action" name="action" value="edit_course">
+                    <input type="hidden" id="action" name="action" value="edit_course">
                     <button>Save Changes</button>
                 {% endif %}
             </form>

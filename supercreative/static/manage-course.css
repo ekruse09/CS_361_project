@@ -78,15 +78,19 @@ body {
     width: 100%;
 }
 
+.message {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
 .logout,
-.create-section,
-.add-user {
+.add-buttons button {
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #f97316;
     height: 40px;
-    width: 90px;
+    width: 110px;
     border: none;
     border-radius: 8px;
     color: white;
@@ -95,14 +99,12 @@ body {
 }
 
 .logout:hover,
-.create-section:hover,
-.add-user:hover {
+.add-buttons button:hover {
     background-color: #da6512;
 }
 
 .logout:active,
-.create-section:active,
-.add-user:active {
+.add-buttons button:active {
     background-color: #f97316;
 }
 
@@ -172,7 +174,8 @@ td button {
 
 .info-pop-up,
 .edit-pop-up,
-.assign-user-pop-up {
+.assign-user-pop-up,
+.remove-user-pop-up{
     position: fixed;
     top: 0;
     bottom: 0;
@@ -189,8 +192,6 @@ td button {
     box-shadow: 0 0 12px -4px black;
     z-index: 2;
 }
-
-
 
 .info-pop-up p {
     margin: 0 50px 5px;
@@ -212,7 +213,8 @@ td button {
 
 .info-pop-up > h1,
 .edit-pop-up > h1,
-.assign-user-pop-up > h1 {
+.assign-user-pop-up > h1,
+.remove-user-pop-up > h1 {
     background-color: white;
     box-shadow: 0 2px 4px -4px black;
     font-size: 24px;
@@ -233,7 +235,7 @@ td button {
 .buttons a {
     background-color: #f97316;
     height: 40px;
-    width: 90px;
+    width: 120px;
     font-size: 16px;
     color: white;
     box-sizing: border-box;
@@ -259,10 +261,24 @@ td button {
     text-decoration: none;
 }
 
-.edit-pop-up > form {
-    padding: 25px 50px;
+.edit-pop-up > form:nth-of-type(1),
+.assign-user-pop-up > form:nth-of-type(1),
+.remove-user-pop-up > form:nth-of-type(1) {
+    padding: 25px 50px 0;
     display: grid;
     gap: 20px;
+}
+
+.edit-pop-up > form:nth-of-type(2),
+.assign-user-pop-up > form:nth-of-type(2),
+.remove-user-pop-up > form:nth-of-type(2) {
+    padding: 0 50px 25px;
+    display: grid;
+    gap: 20px;
+}
+
+select {
+    height: 28px;
 }
 
 .edit-pop-up > form > label {
@@ -280,7 +296,8 @@ textarea {
 }
 
 .edit-pop-up > form button,
-.assign-user-pop-up > form button {
+.assign-user-pop-up > form button,
+.remove-user-pop-up > form button {
     height: 40px;
     width: 120px;
     border: none;
@@ -291,11 +308,15 @@ textarea {
     justify-self: center;
 }
 
-.edit-pop-up > form button:hover {
+.edit-pop-up > form button:hover,
+.assign-user-pop-up > form button:hover,
+.remove-user-pop-up > form button:hover {
     background-color: #da6512;
 }
 
-.edit-pop-up > form button:active {
+.edit-pop-up > form button:active,
+.assign-user-pop-up > form button:active,
+.remove-user-pop-up > form button:active {
     background-color: #f97316;
 }
 
