@@ -213,8 +213,7 @@ td button {
 .buttons {
     margin: 30px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    gap: 25px;
     justify-content: center;
     align-items: center;
 }
@@ -263,6 +262,10 @@ td button {
     padding: 4px;
 }
 
+select {
+    height: 28px;
+}
+
 textarea {
     height: 100px;
     padding: 4px;
@@ -299,4 +302,9 @@ textarea {
 .delete button {
     margin-top: -5px;
     margin-bottom: 25px;
+}
+
+.delete {
+    display: flex;
+    justify-content: center;
 }

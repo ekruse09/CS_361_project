@@ -160,9 +160,6 @@ class ManageCoursesAcceptanceTests(TestCase):
         self.assertTemplateUsed(response, 'manage-course.html')
         self.assertIn('course', response.context)
         self.assertIn('uca_sections', response.context)
-        self.assertTrue(response.context['popup'])
-        self.assertTrue(response.context['edit'])
-        self.assertTrue(response.context['new'])
 
         # Add assertions for the expected values in the uca_sections dictionary
         print(Section.objects.all())
@@ -177,9 +174,6 @@ class ManageCoursesAcceptanceTests(TestCase):
         self.assertTemplateUsed(response, 'manage-course.html')
         self.assertIn('course', response.context)
         self.assertIn('uca_sections', response.context)
-        self.assertTrue(response.context['popup'])
-        self.assertTrue(response.context['edit'])
-        self.assertFalse(response.context['new'])
         # Add assertions for the expected values in the uca_sections dictionary
         self.assertFalse(Section.objects.filter(course_id=self.existing_section_2.course_id, section_id=self.existing_section_2.section_id), "Failed to delete section.")
 
@@ -201,8 +195,7 @@ class ManageCoursesAcceptanceTests(TestCase):
 
         self.assertIn('course', response.context)
         self.assertIn('eligible_users', response.context)
-        self.assertTrue(response.context['popup'])
-        self.assertFalse(response.context['edit'])
+        self.assertTrue(response.context['add_user'])
 
         # user 3 is the only user not assigned to the course
         eligible_users = response.context['eligible_users']
@@ -211,6 +204,7 @@ class ManageCoursesAcceptanceTests(TestCase):
     def test_post_view_section(self):
         response = self.client.post('/manage-course/',
                                     {'action': 'view_section',
+                                     'section_id': self.existing_section_2.section_id,
                                      'course_id': self.existing_course.course_id})
 
         self.assertEqual(response.status_code, 200)
@@ -218,7 +212,6 @@ class ManageCoursesAcceptanceTests(TestCase):
         self.assertIn('course', response.context)
         self.assertIn('uca_sections', response.context)
         self.assertTrue(response.context['popup'])
-        self.assertFalse(response.context['edit'])
 
         # Add assertions for the expected values in the uca_sections dictionary
         uca_sections = response.context['uca_sections']

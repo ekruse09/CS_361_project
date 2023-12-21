@@ -34,6 +34,8 @@
                     {% csrf_token %}
                     <label for="action"></label>
                     <input type="hidden" id="action" name="action" value="request_new">
+                    <label for="course_id"></label>
+                    <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                     <button class="create-section">Add Section</button>
                 </form>
             {% endif %}
@@ -41,9 +43,20 @@
                 {% csrf_token %}
                 <label for="action"></label>
                 <input type="hidden" id="action" name="action" value="add_user">
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                 <button class="add-user">Add User</button>
             </form>
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="request_remove">
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <button class="remove-user">Remove User</button>
+            </form>
         </div>
+        <p class="message">{{ error }}</p>
         <table>
             <col style="width:30%">
             <col style="width:20%">
@@ -57,24 +70,27 @@
                 <th>User</th>
                 <th></th>
             </tr>
-            {% for uca in user_course_assignments %}
+            {% for section, assignment in uca_sections.items %}
                 <tr>
-                    <td>{{ uca.section_id }}</td>
-                    <td>{{ uca.section_type }}</td>
-                    {% if uca.section_type == 'lab' %}
-                        <td>Lab</td>
+                    <td>{{ section.section_id }}</td>
+                    <td>{{ section.section_type.section_type_name }}</td>
+                    {% if assignment == '' %}
+                        <td></td>
+                        <td></td>
                     {% else %}
-                        <td>Lecture</td>
+                        <td>{{ assignment.user_id.role_id.role_name }}</td>
+                        <td>{{ assignment.user_id.first_name }} {{ assignment.user_id.last_name }}</td>
                     {% endif %}
-                    <td>{{ uca.user_id }}</td>
                     <td>
                         <form action="/manage-course/" method="post">
                             {% csrf_token %}
                             <label for="section_id"></label>
-                            <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
+                            <input type="hidden" id="section_id" name="section_id" value="{{ section.section_id }}">
                             <label for="action"></label>
                             <input type="hidden" id="action" name="action" value="view_section">
-                            <button>View</button>
+                            <label for="course_id"></label>
+                            <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                            <button>Manage</button>
                         </form>
                     </td>
                 </tr>
@@ -82,7 +98,7 @@
         </table>
     </div>
     {% if popup and not edit%}
-        <a href="/manage-course/" class="shade"></a>
+        <div class="shade"></div>
         <div class="info-pop-up">
             <h1>Section Information:</h1>
             <p class="field">Course Name:</p>
@@ -90,62 +106,154 @@
             <p class="field">Course Code:</p>
             <p class="data">{{ course.course_code }}</p>
             <p class="field">Section Number:</p>
-            <p class="data">{{ uca.section_id }}</p>
+            <p class="data">{{ section.section_id }}</p>
             <p class="field">Section Type:</p>
-            <p class="data">{{ uca.section_type }}</p>
+            <p class="data">{{ section.section_type.section_type_name }}</p>
             <p class="field">Instructor:</p>
-            <p class="data">{{ uca.user_id }}</p>
+            <p class="data">{{ uca.user_id.first_name }} {{ uca.user_id.last_name }}</p>
             <div class="buttons">
+                {% if role == 'Administrator' or role == 'Instructor' %}
+                    <form action="/manage-course/" method="post">
+                        {% csrf_token %}
+                        <label for="action"></label>
+                        <input type="hidden" id="action" name="action" value="request_user">
+                        <label for="course_id"></label>
+                        <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                        <label for="section_id"></label>
+                        <input type="hidden" id="section_id" name="section_id" value="{{ section.section_id }}">
+                        <button>Assign User</button>
+                    </form>
+                {% endif %}
                 {% if role == 'Administrator' %}
                     <form action="/manage-course/" method="post">
                         {% csrf_token %}
                         <label for="action"></label>
                         <input type="hidden" id="action" name="action" value="delete_section">
                         <label for="section_id"></label>
-                        <input type="hidden" id="section_id" name="section_id" value="{{ uca.section_id }}">
+                        <input type="hidden" id="section_id" name="section_id" value="{{ section.section_id }}">
+                        <label for="course_id"></label>
+                        <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                         <button>Delete</button>
                     </form>
                 {% endif %}
-                <a href="/manage-course/">Back</a>
+                <form action="/manage-course/" method="get">
+                    {% csrf_token %}
+                    <label for="course_id"></label>
+                    <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                    <button>Back</button>
+                </form>
             </div>
         </div>
     {% elif popup and edit %}
-        <a href="/manage-course/" class="shade"></a>
+        <div class="shade"></div>
         <div class="edit-pop-up">
             <h1>New Section Information:</h1>
             <form action="/manage-course/" method="post">
                 {% csrf_token %}
-                <label for="section_id">Section Number:</label>
-                <input type="number" id="section_id" name="section_id" required>
                 <label for="section_type">Section Type:</label>
-                <input type="text" id="section_type" name="section_type" required>
-                <label for="user">Instructor:</label>
-                <select id="user" name="user" required>
-                    <option value="" disabled>Select an Instructor</option>
-                    {% for user in assigned_users %}
-                        <option value="{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                <select name="section_type" id="section_type" required>
+                    <option value="" disabled selected>Select Section Type</option>
+                    {% for type in section_types %}
+                        <option value="{{ type.section_type_name }}">{{ type.section_type_name }}</option>
                     {% endfor %}
                 </select>
                 <label for="action"></label>
                 <input type="hidden" id="action" name="action" value="new_section">
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                 <button>Create Section</button>
+            </form>
+            <form action="/manage-course/" method="get">
+                {% csrf_token %}
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <button>Back</button>
             </form>
         </div>
     {% elif add_user %}
-        <a href="/manage-course/" class="shade"></a>
+        <div class="shade"></div>
         <div class="assign-user-pop-up">
             <h1>Add User to Course</h1>
             <form action="/manage-course/" method="post">
                 {% csrf_token %}
-                <label for="user">User:</label>
-                <select name="user" id="user" required>
+                <label for="user_id">User:</label>
+                <select name="user_id" id="user_id" required>
+                    <option value="" disabled selected>Select an Instructor</option>
                     {% for user in eligible_users %}
-                        <option value="{{ user.user_id }}"></option>
+                        <option value="{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</option>
                     {% endfor %}
                 </select>
                 <label for="action"></label>
                 <input type="hidden" id="action" name="action" value="assign_user">
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
                 <button>Add User</button>
+            </form>
+            <form action="/manage-course/" method="get">
+                {% csrf_token %}
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <button>Back</button>
+            </form>
+        </div>
+    {% elif remove_user %}
+        <div class="shade"></div>
+        <div class="remove-user-pop-up">
+            <h1>Remove User From Course</h1>
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="user_id">User:</label>
+                <select name="user_id" id="user_id" required>
+                    <option value="" disabled selected>Select an Instructor</option>
+                    {% for user in users_in_course %}
+                        <option value="{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="delete_user">
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <button>Remove User</button>
+            </form>
+            <form action="/manage-course/" method="get">
+                {% csrf_token %}
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <button>Back</button>
+            </form>
+        </div>
+    {% elif assign_user_to_section %}
+        <div class="shade"></div>
+        <div class="assign-user-pop-up">
+            <h1>Assign User to Section</h1>
+            <form action="/manage-course/" method="post">
+                {% csrf_token %}
+                <label for="user_id">User:</label>
+                <select name="user_id" id="user_id" required>
+                    {% if uca != None %}
+                        <option value="{{ uca.user_id.user_id }}" selected>{{ uca.user_id.first_name }} {{ uca.user_id.last_name }}</option>
+                    {% else %}
+                        <option value="" disabled selected>Select an Instructor</option>
+                    {% endif %}
+                    {% for user in users_in_course %}
+                        {% if uca == None or user != uca.user_id%}
+                            <option value="{{ user.user_id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <label for="action"></label>
+                <input type="hidden" id="action" name="action" value="assign_user">
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <label for="section_id"></label>
+                <input type="hidden" id="section_id" name="section_id" value="{{ section.section_id }}">
+                <button>Assign User</button>
+            </form>
+            <form action="/manage-course/" method="get">
+                {% csrf_token %}
+                <label for="course_id"></label>
+                <input type="hidden" id="course_id" name="course_id" value="{{ course.course_id }}">
+                <button>Back</button>
             </form>
         </div>
     {% endif %}
