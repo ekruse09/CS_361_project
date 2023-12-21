@@ -30,7 +30,7 @@ class TestDeleteSection(TestCase):
                          "Section exist on User_Course_Assignment")
 
     def test_no_parameter(self):
-        self.assertEqual(delete_section(self.good_section.course_id,None), "No Section detected", "Failed no section pass")
+        self.assertEqual(delete_section(self.good_section.course_id,None), "Section does not exist", "Failed no section pass")
 
     def test_non_existing_section(self):
         self.assertEqual(delete_section(self.good_section.course_id,-1),

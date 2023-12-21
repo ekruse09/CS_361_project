@@ -1,11 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.views import View
-from supercreative.course.user_assignments import assign_user_to
+from supercreative.course.user_assignments import assign_user_to, remove_user_from
 from supercreative.section import section as section_helper
 from supercreative.course import course as courseHelper
 from supercreative.user import user as userHelper
-from supercreative.models import User, Course, Section, UserCourseAssignment, SectionType
+from supercreative.models import User, Course, Section, UserCourseAssignment, SectionType, UserRole
 from supercreative.authentication import authentication
 
 
@@ -62,6 +62,7 @@ class Users(View):
 
         users = User.objects.all()
         role = request.session['role']
+        all_roles = UserRole.objects.all()
 
         if 'view_user' in request.POST.get('action'):
             user_id = request.POST.get('user_id')
@@ -84,7 +85,8 @@ class Users(View):
                                    'popup': True,
                                    'edit': True,
                                    'new': False,
-                                   'role': role})
+                                   'role': role,
+                                   'all_roles': all_roles})
 
         elif 'request_new' in request.POST.get('action'):
             return render(request, 'users.html',
@@ -92,7 +94,8 @@ class Users(View):
                            'popup': True,
                            'edit': True,
                            'new': True,
-                           'role': role})
+                           'role': role,
+                           'all_roles': all_roles})
 
         elif 'new_user' in request.POST.get('action'):
             # localize variables
@@ -247,9 +250,15 @@ class Courses(View):
 
 
         elif 'manage_course' in request.POST.get('action'):
-            course_id = request.POST.get('course_id')
-            course = Course.objects.get(course_id=course_id)
-            return render(request, 'manage-course.html', {'course': course,'role': role})
+            # Retrieve the course, its sections, and its assigned users
+            course_id = Course.objects.get(course_id=request.POST.get('course_id'))
+            uca_sections = section_helper.get_sections(course=course_id)
+
+            return render(request,
+                          'manage-course.html',
+                          {'course': course_id,
+                           'uca_sections': uca_sections,
+                           'role': request.session['role']})
 
         return render(request, 'courses.html', {'courses': courses, 'role': role})
 
@@ -259,21 +268,10 @@ class ManageCourse(View):
         # Check if an active session exists
         if not authentication.active_session_exists(request):
             return redirect("/")
-        # Retrieve the course, its sections, and its assigned users
-        course_id = request.GET.get('course_id')
-        course = Course.objects.get(course_id=course_id)
-        user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
-        course_sections = Section.objects.filter(course_id=course_id)
 
-        # Pass the sections as a dictionary with the user course assignments corresponding to that section
-        uca_sections = {}
-        for section in course_sections:
-            current_uca = None
-            try:
-                current_uca = user_assignments.get(course_id=course_id,section_id=section)
-            except ObjectDoesNotExist:
-                current_uca = ""
-            uca_sections[section] = current_uca
+        # Retrieve the course, its sections, and its assigned users
+        course_id = Course.objects.get(course_id=request.GET.get('course_id'))
+        uca_sections = section_helper.get_sections(course=course_id)
 
         return render(request,
                       'manage-course.html',
@@ -289,29 +287,28 @@ class ManageCourse(View):
         # Retrieve the course, its sections, and its assigned users
         course_id = request.POST.get('course_id')
         course = Course.objects.get(course_id=course_id)
-        user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
-        course_sections = Section.objects.filter(course_id=course)
 
         # Pass the sections as a dictionary with the user course assignments corresponding to that section
-        uca_sections = {}
-        for section in course_sections:
-            current_uca = None
-            try:
-                current_uca = user_assignments.get(course_id=course_id, section_id=section)
-            except ObjectDoesNotExist:
-                current_uca = ""
-            uca_sections[section] = current_uca
+        uca_sections = section_helper.get_sections(course=course_id)
 
         # Handle user course assignment and (optional) section assignment
         if 'assign_user' in request.POST.get('action'):
             user_id = request.POST.get('user_id')
 
-            section_id = request.POST.get('section_id')
+            section = None
+            try:
+                section_id = request.POST.get('section_id')
+                if section_id != None:
+                    section = Section.objects.get(section_id=section_id)
+            except:
+                pass
 
             # Assign the user to the course
             response = assign_user_to(assigned_user=User.objects.get(user_id=user_id),
                                       assigned_course=Course.objects.get(course_id=course_id),
-                                      assigned_section=section_id)
+                                      assigned_section=section)
+            uca_sections = section_helper.get_sections(course=course_id)
+
             return render(request,
                           'manage-course.html',
                           {'course': course,
@@ -322,8 +319,10 @@ class ManageCourse(View):
         # Loads the popup for a new section
         elif 'request_new' in request.POST.get('action'):
 
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course)
             # list of users assigned to the course
             assigned_users = User.objects.filter(user_id__in=user_assignments.values_list('user_id'))
+            uca_sections = section_helper.get_sections(course=course_id)
 
             return render(request, 'manage-course.html',
                           {'course': course,
@@ -332,6 +331,7 @@ class ManageCourse(View):
                            'popup': True,
                            'edit': True,
                            'new': True,
+                           'uca_sections': uca_sections,
                            'role': request.session['role']})
 
         elif 'new_section' in request.POST.get('action'):
@@ -339,15 +339,16 @@ class ManageCourse(View):
             section_type = request.POST.get('section_type')
 
             # create the new section
-            response = section_helper.create_section(Course.objects.get(course_id=course_id), SectionType.objects.get(section_type_name=section_type))
-            print(response)
+            response = section_helper.create_section(Course.objects.get(course_id=course_id), section_type)
+            uca_sections = section_helper.get_sections(course=course_id)
+
             return render(request,
                           'manage-course.html',
                           {'course': course,
                            'uca_sections': uca_sections,
-                           'popup': True,
-                           'edit': True,
-                           'new': True,
+                           'popup': False,
+                           'edit': False,
+                           'new': False,
                            'error': response,
                            'role': request.session['role']})
 
@@ -355,14 +356,15 @@ class ManageCourse(View):
 
             section_id = request.POST.get('section_id')
             # delete the section
-            response = section_helper.delete_section(course_id, section_id)
+            response = section_helper.delete_section(course_id, int(section_id))
+            uca_sections = section_helper.get_sections(course=course_id)
 
             return render(request,
                           'manage-course.html',
                           {'course': course,
                            'uca_sections': uca_sections,
-                           'popup': True,
-                           'edit': True,
+                           'popup': False,
+                           'edit': False,
                            'new': False,
                            'error': response,
                            'role': request.session['role']})
@@ -370,9 +372,20 @@ class ManageCourse(View):
         # view the sections
         elif 'view_section' in request.POST.get('action'):
 
+            section = None
+            try:
+                section_id = request.POST.get('section_id')
+                section = Section.objects.get(section_id=section_id)
+            except:
+                pass
+
+            uca = uca_sections[section]
+
             return render(request, 'manage-course.html',
                           {'course': course,
                            'uca_sections': uca_sections,
+                           'section': section,
+                           'uca': uca,
                            'popup': True,
                            'edit': False,
                            'role': request.session['role']})
@@ -380,6 +393,8 @@ class ManageCourse(View):
         # request to add user to a course
         elif 'add_user' in request.POST.get('action'):
 
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course)
+            uca_sections = section_helper.get_sections(course=course_id)
             all_users = User.objects.all()
             eligible_users = []
             for user in all_users.exclude(user_id__in=user_assignments.values_list('user_id')):
@@ -387,12 +402,63 @@ class ManageCourse(View):
             return render(request, 'manage-course.html',
                           {'course': course,
                            'eligible_users': eligible_users,
-                           'popup': True,
+                           'popup': False,
                            'edit': False,
+                           'add_user': True,
+                           'uca_sections': uca_sections,
+                           'role': request.session['role']})
+
+        elif 'request_remove' in request.POST.get('action'):
+
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course)
+            users_in_course = []
+            for ua in user_assignments:
+                if ua.user_id not in users_in_course:
+                    users_in_course.append(ua.user_id)
+            uca_sections = section_helper.get_sections(course=course_id)
+            return render(request, 'manage-course.html',
+                          {'course': course,
+                           'remove_user': True,
+                           'users_in_course': users_in_course,
+                           'uca_sections': uca_sections,
+                           'role': request.session['role']})
+
+        elif 'request_user' in request.POST.get('action'):
+
+            user_assignments = UserCourseAssignment.objects.filter(course_id=course)
+            uca_sections = section_helper.get_sections(course=course_id)
+            users_in_course = []
+            for ua in user_assignments:
+                if ua.user_id not in users_in_course:
+                    users_in_course.append(ua.user_id)
+
+            section_id = request.POST.get('section_id')
+            section = Section.objects.get(course_id=course_id, section_id=section_id)
+            uca = uca_sections[section]
+
+            return render(request, 'manage-course.html',
+                          {'course': course,
+                           'uca_sections': uca_sections,
+                           'users_in_course': users_in_course,
+                           'section': section,
+                           'uca': uca,
+                           'assign_user_to_section': True,
+                           'role': request.session['role']})
+
+        elif 'delete_user' in request.POST.get('action'):
+
+            user = User.objects.get(user_id=request.POST.get('user_id'))
+            error = remove_user_from(user, course)
+            uca_sections = section_helper.get_sections(course=course_id)
+
+            return render(request, 'manage-course.html',
+                          {'course': course,
+                           'uca_sections': uca_sections,
+                           'error': error,
                            'role': request.session['role']})
 
         return render(request,
                       'manage-course.html',
-                      {'course': course_id,
+                      {'course': course,
                        'uca_sections': uca_sections,
                        'role': request.session['role']})

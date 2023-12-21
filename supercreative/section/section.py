@@ -31,8 +31,8 @@ def create_section(course, section_type):
 
 
 def delete_section(course_id, section_id):
-    if not section_id:
-        return "No Section detected"
+    # if not section_id:
+    #     return "No Section detected"
     try:
         section = Section.objects.get(course_id=course_id,section_id=section_id)
     except ObjectDoesNotExist:
@@ -44,3 +44,17 @@ def delete_section(course_id, section_id):
     except ObjectDoesNotExist:
         return "Section deletion was successful"
     return "Failed to delete section"
+
+def get_sections(course):
+    user_assignments = UserCourseAssignment.objects.filter(course_id=course)
+    course_sections = Section.objects.filter(course_id=course)
+    uca_sections = {}
+    for section in course_sections:
+        current_uca = None
+        try:
+            current_uca = user_assignments.get(course_id=course, section_id=section)
+        except ObjectDoesNotExist:
+            current_uca = ""
+        uca_sections[section] = current_uca
+
+    return uca_sections
