@@ -125,3 +125,11 @@ def delete_user(user_id):
 
     # Return true if the selected User account was deleted
     return "Successfully deleted user."
+
+def edit_user_with_skills(user_id, new_password, new_role, new_first, new_last, new_phone, new_address, skills):
+    result = edit_user(user_id, new_password, new_role, new_first, new_last, new_phone, new_address)
+    user = User.objects.get(user_id=user_id)
+    user.skills = skills
+    user.save()
+
+    return result + " (with skills)"

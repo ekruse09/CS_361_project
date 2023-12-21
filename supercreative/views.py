@@ -1,7 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.views import View
-
 from supercreative.course.user_assignments import assign_user_to
 from supercreative.section import section as section_helper
 from supercreative.course import course as courseHelper
@@ -262,8 +261,8 @@ class ManageCourse(View):
             return redirect("/")
 
         # Retrieve the course, its sections, and its assigned users
-        course_id = request.GET.get('course_id')
-        course_id = Course.objects.get(course_id=course_id)
+        course_id = request.POST.get('course_id')
+        course = Course.objects.get(course_id=course_id)
         user_assignments = UserCourseAssignment.objects.filter(course_id=course_id)
         course_sections = Section.objects.filter(course_id=course_id)
 

@@ -181,8 +181,6 @@ class ManageCoursesAcceptanceTests(TestCase):
         self.assertTrue(response.context['edit'])
         self.assertFalse(response.context['new'])
         # Add assertions for the expected values in the uca_sections dictionary
-        #uca_sections = response.context['uca_sections']
-        #expected_uca = self.expected_uca
         self.assertFalse(Section.objects.filter(course_id=self.existing_section_2.course_id, section_id=self.existing_section_2.section_id), "Failed to delete section.")
 
         # Check to see if user assignment is gone
