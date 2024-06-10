@@ -16,4 +16,32 @@ To get started with the TA Scheduling Application, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone [repository link]
+   git clone [https://github.com/ekruse09/CS_361_project]
+
+2. **Install Dependencies**:
+Navigate to the project directory and install the required dependencies:
+
+```bash
+cd ta-scheduling-app
+pip install django
+
+3. **Setup The Database**:
+Before migrating, generate migration files for any changes to your models:
+
+```bash
+python manage.py makemigrations
+
+```bash
+python manage.py migrate
+
+4. **Run The Application**:
+```bash
+python manage.py runserver
+
+To access the application, open your web browser and navigate to http://localhost:8000 to access the TA Scheduling Application.
+
+
+
+
+
+
