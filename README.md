@@ -1,4 +1,4 @@
-# TA Scheduling Application - CS361 Project
+# TA Scheduling Application
 
 ## Overview
 
@@ -9,13 +9,6 @@ Welcome to the TA Scheduling Application project! This project was developed as 
 - **Automated Course Assignments**: Efficiently assigns TAs to courses based on predefined criteria and availability.
 - **Contact Information Management**: Maintains up-to-date contact details for all TAs, ensuring easy access for administrators and faculty.
 - **Role-Based Access Control**: Implements different access levels for users based on their roles (e.g., administrator, faculty, TA) to ensure data security and appropriate permissions.
-
-## Project Links
-
-- **[Our Code](#)**: Access the codebase for the TA Scheduling Application.
-- **[Project Description](#)**: Detailed description of the project goals, scope, and requirements.
-- **[Design Document](#)**: Comprehensive design document outlining the architecture and design decisions.
-- **[Project Backlog](#)**: Backlog of tasks and features, detailing the development process and progress.
 
 ## Getting Started
 
