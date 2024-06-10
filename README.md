@@ -24,7 +24,6 @@ Navigate to the project directory and install the required dependencies:
    ```bash
    cd Code
 
-   ```bash
    pip install django
 
 3. **Setup The Database**:
@@ -33,7 +32,6 @@ Before migrating, generate migration files for any changes to your models:
    ```bash
    python manage.py makemigrations
 
-   ```bash
    python manage.py migrate
 
 4. **Run The Application**:
